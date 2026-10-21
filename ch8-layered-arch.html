@@ -1,0 +1,924 @@
+<div id="ch8-lesson">
+<style>
+  #ch8-lesson{
+    --ink: var(--seed-fg, #0f172a);
+    --muted: var(--seed-muted, #64748b);
+    --surface: var(--card-bg, #ffffff);
+    --surface-2: var(--inset-bg, #f8fafc);
+    --line: var(--border-standard, rgba(15,23,42,.12));
+    --line-soft: var(--border-subtle, rgba(15,23,42,.07));
+    --primary: var(--seed-primary, #7c3aed);
+    --primary-2: #0891b2;
+    --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+    --ok: #059669;
+    --ok-soft: color-mix(in srgb, #059669 10%, transparent);
+    --warn: #d97706;
+    --warn-soft: color-mix(in srgb, #d97706 11%, transparent);
+    --danger: #dc2626;
+    --danger-soft: color-mix(in srgb, #dc2626 10%, transparent);
+    --code-bg: #0f172a;
+    --code-ink: #dbeafe;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--ink);
+    font: 14px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #ch8-lesson *{ box-sizing:border-box; }
+  #ch8-lesson p{ margin:0; }
+  #ch8-lesson button{ font:inherit; color:inherit; }
+  #ch8-lesson code{ font-family:var(--mono); }
+  #ch8-lesson .ch8-hero{
+    position:relative; overflow:hidden; padding:28px 30px 22px;
+    border:1px solid var(--line); border-radius:20px;
+    background:
+      radial-gradient(680px 250px at 98% -25%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 66%),
+      linear-gradient(145deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface) 58%);
+  }
+  #ch8-lesson .ch8-hero::after{
+    content:""; position:absolute; right:-60px; top:-80px; width:250px; height:250px; border-radius:50%;
+    border:1px dashed color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+  #ch8-lesson .ch8-kicker{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+  #ch8-lesson h1{ margin:0; font-size:clamp(25px,3.4vw,40px); line-height:1.2; letter-spacing:-.02em; }
+  #ch8-lesson .ch8-sub{ margin-top:10px; max-width:860px; color:var(--muted); font-size:14px; }
+  #ch8-lesson .ch8-badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  #ch8-lesson .ch8-badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:7px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 75%, transparent); font-size:11px; color:var(--muted); }
+  #ch8-lesson .ch8-badge b{ color:var(--ink); font-weight:650; }
+  #ch8-lesson .ch8-meta{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); font-size:11px; color:var(--muted); }
+  #ch8-lesson .ch8-steps{
+    position:sticky; top:0; z-index:30; display:flex; gap:4px; overflow-x:auto; scrollbar-width:thin;
+    padding:8px; margin:14px 0 16px; border:1px solid var(--line); border-radius:14px;
+    background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(12px);
+  }
+  #ch8-lesson .ch8-step{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px; border:0; background:transparent; border-radius:9px; padding:7px 11px; cursor:pointer; color:var(--muted); text-align:left; min-width:96px; transition:.2s; }
+  #ch8-lesson .ch8-step .n{ font:10px/1 var(--mono); color:color-mix(in srgb, var(--muted) 75%, transparent); }
+  #ch8-lesson .ch8-step .t{ font-size:11.5px; font-weight:650; white-space:nowrap; }
+  #ch8-lesson .ch8-step:hover{ background:var(--primary-soft); color:var(--ink); }
+  #ch8-lesson .ch8-step.is-active{ background:var(--primary); color:#fff; }
+  #ch8-lesson .ch8-step.is-active .n{ color:rgba(255,255,255,.7); }
+  #ch8-lesson .ch8-progress{ height:3px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:-8px 0 18px; }
+  #ch8-lesson .ch8-progress i{ display:block; height:100%; width:20%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .35s; }
+  #ch8-lesson .ch8-scene{ display:none; }
+  #ch8-lesson .ch8-scene.is-active{ display:block; animation:ch8In .38s ease both; }
+  @keyframes ch8In{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  #ch8-lesson .ch8-scene-head{ margin:2px 0 14px; }
+  #ch8-lesson .ch8-scene-head .tag{ display:inline-flex; align-items:center; gap:6px; font:10px/1 var(--mono); color:var(--primary); border:1px solid color-mix(in srgb, var(--primary) 30%, transparent); background:var(--primary-soft); border-radius:99px; padding:4px 9px; margin-bottom:7px; }
+  #ch8-lesson .ch8-scene-head h2{ margin:0; font-size:clamp(20px,2.5vw,27px); line-height:1.3; letter-spacing:-.01em; }
+  #ch8-lesson .ch8-scene-head p{ margin-top:5px; color:var(--muted); font-size:12.5px; max-width:940px; }
+  #ch8-lesson .ch8-card{ border:1px solid var(--line); border-radius:15px; background:var(--surface); padding:16px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
+  #ch8-lesson .ch8-card + .ch8-card{ margin-top:12px; }
+  #ch8-lesson .ch8-card-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:11px; }
+  #ch8-lesson .ch8-card-h h3{ margin:0; font-size:14px; line-height:1.4; }
+  #ch8-lesson .ch8-hint{ font-size:10.5px; color:var(--muted); white-space:nowrap; }
+  #ch8-lesson .ch8-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+  #ch8-lesson .ch8-grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  #ch8-lesson .ch8-grid2 > .ch8-card, #ch8-lesson .ch8-grid3 > .ch8-card{ margin-top:0; }
+  #ch8-lesson .ch8-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:31px; padding:5px 11px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); cursor:pointer; font-size:11.5px; font-weight:600; transition:.15s; }
+  #ch8-lesson .ch8-btn:hover{ border-color:var(--primary); color:var(--primary); background:var(--primary-soft); }
+  #ch8-lesson .ch8-btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch8-lesson .ch8-btn.primary:hover{ filter:brightness(1.06); color:#fff; }
+  #ch8-lesson .ch8-btn.ghost{ background:transparent; }
+  #ch8-lesson .ch8-btn.danger{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 35%, var(--line)); }
+  #ch8-lesson .ch8-controls{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+  #ch8-lesson .ch8-code{ margin:0; padding:12px 13px; border-radius:10px; background:var(--code-bg); color:var(--code-ink); font:10.5px/1.65 var(--mono); overflow:auto; }
+  #ch8-lesson .ch8-code .cm{ color:#7dd3fc; }
+  #ch8-lesson .ch8-code .kw{ color:#f0abfc; }
+  #ch8-lesson .ch8-code .st{ color:#86efac; }
+  #ch8-lesson .ch8-note{ border:1px solid var(--line); border-left:3px solid var(--primary); border-radius:8px; background:var(--surface-2); padding:9px 11px; font-size:11.5px; color:var(--muted); }
+  #ch8-lesson .ch8-note b{ color:var(--ink); }
+  #ch8-lesson .ch8-note.warn{ border-left-color:var(--warn); background:var(--warn-soft); }
+  #ch8-lesson .ch8-note.danger{ border-left-color:var(--danger); background:var(--danger-soft); }
+  #ch8-lesson .ch8-note.ok{ border-left-color:var(--ok); background:var(--ok-soft); }
+  #ch8-lesson .ch8-status{ margin-top:10px; border:1px dashed var(--line); border-radius:8px; padding:8px 10px; font-size:11px; min-height:38px; color:var(--muted); background:var(--surface-2); }
+  #ch8-lesson .ch8-status b{ color:var(--ink); }
+  #ch8-lesson .ch8-status.is-bad{ border-color:color-mix(in srgb, var(--danger) 40%, var(--line)); background:var(--danger-soft); color:var(--danger); }
+  #ch8-lesson .ch8-status.is-ok{ border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:var(--ok-soft); color:var(--ok); }
+  #ch8-lesson .ch8-chip{ display:inline-flex; align-items:center; gap:4px; border:1px solid var(--line); border-radius:6px; padding:2px 6px; font:9.5px/1.5 var(--mono); color:var(--muted); background:var(--surface-2); }
+  #ch8-lesson .ch8-chip.ok{ color:var(--ok); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); background:var(--ok-soft); }
+  #ch8-lesson .ch8-chip.bad{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 30%, var(--line)); background:var(--danger-soft); }
+  #ch8-lesson .ch8-mini-title{ font:10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+
+  /* layer stack */
+  #ch8-lesson .ch8-layer-stack{ position:relative; padding-right:72px; }
+  #ch8-lesson .ch8-layer{ position:relative; border:1px solid var(--line); border-left:4px solid var(--layer, var(--primary)); border-radius:9px; background:var(--surface-2); padding:9px 11px; cursor:pointer; transition:.15s; }
+  #ch8-lesson .ch8-layer:hover{ border-color:var(--primary); }
+  #ch8-lesson .ch8-layer.is-sel{ background:var(--surface); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch8-lesson .ch8-layer.is-bad{ border-color:var(--danger); background:var(--danger-soft); }
+  #ch8-lesson .ch8-layer .lt{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  #ch8-lesson .ch8-layer b{ font-size:12px; }
+  #ch8-lesson .ch8-layer .files{ font:9px/1.5 var(--mono); color:var(--muted); margin-top:2px; }
+  #ch8-lesson .ch8-layer .tag{ font:8.5px/1.4 var(--mono); color:var(--layer, var(--primary)); border:1px solid color-mix(in srgb, var(--layer, var(--primary)) 28%, var(--line)); border-radius:5px; padding:1px 5px; white-space:nowrap; }
+  #ch8-lesson .ch8-down{ text-align:center; font:9px/1.6 var(--mono); color:var(--muted); padding:3px 0; }
+  #ch8-lesson .ch8-violation{ display:none; position:absolute; right:14px; top:54px; bottom:54px; width:48px; }
+  #ch8-lesson .ch8-violation.is-on{ display:block; }
+  #ch8-lesson .ch8-violation .rail{ position:absolute; right:8px; top:0; bottom:0; border-right:2px dashed var(--danger); }
+  #ch8-lesson .ch8-violation .rail::before{ content:""; position:absolute; right:-5px; top:-4px; border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:8px solid var(--danger); }
+  #ch8-lesson .ch8-violation .vlabel{ position:absolute; right:15px; top:50%; transform:translateY(-50%) rotate(90deg); transform-origin:center; font:8.5px/1 var(--mono); color:var(--danger); white-space:nowrap; background:var(--surface); padding:2px 4px; }
+  #ch8-lesson .ch8-grep{ margin-top:9px; border-radius:8px; background:var(--code-bg); color:#cbd5e1; font:9.5px/1.6 var(--mono); padding:8px 10px; min-height:58px; overflow:auto; }
+  #ch8-lesson .ch8-grep .cmd{ color:#7dd3fc; }
+  #ch8-lesson .ch8-grep .bad{ color:#fca5a5; }
+  #ch8-lesson .ch8-grep .good{ color:#86efac; }
+  #ch8-lesson .ch8-detail{ border:1px dashed var(--line); border-radius:9px; background:var(--surface-2); padding:10px; min-height:124px; font-size:11.5px; }
+  #ch8-lesson .ch8-detail b{ font-size:12.5px; }
+  #ch8-lesson .ch8-detail .row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+
+  /* dip */
+  #ch8-lesson .ch8-dip-flow{ display:grid; gap:5px; }
+  #ch8-lesson .ch8-appbox{ border:1px solid color-mix(in srgb, var(--primary) 35%, var(--line)); border-radius:9px; background:var(--primary-soft); padding:9px 11px; }
+  #ch8-lesson .ch8-appbox b{ font-size:12px; display:block; }
+  #ch8-lesson .ch8-appbox code{ font-size:9.5px; color:var(--primary); }
+  #ch8-lesson .ch8-flow-arrow{ text-align:center; font:9.5px/1.4 var(--mono); color:var(--muted); }
+  #ch8-lesson .ch8-itfbox{ border:1px solid var(--line); border-left:3px solid var(--primary-2); border-radius:9px; background:var(--surface-2); padding:9px 11px; }
+  #ch8-lesson .ch8-itfbox b{ font-size:12px; display:block; }
+  #ch8-lesson .ch8-itfbox code{ font-size:9.5px; color:var(--primary-2); }
+  #ch8-lesson .ch8-drivers{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  #ch8-lesson .ch8-driver{ border:1px solid var(--line); border-radius:8px; padding:8px; background:var(--surface); cursor:pointer; text-align:center; transition:.15s; }
+  #ch8-lesson .ch8-driver:hover{ border-color:var(--primary); }
+  #ch8-lesson .ch8-driver.is-on{ border-color:var(--primary); background:var(--primary-soft); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch8-lesson .ch8-driver b{ display:block; font-size:11.5px; }
+  #ch8-lesson .ch8-driver span{ display:block; font:8.5px/1.5 var(--mono); color:var(--muted); }
+  #ch8-lesson .ch8-output{ margin-top:9px; border:1px dashed var(--line); border-radius:8px; padding:8px 10px; font:9.5px/1.7 var(--mono); color:var(--muted); background:var(--surface-2); min-height:55px; }
+  #ch8-lesson .ch8-output b{ color:var(--ink); }
+
+  /* observer + queue */
+  #ch8-lesson .ch8-obs{ display:grid; gap:5px; margin-top:6px; }
+  #ch8-lesson .ch8-sub{ display:flex; align-items:center; justify-content:space-between; gap:8px; border:1px solid var(--line); border-radius:8px; padding:6px 9px; background:var(--surface-2); font-size:11px; transition:.2s; }
+  #ch8-lesson .ch8-sub.is-hit{ border-color:var(--primary); background:var(--primary-soft); transform:translateX(3px); }
+  #ch8-lesson .ch8-sub.is-off{ opacity:.55; }
+  #ch8-lesson .ch8-sub input{ accent-color:var(--primary); }
+  #ch8-lesson .ch8-sub .c{ font:9px/1.4 var(--mono); color:var(--muted); }
+  #ch8-lesson .ch8-queue{ display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin:7px 0; }
+  #ch8-lesson .ch8-qcell{ border:1px dashed var(--line); border-radius:7px; min-height:44px; display:flex; align-items:center; justify-content:center; font:10px/1.4 var(--mono); color:var(--muted); background:var(--surface-2); }
+  #ch8-lesson .ch8-qcell.is-full{ border-style:solid; border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+  #ch8-lesson .ch8-qstats{ display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:6px; }
+  #ch8-lesson .ch8-qstat{ border:1px solid var(--line-soft); border-radius:6px; padding:4px 7px; font-size:9px; color:var(--muted); background:var(--surface-2); }
+  #ch8-lesson .ch8-qstat b{ display:block; font:600 12px/1.4 var(--mono); color:var(--ink); }
+  #ch8-lesson .ch8-qstat.bad b{ color:var(--danger); }
+
+  /* proxy */
+  #ch8-lesson .ch8-psteps{ display:grid; gap:5px; margin:7px 0; }
+  #ch8-lesson .ch8-pstep{ display:flex; align-items:flex-start; gap:8px; border:1px solid var(--line); border-radius:8px; padding:6px 8px; background:var(--surface-2); font-size:10.5px; transition:.2s; opacity:.55; }
+  #ch8-lesson .ch8-pstep .n{ font:8.5px/1.6 var(--mono); color:var(--primary); }
+  #ch8-lesson .ch8-pstep.is-active{ opacity:1; border-color:var(--primary); background:var(--primary-soft); }
+  #ch8-lesson .ch8-pstep.is-done{ opacity:1; border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); }
+  #ch8-lesson .ch8-pstep.is-error{ opacity:1; border-color:var(--danger); background:var(--danger-soft); color:var(--danger); }
+  #ch8-lesson .ch8-rules{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  #ch8-lesson .ch8-rule{ border:1px solid var(--line-soft); border-radius:7px; padding:6px 8px; background:var(--surface-2); font-size:10px; line-height:1.5; color:var(--muted); }
+  #ch8-lesson .ch8-rule b{ display:block; font-size:10.5px; color:var(--ink); }
+
+  /* init */
+  #ch8-lesson .ch8-initflow{ display:flex; flex-wrap:wrap; gap:5px; margin:7px 0; }
+  #ch8-lesson .ch8-mod{ flex:1 1 90px; border:1px solid var(--line); border-radius:8px; padding:6px; text-align:center; background:var(--surface-2); font:9.5px/1.4 var(--mono); transition:.2s; }
+  #ch8-lesson .ch8-mod small{ display:block; font-size:8px; color:var(--muted); }
+  #ch8-lesson .ch8-mod.is-ready{ border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+  #ch8-lesson .ch8-mod.is-done{ border-color:var(--ok); background:var(--ok-soft); color:var(--ok); }
+  #ch8-lesson .ch8-mod.is-fail{ border-color:var(--danger); background:var(--danger-soft); color:var(--danger); }
+  #ch8-lesson .ch8-term{ border-radius:8px; background:var(--code-bg); color:#cbd5e1; font:9.5px/1.7 var(--mono); padding:8px 10px; min-height:96px; overflow:auto; }
+  #ch8-lesson .ch8-term .ok{ color:#86efac; }
+  #ch8-lesson .ch8-term .bad{ color:#fca5a5; }
+  #ch8-lesson .ch8-term .dim{ color:#64748b; }
+  #ch8-lesson .ch8-bench{ width:100%; border-collapse:collapse; font:10px/1.5 var(--mono); }
+  #ch8-lesson .ch8-bench th{ text-align:left; color:var(--muted); font-weight:500; border-bottom:1px solid var(--line); padding:4px 5px; }
+  #ch8-lesson .ch8-bench td{ border-bottom:1px solid var(--line-soft); padding:4px 5px; }
+  #ch8-lesson .ch8-bench .b{ height:6px; border-radius:99px; background:var(--line-soft); min-width:58px; overflow:hidden; }
+  #ch8-lesson .ch8-bench .b i{ display:block; height:100%; background:var(--primary); }
+  #ch8-lesson .ch8-lab{ display:grid; gap:5px; margin-top:4px; }
+  #ch8-lesson .ch8-lab label{ display:flex; align-items:flex-start; gap:7px; border:1px solid var(--line-soft); border-radius:7px; padding:6px 8px; font-size:10.5px; cursor:pointer; background:var(--surface-2); }
+  #ch8-lesson .ch8-lab label:has(input:checked){ border-color:color-mix(in srgb, var(--ok) 35%, var(--line)); background:var(--ok-soft); }
+  #ch8-lesson .ch8-lab input{ margin-top:3px; accent-color:var(--ok); }
+  #ch8-lesson .ch8-lab-progress{ display:flex; align-items:center; gap:8px; font-size:10px; color:var(--muted); margin-top:7px; }
+  #ch8-lesson .ch8-mini-bar{ flex:1; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch8-lesson .ch8-mini-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--ok),var(--primary)); transition:width .25s; }
+  #ch8-lesson .ch8-footer{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; padding:11px 2px 0; border-top:1px dashed var(--line); font-size:10.5px; color:var(--muted); }
+  #ch8-lesson .ch8-footer .fbtns{ display:flex; gap:6px; }
+
+  @media(max-width:860px){
+    #ch8-lesson .ch8-grid2{ grid-template-columns:1fr; }
+    #ch8-lesson .ch8-grid3{ grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:620px){
+    #ch8-lesson{ font-size:13px; }
+    #ch8-lesson .ch8-hero{ padding:20px 18px 16px; border-radius:15px; }
+    #ch8-lesson .ch8-step{ min-width:84px; padding:6px 8px; }
+    #ch8-lesson .ch8-grid3{ grid-template-columns:1fr; }
+    #ch8-lesson .ch8-layer-stack{ padding-right:0; }
+    #ch8-lesson .ch8-violation{ display:none !important; }
+    #ch8-lesson .ch8-drivers{ grid-template-columns:1fr; }
+    #ch8-lesson .ch8-rules{ grid-template-columns:1fr; }
+    #ch8-lesson .ch8-card{ padding:12px; border-radius:12px; }
+    #ch8-lesson .ch8-scene-head h2{ font-size:20px; }
+    #ch8-lesson .ch8-qstats{ grid-template-columns:1fr 1fr 1fr; }
+  }
+</style>
+
+<header class="ch8-hero">
+  <div class="ch8-kicker">第 1 篇 · 编程基础 / 第 8 章</div>
+  <h1>分层架构与设计模式</h1>
+  <p class="ch8-sub">模块化不是“多建几个文件夹”，而是让依赖有方向、让硬件有边界、让替换有成本。这一章把 C 语言的接口注入、三种最高频模式和一个可编译期检查的依赖规范，变成能直接搬进项目的骨架。</p>
+  <div class="ch8-badges">
+    <span class="ch8-badge">🏗️ <b>四层</b> 单向依赖</span>
+    <span class="ch8-badge">🔌 <b>接口注入</b> ops 表</span>
+    <span class="ch8-badge">📡 <b>观察者</b> 事件广播</span>
+    <span class="ch8-badge">🚚 <b>生产者消费者</b></span>
+    <span class="ch8-badge">🎭 <b>代理 / 门面</b></span>
+  </div>
+  <div class="ch8-meta">
+    <span>学习时长约 50 分钟 · 5 个互动实验</span>
+    <span>建议前置：第 3 章工程化、第 4 章 C++ 接口（可选）</span>
+  </div>
+</header>
+
+<nav class="ch8-steps" aria-label="章节导航">
+  <button type="button" class="ch8-step is-active" data-goto="0"><span class="n">01</span><span class="t">四层依赖</span></button>
+  <button type="button" class="ch8-step" data-goto="1"><span class="n">02</span><span class="t">接口注入</span></button>
+  <button type="button" class="ch8-step" data-goto="2"><span class="n">03</span><span class="t">观察者与队列</span></button>
+  <button type="button" class="ch8-step" data-goto="3"><span class="n">04</span><span class="t">代理与规范</span></button>
+  <button type="button" class="ch8-step" data-goto="4"><span class="n">05</span><span class="t">init 表与 Lab</span></button>
+</nav>
+<div class="ch8-progress"><i id="ch8-progress"></i></div>
+
+<main>
+  <!-- scene 0 -->
+  <section class="ch8-scene is-active" data-scene="0">
+    <div class="ch8-scene-head">
+      <span class="tag">8.1 / 8.4 · 架构体检</span>
+      <h2>依赖只能向下，硬件细节只能留在最底层</h2>
+      <p>把工程拆成 App、服务、接口、驱动四层。点击每一层看它的职责和禁止事项；再注入一次“App 直接调 HAL”的违规，看看 grep 门禁能不能在 CI 里把它拦住。</p>
+    </div>
+
+    <div class="ch8-grid2">
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>四层依赖栈</h3><span class="ch8-hint">点击层查看</span></div>
+        <div class="ch8-layer-stack">
+          <div class="ch8-layer" data-layer="app" style="--layer:#7c3aed">
+            <div class="lt"><b>App 层</b><span class="tag">业务编排</span></div>
+            <div class="files">app_main.c · app_task_sensor.c</div>
+          </div>
+          <div class="ch8-down">↓ 只调用服务 / 接口</div>
+          <div class="ch8-layer" data-layer="service" style="--layer:#0891b2">
+            <div class="lt"><b>服务层</b><span class="tag">策略与缓存</span></div>
+            <div class="files">sensor_svc.c · storage_svc.c</div>
+          </div>
+          <div class="ch8-down">↓ 依赖抽象，不依赖型号</div>
+          <div class="ch8-layer" data-layer="itf" style="--layer:#059669">
+            <div class="lt"><b>抽象接口</b><span class="tag">纯契约</span></div>
+            <div class="files">sensor_itf.h · storage_itf.h</div>
+          </div>
+          <div class="ch8-down">↑ 驱动实现接口</div>
+          <div class="ch8-layer" data-layer="driver" style="--layer:#d97706">
+            <div class="lt"><b>驱动层</b><span class="tag">独占硬件</span></div>
+            <div class="files">drv_sht31.c · drv_sd_spi.c</div>
+          </div>
+          <div class="ch8-violation" id="ch8-violation"><div class="rail"></div><div class="vlabel">App → HAL</div></div>
+        </div>
+        <div class="ch8-controls">
+          <button type="button" class="ch8-btn danger" data-violation="inject">注入违规：App 调 HAL</button>
+          <button type="button" class="ch8-btn primary" data-violation="fix">修复：加 proxy</button>
+          <button type="button" class="ch8-btn ghost" data-violation="reset">重置</button>
+        </div>
+        <div class="ch8-grep" id="ch8-grep"><span class="cmd">$ grep -rn "HAL_\|LL_" App/ Services/</span><br><span class="dim"># 暂无结果：依赖方向正确</span></div>
+        <div class="ch8-status" id="ch8-arch-status"><b>架构自洽：</b>App 只 include 服务头与接口头，不知道 SHT31、SPI2 或 HAL_UART 的存在。</div>
+      </div>
+
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>这一层负责什么</h3><span class="ch8-hint">点击左侧层</span></div>
+        <div class="ch8-detail" id="ch8-layer-detail">
+          <b>App 层</b>
+          <p style="color:var(--muted);margin-top:4px">只写业务编排：采集、判断、上报、状态迁移。它应该能在 PC 上跑单元测试，不需要真实硬件。</p>
+          <div class="row"><span class="ch8-chip">允许：sensor_itf.h</span><span class="ch8-chip bad">禁止：HAL_ / LL_</span></div>
+        </div>
+        <div class="ch8-note" style="margin-top:9px">
+          <b>唯一知道芯片型号的地方：</b><code>board.c</code> / <code>main.c</code> 的组装函数。它把具体驱动实例注入给 App；换 MCU 时只改驱动层和 board 文件，App 一行不动。
+        </div>
+        <div class="ch8-note warn" style="margin-top:7px">
+          <b>“接口头文件 + 多实现 + 注册注入”：</b>C 语言没有虚函数，但 <code>struct</code> 里放函数指针，效果就是一张手写 vtable。接口头不包含任何寄存器地址、HAL 类型或芯片型号。
+        </div>
+        <div class="ch8-note ok" style="margin-top:7px">
+          <b>可编译期检查：</b>把驱动头文件移出 App 的 include path，App 一旦直接 include <code>drv_sht31.h</code> 就编译失败；再配合 CI 的 grep 门禁，形成“技术 + 流程”双保险。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch8-grid3" style="margin-top:12px">
+      <div class="ch8-card">
+        <div class="ch8-mini-title">依赖方向</div>
+        <p style="font-size:11px;color:var(--muted)">App → Service → Interface → Driver。<b>接口层被上下同时依赖</b>，但接口本身不依赖任何一方；运行时由 board 把实现注入。</p>
+      </div>
+      <div class="ch8-card">
+        <div class="ch8-mini-title">换芯片的半径</div>
+        <p style="font-size:11px;color:var(--muted)">理想状态：换 MCU 只改 <code>drv_*.c</code> 和 <code>board.c</code>；Service/App 的编译单元和测试用例不变。</p>
+      </div>
+      <div class="ch8-card">
+        <div class="ch8-mini-title">测试的收益</div>
+        <p style="font-size:11px;color:var(--muted)">接口是天然的 mock 点。第 9 章 Unity 测试会用 <code>mock_sensor</code> 替换真实驱动，在主机上覆盖业务分支。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 1 -->
+  <section class="ch8-scene" data-scene="1">
+    <div class="ch8-scene-head">
+      <span class="tag">8.2 / 8.8 · 依赖倒置</span>
+      <h2>App 只认识函数指针表，不认识传感器型号</h2>
+      <p>切换驱动时，board 换一个实例，App 的编译结果不变。点“读取温度”调用同一个 <code>read</code> 指针，观察三种实现返回不同结果——这就是可替换性。</p>
+    </div>
+
+    <div class="ch8-grid2">
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>传感器接口注入</h3><span class="ch8-hint">点击驱动切换</span></div>
+        <div class="ch8-dip-flow">
+          <div class="ch8-appbox"><b>App: app_task_sensor.c</b><code>float t; g_sensor-&gt;read(g_sensor, &amp;t);</code></div>
+          <div class="ch8-flow-arrow">↓ 只依赖 ops 表</div>
+          <div class="ch8-itfbox"><b>sensor_itf_t</b><code>int (*read)(self, float *out); int (*selftest)(self);</code></div>
+          <div class="ch8-flow-arrow">↑ board.c 注入具体实现</div>
+          <div class="ch8-drivers">
+            <button type="button" class="ch8-driver is-on" data-driver="sht31"><b>SHT31</b><span>I2C · 0x44</span><span>量产驱动</span></button>
+            <button type="button" class="ch8-driver" data-driver="aht20"><b>AHT20</b><span>I2C · 0x38</span><span>备选驱动</span></button>
+            <button type="button" class="ch8-driver" data-driver="mock"><b>Mock</b><span>主机测试</span><span>固定 25.0°C</span></button>
+          </div>
+        </div>
+        <div class="ch8-controls">
+          <button type="button" class="ch8-btn primary" data-dip="read">读取温度</button>
+          <button type="button" class="ch8-btn" data-dip="swap">编译期换驱动</button>
+          <button type="button" class="ch8-btn ghost" data-dip="reset">重置</button>
+        </div>
+        <div class="ch8-output" id="ch8-dip-output">等待调用：<b>g_sensor-&gt;read()</b> 尚未执行。切换驱动只会改变 board 里的实例。</div>
+        <div class="ch8-status" id="ch8-dip-status"><b>当前实例：</b>g_sensor_sht31。App 源码不需要知道这个名字。</div>
+      </div>
+
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>接口与组装</h3><span class="ch8-hint">C 语言的依赖倒置</span></div>
+        <pre class="ch8-code"><span class="cm">/* sensor_itf.h：纯抽象，无硬件痕迹 */</span>
+<span class="kw">typedef struct</span> sensor_ops sensor_itf_t;
+<span class="kw">struct</span> sensor_ops {
+  uint16_t api_version;   <span class="cm">/* 首成员：运行期校验 */</span>
+  <span class="kw">int</span> (*read)(sensor_itf_t *self, <span class="kw">float</span> *out);
+  <span class="kw">int</span> (*selftest)(sensor_itf_t *self);
+};
+
+<span class="cm">/* drv_sht31.c：具体实现 */</span>
+<span class="kw">static int</span> sht_read(sensor_itf_t *self, <span class="kw">float</span> *out) {
+  <span class="cm">/* I2C 读取、CRC、换算，全在这里 */</span>
+}
+<span class="kw">const</span> sensor_itf_t g_sensor_sht31 = {
+  .api_version = 1,
+  .read = sht_read, .selftest = sht_selftest
+};
+
+<span class="cm">/* board.c：唯一知道型号的地方 */</span>
+<span class="kw">void</span> board_init(<span class="kw">void</span>) {
+  app_init((sensor_itf_t *)&amp;g_sensor_sht31);
+}</pre>
+        <div class="ch8-note" style="margin-top:9px">
+          <b>函数指针慢吗？</b>F407 上一次间接调用约 9 周期，虚表约 11 周期，而一次 UART 事务是毫秒级。架构抽象的成本只在 PID 内环这类微秒级路径才需要“开天窗”直连。
+        </div>
+        <div class="ch8-note warn" style="margin-top:7px">
+          <b>接口版本：</b>itf 结构体第一个成员放 <code>api_version</code>，运行期校验，防止 OTA 后新旧驱动错配。这是 IAP 场景常见事故的廉价保险。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 2 -->
+  <section class="ch8-scene" data-scene="2">
+    <div class="ch8-scene-head">
+      <span class="tag">8.3 · 高频模式三连（上）</span>
+      <h2>观察者负责“通知”，队列负责“解耦”</h2>
+      <p>同步观察者适合低延迟、短回调；ISR 与慢任务之间必须用生产者消费者队列。两个小实验都围绕一个问题：回调 / 队列满的时候，系统如何保持可预测？</p>
+    </div>
+
+    <div class="ch8-grid2">
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>① 观察者：一对多广播</h3><span class="ch8-hint">点击发布</span></div>
+        <div class="ch8-obs" id="ch8-subs"></div>
+        <div class="ch8-controls">
+          <button type="button" class="ch8-btn primary" data-obs="sensor">发布 EV_SENSOR</button>
+          <button type="button" class="ch8-btn" data-obs="fault">发布 EV_FAULT</button>
+          <button type="button" class="ch8-btn danger" data-obs="reentrant">回调内再次 publish</button>
+          <button type="button" class="ch8-btn ghost" data-obs="reset">重置</button>
+        </div>
+        <div class="ch8-status" id="ch8-obs-status"><b>待发布：</b>订阅者默认是“日志”和“显示”，云连接未订阅。</div>
+        <pre class="ch8-code" style="margin-top:9px"><span class="kw">for</span> (obs_t *o = ps-&gt;subs[topic]; o; o = o-&gt;next)
+  o-&gt;cb(topic, data, o-&gt;ctx); <span class="cm">/* 同步派发 */</span></pre>
+        <div class="ch8-note warn" style="margin-top:8px">
+          <b>同步回调的红线：</b>回调里不要做阻塞 IO、不要拿同一把锁、不要假设自己运行在中断上下文。耗时或可能重入的回调应改为“投递到邮箱 / 队列”，异步化后再处理。
+        </div>
+      </div>
+
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>② 生产者消费者：ISR → 队列 → 任务</h3><span class="ch8-hint">容量 4</span></div>
+        <div class="ch8-mini-title">FreeRTOS Queue · 单生产者 / 单消费者</div>
+        <div class="ch8-queue" id="ch8-queue"></div>
+        <div class="ch8-qstats" id="ch8-qstats"></div>
+        <div class="ch8-controls">
+          <button type="button" class="ch8-btn primary" data-queue="isr">ISR 投递 1 个</button>
+          <button type="button" class="ch8-btn" data-queue="burst">ISR 突发 5 个</button>
+          <button type="button" class="ch8-btn" data-queue="work">工人取 1 个</button>
+          <button type="button" class="ch8-btn ghost" data-queue="auto">自动消费</button>
+          <button type="button" class="ch8-btn ghost" data-queue="reset">重置</button>
+        </div>
+        <div class="ch8-status" id="ch8-queue-status"><b>空闲：</b>xQueueSendFromISR 只把事件放进队列，解码与业务处理留给任务。</div>
+        <pre class="ch8-code" style="margin-top:9px"><span class="kw">void</span> UART_IRQHandler(<span class="kw">void</span>) {
+  evt_t e = decode_isr();
+  xQueueSendFromISR(q_evt, &amp;e, NULL);
+}
+<span class="kw">while</span> (xQueueReceive(q_evt, &amp;e, portMAX_DELAY))
+  handle(&amp;e);</pre>
+        <div class="ch8-note danger" style="margin-top:8px">
+          <b>队列满策略必须写清楚：</b>丢弃最新 + 计数、覆盖最旧、还是阻塞等待？三者对实时性的影响完全不同。未定义策略的队列，就是一颗随机丢事件的定时炸弹。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 3 -->
+  <section class="ch8-scene" data-scene="3">
+    <div class="ch8-scene-head">
+      <span class="tag">8.3 / 8.4 · 代理与模块规范</span>
+      <h2>给丑陋的 HAL 包一张“语义脸”</h2>
+      <p>代理层负责锁、超时、错误码映射和重试，把 HAL 的句柄、状态枚举、毫秒换算收敛在一个文件里。点“调用 uart_write”走一遍完整路径，再注入一次超时。</p>
+    </div>
+
+    <div class="ch8-grid2">
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>uart_write 的代理路径</h3><span class="ch8-hint">4 步 · 可注入超时</span></div>
+        <div class="ch8-psteps" id="ch8-psteps">
+          <div class="ch8-pstep" data-step="0"><span class="n">01</span><span><b>uart_lock(d)</b><br>拿设备锁，防止多任务并发写同一串口</span></div>
+          <div class="ch8-pstep" data-step="1"><span class="n">02</span><span><b>HAL_UART_Transmit()</b><br>把毫秒超时换算成 tick，调用 HAL</span></div>
+          <div class="ch8-pstep" data-step="2"><span class="n">03</span><span><b>uart_unlock(d)</b><br>无论成功失败都必须释放锁</span></div>
+          <div class="ch8-pstep" data-step="3"><span class="n">04</span><span><b>map_err(s)</b><br>HAL 状态 → 项目统一错误码（0 / -ETIMEDOUT / -EIO）</span></div>
+        </div>
+        <div class="ch8-controls">
+          <button type="button" class="ch8-btn primary" data-proxy="ok">调用 uart_write（正常）</button>
+          <button type="button" class="ch8-btn danger" data-proxy="timeout">注入 HAL_TIMEOUT</button>
+          <button type="button" class="ch8-btn ghost" data-proxy="reset">重置</button>
+        </div>
+        <div class="ch8-status" id="ch8-proxy-status"><b>待调用：</b>App 只需要一行 uart_write()，不需要知道 HAL 句柄和 tick 换算。</div>
+        <div class="ch8-note" style="margin-top:9px">
+          <b>门面 vs 代理：</b>门面（facade）简化接口，代理（proxy）在调用前后加控制。这里两者合一：一行语义 API + 锁/超时/错误映射。真实项目里可拆成 <code>uart_port</code> 与 <code>uart_bus</code> 两层。
+        </div>
+      </div>
+
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>模块规范六条</h3><span class="ch8-hint">贴墙上</span></div>
+        <div class="ch8-rules">
+          <div class="ch8-rule"><b>① 一个对外头文件</b>xxx.h 是契约；私有声明放 xxx_internal.h，不暴露给上层。</div>
+          <div class="ch8-rule"><b>② 统一错误码</b>对外 API 返回 int：0 成功，负数失败；errno 风格便于日志与重试。</div>
+          <div class="ch8-rule"><b>③ 头文件不放变量</b>全局状态封装为 get/set 或上下文指针，避免每个编译单元各有一份副本。</div>
+          <div class="ch8-rule"><b>④ 初始化两段式</b>xxx_early() 做时钟级，xxx_open() 做业务级；顺序集中在 init 表。</div>
+          <div class="ch8-rule"><b>⑤ 延时走统一接口</b>禁止裸循环 delay；统一 delay_ms() 才能在 RTOS / 裸机间移植。</div>
+          <div class="ch8-rule"><b>⑥ 自带自测入口</b>#ifdef MODULE_SELFTEST，让每个模块能在产线或 CI 里单独验证。</div>
+        </div>
+        <pre class="ch8-code" style="margin-top:9px"><span class="cm">/* 代理前：App 里到处是 HAL 细节 */</span>
+HAL_UART_Transmit(&amp;huart2, buf, len, 100);
+
+<span class="cm">/* 代理后：语义清晰、可测试、可替换 */</span>
+<span class="kw">int</span> rc = uart_write(UART_DEBUG, buf, len, 100);
+<span class="kw">if</span> (rc == -ETIMEDOUT) retry_or_log();</pre>
+        <div class="ch8-note warn" style="margin-top:8px">
+          <b>门禁的度：</b>grep 规则太严会催生“绕路 hack”。保留白名单注释 <code>// ARCH-ALLOW: reason</code>，CI 解析豁免并要求评审确认；规则要服务于架构，而不是变成新的形式主义。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 4 -->
+  <section class="ch8-scene" data-scene="4">
+    <div class="ch8-scene-head">
+      <span class="tag">8.6 / 8.7 / Lab L8-1 · 初始化与成本</span>
+      <h2>初始化顺序不该靠“文件刚好被链接进来”</h2>
+      <p>把每个模块的初始化函数登记到自定义段，链接器按优先级排序，main 只遍历一次。先按表跑一遍，再按文件顺序跑一遍，看依赖缺失如何让启动失败。</p>
+    </div>
+
+    <div class="ch8-grid2">
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>init 表执行顺序</h3><span class="ch8-hint">5 个模块</span></div>
+        <div class="ch8-initflow" id="ch8-initflow"></div>
+        <div class="ch8-controls">
+          <button type="button" class="ch8-btn primary" data-init="sorted">按 init 表运行</button>
+          <button type="button" class="ch8-btn danger" data-init="random">按文件顺序运行</button>
+          <button type="button" class="ch8-btn ghost" data-init="reset">重置</button>
+        </div>
+        <div class="ch8-term" id="ch8-init-term"><span class="dim">$ ./firmware --boot</span><br><span class="dim">等待初始化...</span></div>
+        <div class="ch8-note" style="margin-top:9px">
+          <b>依赖关系：</b>clock → sensor / storage；storage → net；sensor + storage + net → app。优先级只是排序，依赖校验仍然要显式做；两者缺一不可。
+        </div>
+      </div>
+
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>链接器自动收集</h3><span class="ch8-hint">RT-Thread INIT_EXPORT 原理</span></div>
+        <pre class="ch8-code"><span class="cm">/* 注册宏：带优先级字节放进 .init_tab */</span>
+<span class="kw">#define</span> INIT_FN(prio, fn) \
+  <span class="kw">static const</span> init_entry_t __init_##fn \
+  __attribute__((used, section(<span class="st">".init_tab."</span> #prio))) \
+  = { prio, fn };
+
+<span class="kw">typedef struct</span> {
+  uint8_t prio; <span class="kw">void</span> (*fn)(<span class="kw">void</span>);
+} init_entry_t;
+
+INIT_FN(10, clock_init);
+INIT_FN(20, sensor_init);
+<span class="cm">/* ...各模块文件各一行... */</span>
+
+<span class="cm">/* ld：按段名排序 = 按优先级排序 */</span>
+.init_tab : {
+  KEEP(*(.init_tab.0*));
+  KEEP(*(.init_tab.1*));
+} &gt; FLASH
+<span class="cm">/* main：遍历函数指针表 */</span>
+<span class="kw">for</span> (p = __init_start; p &lt; __init_end; p++)
+  p-&gt;fn();</pre>
+        <div class="ch8-note warn" style="margin-top:8px">
+          <b>优点：</b>新增模块零改 main，顺序集中可审查。<b>代价：</b>依赖链接脚本和段名规范；被 gc-sections 误删时要 KEEP；跨优先级依赖仍需运行期校验。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch8-grid2" style="margin-top:12px">
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>函数指针的性能账单</h3><span class="ch8-hint">F407 · -O2</span></div>
+        <table class="ch8-bench">
+          <thead><tr><th>调用形态</th><th>周期</th><th></th><th>相对</th></tr></thead>
+          <tbody>
+            <tr><td>static 直接调用</td><td>~6</td><td><div class="b"><i style="width:55%"></i></div></td><td>1.0x</td></tr>
+            <tr><td>结构体函数指针</td><td>~9</td><td><div class="b"><i style="width:76%"></i></div></td><td>1.5x</td></tr>
+            <tr><td>虚函数 vtable</td><td>~11</td><td><div class="b"><i style="width:92%"></i></div></td><td>1.8x</td></tr>
+          </tbody>
+        </table>
+        <div class="ch8-note" style="margin-top:9px">
+          <b>结论：</b>UART 事务是毫秒级，函数指针的几周期可以忽略；只有 PID 内环、滤波内循环这类微秒级路径，才值得为性能开天窗直连驱动。架构服务于可维护性，性能关键处做显式例外并记录原因。
+        </div>
+      </div>
+
+      <div class="ch8-card">
+        <div class="ch8-card-h"><h3>L8-1：给项目做一次分层体检</h3><span class="ch8-hint" id="ch8-lab-count">0 / 4</span></div>
+        <div class="ch8-lab" id="ch8-lab">
+          <label><input type="checkbox" data-lab8>运行 <code>grep -rn "HAL_\|LL_" App/ Services/</code>，列出违规点</label>
+          <label><input type="checkbox" data-lab8>挑一个高频违规，建 xxx_itf.h + bsp 实现</label>
+          <label><input type="checkbox" data-lab8>迁移调用方并编译通过，确认 App 不直接 include 驱动头</label>
+          <label><input type="checkbox" data-lab8>把 grep 命令写进 CI，失败即阻断</label>
+        </div>
+        <div class="ch8-lab-progress"><span>进度</span><div class="ch8-mini-bar"><i id="ch8-lab-bar"></i></div><span id="ch8-lab-pct">0%</span></div>
+        <div class="ch8-note ok" style="margin-top:9px">
+          <b>验收：</b>App / Services 目录的 grep 结果归零，CI 门禁上线。若迁移时发现“回调签名不匹配”，说明你顺带补上了接口文档——这是重构的隐藏收益。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch8-footer">
+      <span>第 8 章 · 分层架构与设计模式 · 下一章：代码质量与测试</span>
+      <div class="fbtns"><button type="button" class="ch8-btn" data-goto="0">回到开头</button></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var root = $('#ch8-lesson');
+  var scenes = $$('.ch8-scene', root);
+  var steps = $$('.ch8-step', root);
+  function go(n){
+    n = Math.max(0, Math.min(scenes.length - 1, Number(n)));
+    scenes.forEach(function(s, i){ s.classList.toggle('is-active', i === n); });
+    steps.forEach(function(b){ b.classList.toggle('is-active', Number(b.getAttribute('data-goto')) === n); });
+    $('#ch8-progress').style.width = ((n + 1) / scenes.length * 100) + '%';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  steps.forEach(function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+  $$('[data-goto]', root).forEach(function(b){ if(!b.classList.contains('ch8-step')) b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+
+  /* scene 0: layers + violation */
+  var layerInfo = {
+    app: {name:'App 层', desc:'只写业务编排：采集、判断、上报、状态迁移。应该能在 PC 上跑单元测试，不需要真实硬件。', yes:'允许：service_itf.h / sensor_itf.h', no:'禁止：HAL_ / LL_ / 芯片型号'},
+    service: {name:'服务层', desc:'把多个驱动组合成业务能力：滤波、缓存、调度、策略、重试。它依赖接口，不依赖具体型号。', yes:'允许：xxx_itf.h', no:'禁止：寄存器地址 / HAL 句柄'},
+    itf: {name:'抽象接口层', desc:'纯契约：结构体 + 函数指针 + 错误码 + 版本号。没有状态，没有硬件，没有具体实现。', yes:'允许：stdint.h / 前向声明', no:'禁止：drv_*.h / HAL 类型'},
+    driver: {name:'驱动层', desc:'独占硬件细节：寄存器、I2C/SPI、DMA、时序。对外只暴露 itf 的实现实例，不暴露寄存器。', yes:'允许：芯片手册 / HAL / LL', no:'禁止：业务逻辑 / 全局策略'}
+  };
+  function showLayer(k){
+    var d = layerInfo[k];
+    if(!d) return;
+    $$('.ch8-layer', root).forEach(function(x){ x.classList.toggle('is-sel', x.getAttribute('data-layer') === k); });
+    $('#ch8-layer-detail').innerHTML = '<b>' + d.name + '</b><p style="color:var(--muted);margin-top:4px">' + d.desc + '</p><div class="row"><span class="ch8-chip ok">' + d.yes + '</span><span class="ch8-chip bad">' + d.no + '</span></div>';
+  }
+  $$('.ch8-layer', root).forEach(function(b){ b.addEventListener('click', function(){ showLayer(b.getAttribute('data-layer')); }); });
+  showLayer('app');
+  var violated = false;
+  function renderArch(){
+    $('#ch8-violation').classList.toggle('is-on', violated);
+    $$('.ch8-layer', root).forEach(function(x){ x.classList.toggle('is-bad', violated && x.getAttribute('data-layer') !== 'driver'); });
+    if(violated){
+      $('#ch8-grep').innerHTML = '<span class="cmd">$ grep -rn "HAL_\\|LL_" App/ Services/</span><br><span class="bad">App/app_task_sensor.c:42: HAL_UART_Transmit(&amp;huart2, ...);</span><br><span class="bad">App/app_main.c:88: LL_GPIO_SetOutputPin(...);</span><br><span class="dim"># 2 处违规：硬件细节泄漏到上层</span>';
+      $('#ch8-arch-status').className = 'ch8-status is-bad';
+      $('#ch8-arch-status').innerHTML = '<b>违规：</b>App 绕过接口直接调 HAL，换 MCU 时这两处必须重写；更糟的是 App 无法在主机上脱离 HAL 做单元测试。';
+    } else {
+      $('#ch8-grep').innerHTML = '<span class="cmd">$ grep -rn "HAL_\\|LL_" App/ Services/</span><br><span class="good"># 0 处违规</span><br><span class="dim"># App 只依赖接口，硬件细节止步于驱动层</span>';
+      $('#ch8-arch-status').className = 'ch8-status is-ok';
+      $('#ch8-arch-status').innerHTML = '<b>架构自洽：</b>App 只 include 服务头与接口头，不知道 SHT31、SPI2 或 HAL_UART 的存在；CI 门禁可以稳定复现这个结论。';
+    }
+  }
+  $$('[data-violation]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.getAttribute('data-violation');
+      if(a === 'inject') violated = true;
+      else if(a === 'fix' || a === 'reset') violated = false;
+      renderArch();
+    });
+  });
+  renderArch();
+
+  /* scene 1: DIP */
+  var driverData = {
+    sht31: {name:'SHT31', temp:'24.6 °C', detail:'I2C 0x44 · CRC 校验通过', instance:'g_sensor_sht31', code:'sht_read()'},
+    aht20: {name:'AHT20', temp:'25.1 °C', detail:'I2C 0x38 · 校准系数已加载', instance:'g_sensor_aht20', code:'aht_read()'},
+    mock: {name:'Mock', temp:'25.0 °C', detail:'固定值 · 主机单元测试', instance:'g_sensor_mock', code:'mock_read()'}
+  };
+  var selected = 'sht31';
+  var readCount = 0, swapCount = 0;
+  function renderDip(){
+    $$('.ch8-driver', root).forEach(function(b){ b.classList.toggle('is-on', b.getAttribute('data-driver') === selected); });
+    var d = driverData[selected];
+    $('#ch8-dip-status').innerHTML = '<b>当前实例：</b>' + d.instance + '（' + d.name + '）。board.c 注入后，App 只看到 <code>sensor_itf_t</code>。';
+    $('#ch8-dip-output').innerHTML = '<b>App 源码未改一行。</b> 当前实现：' + d.name + ' · ' + d.detail + ' · 已读取 ' + readCount + ' 次 · 切换 ' + swapCount + ' 次。';
+  }
+  $$('.ch8-driver', root).forEach(function(b){
+    b.addEventListener('click', function(){ selected = b.getAttribute('data-driver'); swapCount++; renderDip(); });
+  });
+  $$('[data-dip]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.getAttribute('data-dip');
+      if(a === 'read'){
+        var d = driverData[selected];
+        readCount++;
+        $('#ch8-dip-output').innerHTML = '<span style="color:var(--ok)">read() → ' + d.temp + '</span><br><span class="ch8-chip ok">' + d.code + '</span> <span class="ch8-chip">' + d.detail + '</span><br>同一条调用语句：<code>g_sensor-&gt;read(g_sensor, &amp;t)</code>';
+        $('#ch8-dip-status').innerHTML = '<b>调用完成：</b>' + d.name + ' 的实现被间接调用。App 没有 include 任何驱动头文件，也没有出现芯片型号。';
+      } else if(a === 'swap'){
+        var keys = Object.keys(driverData);
+        selected = keys[(keys.indexOf(selected) + 1) % keys.length];
+        swapCount++;
+        renderDip();
+        $('#ch8-dip-output').innerHTML = '<b>board.c 换了一行：</b><code>app_init(&amp;' + driverData[selected].instance + ');</code><br>App 的编译单元没有重新编译，行为随实现改变。';
+      } else {
+        selected = 'sht31'; readCount = 0; swapCount = 0; renderDip();
+        $('#ch8-dip-output').innerHTML = '等待调用：<b>g_sensor-&gt;read()</b> 尚未执行。切换驱动只会改变 board 里的实例。';
+      }
+    });
+  });
+  renderDip();
+
+  /* scene 2: observer */
+  var subs = [
+    {id:'log', name:'日志模块', desc:'SD / RTT 记录', on:true, count:0},
+    {id:'disp', name:'显示模块', desc:'OLED 刷新', on:true, count:0},
+    {id:'cloud', name:'云连接', desc:'MQTT 上报', on:false, count:0}
+  ];
+  var obsPublish = 0;
+  function renderSubs(){
+    $('#ch8-subs').innerHTML = subs.map(function(s){
+      return '<div class="ch8-sub' + (s.on ? '' : ' is-off') + '" data-sub="' + s.id + '"><div><b>' + s.name + '</b><div class="c">' + s.desc + ' · 已接收 ' + s.count + '</div></div><label style="display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted)"><input type="checkbox" data-subon="' + s.id + '"' + (s.on ? ' checked' : '') + '>订阅</label></div>';
+    }).join('');
+    $$('#ch8-subs [data-subon]', root).forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var id = cb.getAttribute('data-subon');
+        subs.forEach(function(s){ if(s.id === id) s.on = cb.checked; });
+        renderSubs();
+      });
+    });
+  }
+  function obsPublishEvent(topic){
+    obsPublish++;
+    var hit = subs.filter(function(s){ return s.on; });
+    hit.forEach(function(s){ s.count++; });
+    renderSubs();
+    hit.forEach(function(s){
+      var el = $('#ch8-subs [data-sub="' + s.id + '"]');
+      if(el){ el.classList.add('is-hit'); setTimeout(function(){ el.classList.remove('is-hit'); }, 650); }
+    });
+    $('#ch8-obs-status').innerHTML = '<b>publish #' + obsPublish + ' · ' + topic + '：</b>' + (hit.length ? hit.map(function(s){ return s.name; }).join(' → ') : '没有订阅者，事件被丢弃。') + ' 同步派发，返回时所有回调已执行完。';
+  }
+  $$('[data-obs]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.getAttribute('data-obs');
+      if(a === 'sensor') obsPublishEvent('EV_SENSOR');
+      else if(a === 'fault') obsPublishEvent('EV_FAULT');
+      else if(a === 'reentrant'){
+        $('#ch8-obs-status').className = 'ch8-status is-bad';
+        $('#ch8-obs-status').innerHTML = '<b>重入风险：</b>在同步回调里再次 publish，会递归进入派发循环；如果回调还持有锁，下一次派发尝试拿同一把锁就会死锁。正确做法：投递到事件队列，由独立任务异步处理。';
+      } else {
+        subs = subs.map(function(s){ s.on = s.id !== 'cloud'; s.count = 0; return s; });
+        obsPublish = 0; renderSubs();
+        $('#ch8-obs-status').className = 'ch8-status';
+        $('#ch8-obs-status').innerHTML = '<b>待发布：</b>订阅者默认是“日志”和“显示”，云连接未订阅。';
+      }
+    });
+  });
+  renderSubs();
+
+  /* scene 2: queue */
+  var QCAP = 4;
+  var queue = [], qseq = 0, qdrop = 0, qhandled = 0;
+  var qauto = null;
+  function renderQueue(){
+    var html = '';
+    for(var i = 0; i < QCAP; i++){
+      var v = queue[i];
+      html += '<div class="ch8-qcell' + (v !== undefined ? ' is-full' : '') + '">' + (v !== undefined ? v : '·') + '</div>';
+    }
+    $('#ch8-queue').innerHTML = html;
+    $('#ch8-qstats').innerHTML =
+      '<div class="ch8-qstat"><span>队列深度</span><b>' + queue.length + ' / ' + QCAP + '</b></div>' +
+      '<div class="ch8-qstat ' + (qdrop ? 'bad' : '') + '"><span>丢弃</span><b>' + qdrop + '</b></div>' +
+      '<div class="ch8-qstat"><span>已处理</span><b>' + qhandled + '</b></div>';
+  }
+  function isrPost(){
+    if(queue.length >= QCAP){
+      qdrop++;
+      $('#ch8-queue-status').className = 'ch8-status is-bad';
+      $('#ch8-queue-status').innerHTML = '<b>队列满：</b>ISR 不能阻塞，本次事件被丢弃并计数。产品必须定义策略：丢弃最新、覆盖最旧，或在源头降采样。';
+      renderQueue();
+      return false;
+    }
+    var e = 'E' + (++qseq);
+    queue.push(e);
+    renderQueue();
+    $('#ch8-queue-status').className = 'ch8-status is-ok';
+    $('#ch8-queue-status').innerHTML = '<b>ISR 投递 ' + e + '：</b>xQueueSendFromISR 立即返回，解码与业务处理留给工作任务。';
+    return true;
+  }
+  function workOnce(){
+    if(!queue.length){
+      $('#ch8-queue-status').innerHTML = '<b>队列空：</b>工人任务阻塞在 xQueueReceive(portMAX_DELAY)，不占 CPU。';
+      return false;
+    }
+    var e = queue.shift();
+    qhandled++;
+    renderQueue();
+    $('#ch8-queue-status').className = 'ch8-status is-ok';
+    $('#ch8-queue-status').innerHTML = '<b>处理 ' + e + '：</b>任务上下文可以安全地做阻塞 IO、日志和业务计算，不再受 ISR 时长约束。';
+    return true;
+  }
+  $$('[data-queue]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.getAttribute('data-queue');
+      if(a === 'isr') isrPost();
+      else if(a === 'burst'){ for(var i = 0; i < 5; i++) if(!isrPost()) break; }
+      else if(a === 'work') workOnce();
+      else if(a === 'auto'){
+        if(qauto){ clearInterval(qauto); qauto = null; b.textContent = '自动消费'; }
+        else { qauto = setInterval(workOnce, 900); b.textContent = '暂停消费'; }
+      } else if(a === 'reset'){
+        if(qauto){ clearInterval(qauto); qauto = null; $('[data-queue="auto"]').textContent = '自动消费'; }
+        queue = []; qseq = 0; qdrop = 0; qhandled = 0; renderQueue();
+        $('#ch8-queue-status').className = 'ch8-status';
+        $('#ch8-queue-status').innerHTML = '<b>空闲：</b>xQueueSendFromISR 只把事件放进队列，解码与业务处理留给任务。';
+      }
+    });
+  });
+  renderQueue();
+
+  /* scene 3: proxy */
+  var pTimer = null;
+  var pSteps = $$('.ch8-pstep', root);
+  var pOrig = pSteps.map(function(s){ return s.querySelector('span:last-child').innerHTML; });
+  function proxyRestoreText(){
+    pSteps.forEach(function(s, k){ s.querySelector('span:last-child').innerHTML = pOrig[k]; });
+  }
+  function proxyReset(){
+    if(pTimer){ clearTimeout(pTimer); pTimer = null; }
+    pSteps.forEach(function(s){ s.classList.remove('is-active','is-done','is-error'); });
+    proxyRestoreText();
+    $('#ch8-proxy-status').className = 'ch8-status';
+    $('#ch8-proxy-status').innerHTML = '<b>待调用：</b>App 只需要一行 uart_write()，不需要知道 HAL 句柄和 tick 换算。';
+  }
+  function runProxy(timeout){
+    if(pTimer){ clearTimeout(pTimer); pTimer = null; }
+    pSteps.forEach(function(s){ s.classList.remove('is-active','is-done','is-error'); });
+    proxyRestoreText();
+    var steps = pSteps;
+    var i = 0;
+    $('#ch8-proxy-status').className = 'ch8-status';
+    $('#ch8-proxy-status').innerHTML = '<b>调用中：</b>uart_write(UART_DEBUG, buf, len, 100)...';
+    function next(){
+      if(i > 0){
+        var prev = steps[i-1];
+        prev.classList.remove('is-active');
+        if(!prev.classList.contains('is-error')) prev.classList.add('is-done');
+      }
+      if(i >= steps.length){
+        $('#ch8-proxy-status').className = 'ch8-status ' + (timeout ? 'is-bad' : 'is-ok');
+        $('#ch8-proxy-status').innerHTML = timeout
+          ? '<b>返回 -ETIMEDOUT：</b>HAL 超时被映射为项目统一错误码，锁已释放；调用方可以选择重试或上报。'
+          : '<b>返回 0：</b>数据已发送，锁已释放，HAL 状态被映射为 0。App 没有看到任何 HAL 类型。';
+        return;
+      }
+      var s = steps[i];
+      s.classList.add('is-active');
+      if(timeout && i === 1){
+        s.classList.add('is-error');
+        s.querySelector('span:last-child').innerHTML = '<b>HAL_UART_Transmit()</b><br>返回 HAL_TIMEOUT：总线忙 / 从设备无响应';
+      }
+      i++;
+      pTimer = setTimeout(next, 650);
+    }
+    next();
+  }
+  $$('[data-proxy]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.getAttribute('data-proxy');
+      if(a === 'ok') runProxy(false);
+      else if(a === 'timeout') runProxy(true);
+      else proxyReset();
+    });
+  });
+
+  /* scene 4: init table */
+  var mods = [
+    {name:'clock_init', prio:10, deps:[], label:'时钟 / FPU'},
+    {name:'sensor_init', prio:20, deps:['clock_init'], label:'传感器'},
+    {name:'storage_init', prio:30, deps:['clock_init'], label:'存储'},
+    {name:'net_init', prio:40, deps:['storage_init'], label:'网络'},
+    {name:'app_init', prio:50, deps:['sensor_init','storage_init','net_init'], label:'应用'}
+  ];
+  var initTimer = null, initRunId = 0;
+  function renderMods(states){
+    states = states || {};
+    $('#ch8-initflow').innerHTML = mods.map(function(m){
+      var st = states[m.name] || '';
+      return '<div class="ch8-mod ' + st + '">' + m.name + '<small>prio ' + m.prio + ' · ' + m.label + '</small></div>';
+    }).join('');
+  }
+  function initReset(){
+    initRunId++;
+    if(initTimer){ clearTimeout(initTimer); initTimer = null; }
+    renderMods({});
+    $('#ch8-init-term').innerHTML = '<span class="dim">$ ./firmware --boot</span><br><span class="dim">等待初始化...</span>';
+  }
+  function runInit(sorted){
+    initRunId++;
+    var myRun = initRunId;
+    if(initTimer){ clearTimeout(initTimer); initTimer = null; }
+    renderMods({});
+    $('#ch8-init-term').innerHTML = '<span class="dim">$ ./firmware --boot</span><br>';
+    var order = sorted ? mods.slice().sort(function(a,b){ return a.prio - b.prio; }) : [mods[3], mods[4], mods[0], mods[1], mods[2]];
+    var done = {}, states = {}, idx = 0, failures = 0;
+    function next(){
+      if(myRun !== initRunId) return;
+      if(idx >= order.length){
+        var term = $('#ch8-init-term');
+        if(failures){
+          term.innerHTML += '<br><span class="bad">' + failures + ' 个模块初始化失败；系统进入安全模式。</span>';
+        } else {
+          term.innerHTML += '<br><span class="ok">所有模块初始化完成，进入 main loop。</span>';
+        }
+        return;
+      }
+      var m = order[idx++];
+      states[m.name] = 'is-ready';
+      renderMods(states);
+      var missing = m.deps.filter(function(d){ return !done[d]; });
+      var term = $('#ch8-init-term');
+      term.innerHTML += '<span class="dim">[' + m.prio + ']</span> ' + m.name + ' ... ';
+      setTimeout(function(){
+        if(myRun !== initRunId) return;
+        if(missing.length){
+          states[m.name] = 'is-fail';
+          renderMods(states);
+          term.innerHTML += '<span class="bad">FAIL（缺少 ' + missing.join(', ') + '）</span><br>';
+          failures++;
+        } else {
+          done[m.name] = true;
+          states[m.name] = 'is-done';
+          renderMods(states);
+          term.innerHTML += '<span class="ok">OK</span><br>';
+        }
+        next();
+      }, 520);
+    }
+    next();
+  }
+  $$('[data-init]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var a = b.getAttribute('data-init');
+      if(a === 'sorted') runInit(true);
+      else if(a === 'random') runInit(false);
+      else initReset();
+    });
+  });
+  initReset();
+
+  /* lab */
+  var lab = $$('[data-lab8]', root);
+  function labUpdate(){
+    var n = lab.filter(function(x){ return x.checked; }).length;
+    $('#ch8-lab-count').textContent = n + ' / ' + lab.length;
+    $('#ch8-lab-bar').style.width = (n / lab.length * 100) + '%';
+    $('#ch8-lab-pct').textContent = Math.round(n / lab.length * 100) + '%';
+  }
+  lab.forEach(function(x){ x.addEventListener('change', labUpdate); });
+  labUpdate();
+})();
+</script>
+</div>

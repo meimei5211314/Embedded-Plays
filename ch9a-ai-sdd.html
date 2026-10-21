@@ -1,0 +1,731 @@
+<div id="ch9a-lesson">
+<style>
+  #ch9a-lesson{
+    --ink: var(--seed-fg, #0f172a);
+    --muted: var(--seed-muted, #64748b);
+    --surface: var(--card-bg, #ffffff);
+    --surface-2: var(--inset-bg, #f8fafc);
+    --line: var(--border-standard, rgba(15,23,42,.12));
+    --line-soft: var(--border-subtle, rgba(15,23,42,.07));
+    --primary: var(--seed-primary, #4f46e5);
+    --primary-2: #d97706;
+    --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+    --ok: #059669;
+    --ok-soft: color-mix(in srgb, #059669 10%, transparent);
+    --warn: #d97706;
+    --warn-soft: color-mix(in srgb, #d97706 11%, transparent);
+    --danger: #dc2626;
+    --danger-soft: color-mix(in srgb, #dc2626 10%, transparent);
+    --code-bg: #0f172a;
+    --code-ink: #dbeafe;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--ink);
+    font: 14px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #ch9a-lesson *{ box-sizing:border-box; }
+  #ch9a-lesson p{ margin:0; }
+  #ch9a-lesson button{ font:inherit; color:inherit; }
+  #ch9a-lesson code{ font-family:var(--mono); }
+  #ch9a-lesson .ch9a-hero{
+    position:relative; overflow:hidden; padding:28px 30px 22px;
+    border:1px solid var(--line); border-radius:20px;
+    background:
+      radial-gradient(680px 250px at 98% -25%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 66%),
+      linear-gradient(145deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface) 58%);
+  }
+  #ch9a-lesson .ch9a-hero::after{
+    content:""; position:absolute; right:-60px; top:-80px; width:250px; height:250px; border-radius:50%;
+    border:1px dashed color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+  #ch9a-lesson .ch9a-kicker{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+  #ch9a-lesson h1{ margin:0; font-size:clamp(25px,3.4vw,40px); line-height:1.2; letter-spacing:-.02em; }
+  #ch9a-lesson .ch9a-sub{ margin-top:10px; max-width:880px; color:var(--muted); font-size:14px; }
+  #ch9a-lesson .ch9a-badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  #ch9a-lesson .ch9a-badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:7px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 75%, transparent); font-size:11px; color:var(--muted); }
+  #ch9a-lesson .ch9a-badge b{ color:var(--ink); font-weight:650; }
+  #ch9a-lesson .ch9a-meta{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); font-size:11px; color:var(--muted); }
+  #ch9a-lesson .ch9a-steps{
+    position:sticky; top:0; z-index:30; display:flex; gap:4px; overflow-x:auto; scrollbar-width:thin;
+    padding:8px; margin:14px 0 16px; border:1px solid var(--line); border-radius:14px;
+    background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(12px);
+  }
+  #ch9a-lesson .ch9a-step{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px; border:0; background:transparent; border-radius:9px; padding:7px 11px; cursor:pointer; color:var(--muted); text-align:left; min-width:104px; transition:.2s; }
+  #ch9a-lesson .ch9a-step .n{ font:10px/1 var(--mono); color:color-mix(in srgb, var(--muted) 75%, transparent); }
+  #ch9a-lesson .ch9a-step .t{ font-size:11.5px; font-weight:650; white-space:nowrap; }
+  #ch9a-lesson .ch9a-step:hover{ background:var(--primary-soft); color:var(--ink); }
+  #ch9a-lesson .ch9a-step.is-active{ background:var(--primary); color:#fff; }
+  #ch9a-lesson .ch9a-step.is-active .n{ color:rgba(255,255,255,.7); }
+  #ch9a-lesson .ch9a-progress{ height:3px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:-8px 0 18px; }
+  #ch9a-lesson .ch9a-progress i{ display:block; height:100%; width:25%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .35s; }
+  #ch9a-lesson .ch9a-scene{ display:none; }
+  #ch9a-lesson .ch9a-scene.is-active{ display:block; animation:ch9aIn .38s ease both; }
+  @keyframes ch9aIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  #ch9a-lesson .ch9a-scene-head{ margin:2px 0 14px; }
+  #ch9a-lesson .ch9a-scene-head .tag{ display:inline-flex; align-items:center; gap:6px; font:10px/1 var(--mono); color:var(--primary); border:1px solid color-mix(in srgb, var(--primary) 30%, transparent); background:var(--primary-soft); border-radius:99px; padding:4px 9px; margin-bottom:7px; }
+  #ch9a-lesson .ch9a-scene-head h2{ margin:0; font-size:clamp(20px,2.5vw,27px); line-height:1.3; letter-spacing:-.01em; }
+  #ch9a-lesson .ch9a-scene-head p{ margin-top:5px; color:var(--muted); font-size:12.5px; max-width:940px; }
+  #ch9a-lesson .ch9a-card{ border:1px solid var(--line); border-radius:15px; background:var(--surface); padding:16px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
+  #ch9a-lesson .ch9a-card + .ch9a-card{ margin-top:12px; }
+  #ch9a-lesson .ch9a-card-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:11px; }
+  #ch9a-lesson .ch9a-card-h h3{ margin:0; font-size:14px; line-height:1.4; }
+  #ch9a-lesson .ch9a-hint{ font-size:10.5px; color:var(--muted); white-space:nowrap; }
+  #ch9a-lesson .ch9a-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+  #ch9a-lesson .ch9a-grid2 > .ch9a-card{ margin-top:0; }
+  #ch9a-lesson .ch9a-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:31px; padding:5px 11px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); cursor:pointer; font-size:11.5px; font-weight:600; transition:.15s; }
+  #ch9a-lesson .ch9a-btn:hover{ border-color:var(--primary); color:var(--primary); background:var(--primary-soft); }
+  #ch9a-lesson .ch9a-btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch9a-lesson .ch9a-btn.primary:hover{ filter:brightness(1.06); color:#fff; }
+  #ch9a-lesson .ch9a-btn.ghost{ background:transparent; }
+  #ch9a-lesson .ch9a-btn.danger{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 35%, var(--line)); }
+  #ch9a-lesson .ch9a-controls{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+  #ch9a-lesson .ch9a-code{ margin:0; padding:12px 13px; border-radius:10px; background:var(--code-bg); color:var(--code-ink); font:10.5px/1.65 var(--mono); overflow:auto; }
+  #ch9a-lesson .ch9a-code .cm{ color:#7dd3fc; }
+  #ch9a-lesson .ch9a-code .kw{ color:#f0abfc; }
+  #ch9a-lesson .ch9a-code .st{ color:#86efac; }
+  #ch9a-lesson .ch9a-note{ border:1px solid var(--line); border-left:3px solid var(--primary); border-radius:8px; background:var(--surface-2); padding:9px 11px; font-size:11.5px; color:var(--muted); }
+  #ch9a-lesson .ch9a-note b{ color:var(--ink); }
+  #ch9a-lesson .ch9a-note.warn{ border-left-color:var(--warn); background:var(--warn-soft); }
+  #ch9a-lesson .ch9a-note.danger{ border-left-color:var(--danger); background:var(--danger-soft); }
+  #ch9a-lesson .ch9a-note.ok{ border-left-color:var(--ok); background:var(--ok-soft); }
+  #ch9a-lesson .ch9a-status{ margin-top:10px; border:1px dashed var(--line); border-radius:8px; padding:8px 10px; font-size:11px; min-height:38px; color:var(--muted); background:var(--surface-2); }
+  #ch9a-lesson .ch9a-status b{ color:var(--ink); }
+  #ch9a-lesson .ch9a-status.is-bad{ border-color:color-mix(in srgb, var(--danger) 40%, var(--line)); background:var(--danger-soft); color:var(--danger); }
+  #ch9a-lesson .ch9a-status.is-warn{ border-color:color-mix(in srgb, var(--warn) 40%, var(--line)); background:var(--warn-soft); color:var(--warn); }
+  #ch9a-lesson .ch9a-status.is-ok{ border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:var(--ok-soft); color:var(--ok); }
+  #ch9a-lesson .ch9a-chip{ display:inline-flex; align-items:center; gap:4px; border:1px solid var(--line); border-radius:6px; padding:2px 6px; font:9.5px/1.5 var(--mono); color:var(--muted); background:var(--surface-2); }
+  #ch9a-lesson .ch9a-chip.ok{ color:var(--ok); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); background:var(--ok-soft); }
+  #ch9a-lesson .ch9a-chip.bad{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 30%, var(--line)); background:var(--danger-soft); }
+  #ch9a-lesson .ch9a-mini-title{ font:10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+
+  /* task sort */
+  #ch9a-lesson .ch9a-tasks{ display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+  #ch9a-lesson .ch9a-task{ border:1px solid var(--line); border-radius:99px; background:var(--surface); padding:4px 9px; font-size:10px; cursor:pointer; color:var(--muted); transition:.15s; }
+  #ch9a-lesson .ch9a-task:hover{ border-color:var(--primary); }
+  #ch9a-lesson .ch9a-task.is-ok{ border-color:var(--ok); background:var(--ok-soft); color:var(--ok); }
+  #ch9a-lesson .ch9a-task.is-warn{ border-color:var(--warn); background:var(--warn-soft); color:var(--warn); }
+  #ch9a-lesson .ch9a-task.is-bad{ border-color:var(--danger); background:var(--danger-soft); color:var(--danger); }
+  #ch9a-lesson .ch9a-quad{ display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  #ch9a-lesson .ch9a-qbox{ border:1px solid var(--line); border-radius:9px; background:var(--surface-2); padding:9px; font-size:10.5px; }
+  #ch9a-lesson .ch9a-qbox b{ display:block; font-size:11.5px; margin-bottom:3px; }
+  #ch9a-lesson .ch9a-qbox.good{ border-left:3px solid var(--ok); }
+  #ch9a-lesson .ch9a-qbox.mid{ border-left:3px solid var(--warn); }
+  #ch9a-lesson .ch9a-qbox.bad{ border-left:3px solid var(--danger); }
+  #ch9a-lesson .ch9a-qbox span{ color:var(--muted); }
+
+  /* prompt lab */
+  #ch9a-lesson .ch9a-ctx{ display:grid; gap:5px; }
+  #ch9a-lesson .ch9a-ctx label{ display:flex; align-items:flex-start; gap:7px; border:1px solid var(--line-soft); border-radius:7px; padding:5px 8px; font-size:10.5px; cursor:pointer; background:var(--surface-2); }
+  #ch9a-lesson .ch9a-ctx label:has(input:checked){ border-color:color-mix(in srgb, var(--primary) 30%, var(--line)); background:var(--primary-soft); }
+  #ch9a-lesson .ch9a-ctx input{ margin-top:3px; accent-color:var(--primary); }
+  #ch9a-lesson .ch9a-ctx code{ font-size:9px; color:var(--muted); }
+  #ch9a-lesson .ch9a-meter{ display:flex; align-items:center; gap:8px; margin-top:8px; font-size:10px; color:var(--muted); }
+  #ch9a-lesson .ch9a-meter .bar{ flex:1; height:7px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch9a-lesson .ch9a-meter .bar i{ display:block; height:100%; width:20%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .3s; }
+  #ch9a-lesson .ch9a-meter b{ font:10px/1 var(--mono); color:var(--ink); }
+  #ch9a-lesson .ch9a-prompt{ margin-top:8px; border-radius:8px; background:var(--code-bg); color:#cbd5e1; font:9px/1.65 var(--mono); padding:8px 10px; min-height:128px; max-height:175px; overflow:auto; }
+  #ch9a-lesson .ch9a-prompt .k{ color:#7dd3fc; }
+  #ch9a-lesson .ch9a-prompt .v{ color:#86efac; }
+  #ch9a-lesson .ch9a-gates{ display:grid; gap:5px; margin-top:8px; }
+  #ch9a-lesson .ch9a-gate{ display:flex; align-items:center; gap:7px; border:1px solid var(--line); border-radius:7px; padding:5px 8px; background:var(--surface-2); font-size:10px; }
+  #ch9a-lesson .ch9a-gate .dot{ width:8px; height:8px; border-radius:50%; background:var(--line); }
+  #ch9a-lesson .ch9a-gate .st{ margin-left:auto; font:8.5px/1.4 var(--mono); color:var(--muted); }
+  #ch9a-lesson .ch9a-gate.is-run{ border-color:var(--primary); }
+  #ch9a-lesson .ch9a-gate.is-run .dot{ background:var(--primary); }
+  #ch9a-lesson .ch9a-gate.is-pass{ border-color:color-mix(in srgb,var(--ok) 30%,var(--line)); }
+  #ch9a-lesson .ch9a-gate.is-pass .dot{ background:var(--ok); }
+  #ch9a-lesson .ch9a-gate.is-pass .st{ color:var(--ok); }
+  #ch9a-lesson .ch9a-gate.is-fail{ border-color:var(--danger); background:var(--danger-soft); }
+  #ch9a-lesson .ch9a-gate.is-fail .dot{ background:var(--danger); }
+  #ch9a-lesson .ch9a-gate.is-fail .st{ color:var(--danger); }
+  #ch9a-lesson .ch9a-gen{ margin-top:8px; border-radius:8px; background:var(--code-bg); color:#cbd5e1; font:9px/1.7 var(--mono); padding:8px 10px; min-height:148px; max-height:220px; overflow:auto; }
+  #ch9a-lesson .ch9a-gen .r{ color:#fca5a5; }
+  #ch9a-lesson .ch9a-gen .g{ color:#86efac; }
+  #ch9a-lesson .ch9a-gen .d{ color:#64748b; }
+
+  /* hallucination hunt */
+  #ch9a-lesson .ch9a-hall{ border-radius:9px; background:var(--code-bg); padding:7px; font:10px/1.65 var(--mono); color:#dbeafe; overflow:auto; }
+  #ch9a-lesson .ch9a-hl{ display:grid; grid-template-columns:22px 1fr; gap:5px; width:100%; border:0; background:transparent; color:inherit; text-align:left; padding:2px 5px; border-radius:5px; cursor:pointer; font:inherit; }
+  #ch9a-lesson .ch9a-hl .ln{ color:#64748b; text-align:right; }
+  #ch9a-lesson .ch9a-hl:hover{ background:rgba(148,163,184,.13); }
+  #ch9a-lesson .ch9a-hl.is-flag{ background:rgba(5,150,105,.16); box-shadow:inset 2px 0 0 #059669; }
+  #ch9a-lesson .ch9a-hl.is-wrong{ background:rgba(220,38,38,.14); box-shadow:inset 2px 0 0 #dc2626; }
+  #ch9a-lesson .ch9a-hl .m{ font-size:8px; color:#86efac; }
+  #ch9a-lesson .ch9a-src{ display:grid; gap:5px; }
+  #ch9a-lesson .ch9a-fact{ display:flex; justify-content:space-between; gap:8px; border:1px solid var(--line); border-radius:7px; padding:5px 8px; background:var(--surface-2); font-size:10px; }
+  #ch9a-lesson .ch9a-fact b{ font-family:var(--mono); color:var(--ink); font-weight:600; }
+  #ch9a-lesson .ch9a-fact span{ color:var(--muted); }
+  #ch9a-lesson .ch9a-fact.reveal{ border-color:color-mix(in srgb,var(--primary) 30%,var(--line)); background:var(--primary-soft); }
+  #ch9a-lesson .ch9a-fact.reveal b{ color:var(--primary); }
+
+  /* SDD */
+  #ch9a-lesson .ch9a-sdd{ display:flex; gap:4px; flex-wrap:wrap; margin:4px 0 9px; }
+  #ch9a-lesson .ch9a-sdd button{ flex:1 1 86px; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); padding:7px 6px; font-size:9.5px; cursor:pointer; color:var(--muted); text-align:left; transition:.15s; }
+  #ch9a-lesson .ch9a-sdd button b{ display:block; font:9px/1.4 var(--mono); color:var(--primary); }
+  #ch9a-lesson .ch9a-sdd button span{ font-size:8.5px; }
+  #ch9a-lesson .ch9a-sdd button:hover{ border-color:var(--primary); }
+  #ch9a-lesson .ch9a-sdd button.is-on{ border-color:var(--primary); background:var(--primary-soft); box-shadow:0 0 0 2px var(--primary-soft); color:var(--ink); }
+  #ch9a-lesson .ch9a-art{ border:1px dashed var(--line); border-radius:9px; background:var(--surface-2); padding:9px; font-size:10.5px; min-height:148px; }
+  #ch9a-lesson .ch9a-art h4{ margin:0 0 5px; font-size:12px; }
+  #ch9a-lesson .ch9a-art p{ color:var(--muted); }
+  #ch9a-lesson .ch9a-art pre{ margin:6px 0 0; border-radius:6px; background:var(--code-bg); color:#86efac; padding:7px 8px; font:8.5px/1.6 var(--mono); overflow:auto; max-height:130px; }
+  #ch9a-lesson .ch9a-acs{ display:grid; gap:4px; margin-top:5px; }
+  #ch9a-lesson .ch9a-ac{ display:flex; align-items:center; gap:6px; border:1px solid var(--line-soft); border-radius:6px; padding:4px 7px; background:var(--surface); font-size:9.5px; }
+  #ch9a-lesson .ch9a-ac .mark{ margin-left:auto; font:9px/1 var(--mono); color:var(--muted); }
+  #ch9a-lesson .ch9a-ac.is-pass{ border-color:color-mix(in srgb,var(--ok) 28%,var(--line)); background:var(--ok-soft); }
+  #ch9a-lesson .ch9a-ac.is-pass .mark{ color:var(--ok); }
+  #ch9a-lesson .ch9a-ac.is-fail{ border-color:var(--danger); background:var(--danger-soft); }
+  #ch9a-lesson .ch9a-ac.is-fail .mark{ color:var(--danger); }
+  #ch9a-lesson .ch9a-vs{ width:100%; border-collapse:collapse; font-size:10px; }
+  #ch9a-lesson .ch9a-vs th{ text-align:left; color:var(--muted); font-weight:500; border-bottom:1px solid var(--line); padding:4px; }
+  #ch9a-lesson .ch9a-vs td{ border-bottom:1px solid var(--line-soft); padding:4px; vertical-align:top; }
+  #ch9a-lesson .ch9a-lab{ display:grid; gap:5px; margin-top:4px; }
+  #ch9a-lesson .ch9a-lab label{ display:flex; align-items:flex-start; gap:7px; border:1px solid var(--line-soft); border-radius:7px; padding:6px 8px; font-size:10.5px; cursor:pointer; background:var(--surface-2); }
+  #ch9a-lesson .ch9a-lab label:has(input:checked){ border-color:color-mix(in srgb, var(--ok) 35%, var(--line)); background:var(--ok-soft); }
+  #ch9a-lesson .ch9a-lab input{ margin-top:3px; accent-color:var(--ok); }
+  #ch9a-lesson .ch9a-lab-progress{ display:flex; align-items:center; gap:8px; font-size:10px; color:var(--muted); margin-top:7px; }
+  #ch9a-lesson .ch9a-mini-bar{ flex:1; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch9a-lesson .ch9a-mini-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--ok),var(--primary)); transition:width .25s; }
+  #ch9a-lesson .ch9a-footer{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; padding:11px 2px 0; border-top:1px dashed var(--line); font-size:10.5px; color:var(--muted); }
+  #ch9a-lesson .ch9a-footer .fbtns{ display:flex; gap:6px; }
+
+  @media(max-width:860px){
+    #ch9a-lesson .ch9a-grid2{ grid-template-columns:1fr; }
+  }
+  @media(max-width:620px){
+    #ch9a-lesson{ font-size:13px; }
+    #ch9a-lesson .ch9a-hero{ padding:20px 18px 16px; border-radius:15px; }
+    #ch9a-lesson .ch9a-step{ min-width:90px; padding:6px 8px; }
+    #ch9a-lesson .ch9a-card{ padding:12px; border-radius:12px; }
+    #ch9a-lesson .ch9a-scene-head h2{ font-size:20px; }
+    #ch9a-lesson .ch9a-quad{ grid-template-columns:1fr; }
+    #ch9a-lesson .ch9a-sdd button{ flex:1 1 42%; }
+  }
+</style>
+
+<header class="ch9a-hero">
+  <div class="ch9a-kicker">第 1 篇 · 编程基础 / 第 9A 章</div>
+  <h1>AI 协作与规格驱动开发</h1>
+  <p class="ch9a-sub">AI 是加速器，不是责任人。这一章把“让 AI 写代码”拆成一条可验证的流水线：给足上下文、逐行核对数据手册、用编译/仪器/测试三关验收；再把需求升级为机器可验收的 spec，让 AI 按规格实现，而不是靠猜。</p>
+  <div class="ch9a-badges">
+    <span class="ch9a-badge">🧭 <b>能力边界</b> 四象限</span>
+    <span class="ch9a-badge">✍️ <b>提示词</b> 上下文工程</span>
+    <span class="ch9a-badge">🔬 <b>幻觉猎杀</b> 对照手册</span>
+    <span class="ch9a-badge">🧪 <b>三关验收</b> 编译/仪器/测试</span>
+    <span class="ch9a-badge">📐 <b>SDD</b> 规格驱动</span>
+  </div>
+  <div class="ch9a-meta">
+    <span>学习时长约 50 分钟 · 4 个互动实验</span>
+    <span>建议前置：第 9 章测试体系，以及第二篇的仪器基础</span>
+  </div>
+</header>
+
+<nav class="ch9a-steps" aria-label="章节导航">
+  <button type="button" class="ch9a-step is-active" data-goto="0"><span class="n">01</span><span class="t">能力边界</span></button>
+  <button type="button" class="ch9a-step" data-goto="1"><span class="n">02</span><span class="t">提示词实验</span></button>
+  <button type="button" class="ch9a-step" data-goto="2"><span class="n">03</span><span class="t">幻觉猎杀</span></button>
+  <button type="button" class="ch9a-step" data-goto="3"><span class="n">04</span><span class="t">SDD 工作流</span></button>
+</nav>
+<div class="ch9a-progress"><i id="ch9a-progress"></i></div>
+
+<main>
+  <!-- scene 0 -->
+  <section class="ch9a-scene is-active" data-scene="0">
+    <div class="ch9a-scene-head">
+      <span class="tag">9A.1 / 9A.2 · 能力边界</span>
+      <h2>先决定“哪些活能交给 AI”，再谈怎么提问</h2>
+      <p>点击下面的任务卡，判断它属于“擅长、不稳定、禁区”哪一类。高价值任务都有一个共同点：产出容易核对；高危任务也有共同点：错误能编译通过，却可能在现场偶发。</p>
+    </div>
+
+    <div class="ch9a-grid2">
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>任务分类小测</h3><span class="ch9a-hint" id="ch9a-quiz-count">0 / 6 已判断</span></div>
+        <div class="ch9a-tasks" id="ch9a-tasks">
+          <button type="button" class="ch9a-task" data-q="0">生成外设初始化模板</button>
+          <button type="button" class="ch9a-task" data-q="1">解读 TRM 某一章</button>
+          <button type="button" class="ch9a-task" data-q="2">精确计算 UART BRR</button>
+          <button type="button" class="ch9a-task" data-q="3">直接采用寄存器配置</button>
+          <button type="button" class="ch9a-task" data-q="4">生成 Unity 用例骨架</button>
+          <button type="button" class="ch9a-task" data-q="5">上传客户固件到公有云</button>
+        </div>
+        <div class="ch9a-status" id="ch9a-quiz-status"><b>开始：</b>先想一想，这个任务的错误能否被你快速验证？</div>
+        <div class="ch9a-quad" style="margin-top:9px">
+          <div class="ch9a-qbox good"><b>✓ 擅长 · 可以放手</b><span>样板代码、概念解释、手册翻译、测试点枚举。产出可逐行核对，错了改起来便宜。</span></div>
+          <div class="ch9a-qbox mid"><b>△ 不稳定 · 必须复核</b><span>精确数值、跨文件一致性、最新库 API。训练数据滞后，且“看起来合理”最危险。</span></div>
+          <div class="ch9a-qbox bad"><b>✕ 禁区 · 人来负责</b><span>寄存器级代码直接采信、时序敏感逻辑照抄、闭源代码外发。后果不可逆或涉密。</span></div>
+          <div class="ch9a-qbox"><b>最终责任</b><span>AI 不会对你的板子负责。编译通过只是起点，按下烧录键的人是你。</span></div>
+        </div>
+      </div>
+
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>三大高危禁区</h3><span class="ch9a-hint">能跑但偶发，比不能跑更危险</span></div>
+        <div class="ch9a-note danger" style="margin-bottom:7px">
+          <b>① 寄存器级代码直接采信</b><br>LLM 幻觉出的 BRR / PSC 计算可能错一位；凡是直捅硬件的行，逐字段对照 RM 手册复核。
+        </div>
+        <div class="ch9a-note danger" style="margin-bottom:7px">
+          <b>② 时序敏感逻辑照抄</b><br>临界区范围、中断使能时机、DMA 对齐——AI 没有你的硬件上下文。错误常常“能跑但偶发”，示波器才能看见。
+        </div>
+        <div class="ch9a-note danger">
+          <b>③ 闭源代码外发</b><br>客户固件、密钥、产线参数严禁粘贴到公有云服务。用本地部署模型或脱敏；公司合规政策优先。
+        </div>
+        <div class="ch9a-note warn" style="margin-top:9px">
+          <b>许可合规：</b>AI 可能复现训练语料中的受限许可片段（如 GPL 混入商业固件）。高风险项目开启供应商“不训练”选项，关键模块做许可证扫描（scan-code / fossology），向开源项目贡献时按基金会政策披露。
+        </div>
+        <div class="ch9a-note ok" style="margin-top:7px">
+          <b>一个判断口诀：</b>“如果这段代码错了，我能在 5 分钟内用仪器或测试证明吗？”不能，就别把它当“AI 生成即可信”。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 1 -->
+  <section class="ch9a-scene" data-scene="1">
+    <div class="ch9a-scene-head">
+      <span class="tag">9A.3 · 提示词工程与三重验证</span>
+      <h2>给足上下文，才能缩小幻觉面</h2>
+      <p>打开或关闭五个上下文要素，观察提示词与生成质量如何变化。芯片、HAL 版本、引脚外设、硬约束、验收标准缺一项，AI 就只能猜——而猜错的代码往往能编译通过。</p>
+    </div>
+
+    <div class="ch9a-grid2">
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>上下文构建器</h3><span class="ch9a-hint">五项全开再生成</span></div>
+        <div class="ch9a-ctx" id="ch9a-ctx">
+          <label><input type="checkbox" data-ctx="chip" checked><span><b>目标芯片：</b>STM32F407ZGT6 <code>时钟/外设映射</code></span></label>
+          <label><input type="checkbox" data-ctx="hal" checked><span><b>HAL 版本：</b>STM32CubeF4 v1.28 <code>API 不随训练数据漂移</code></span></label>
+          <label><input type="checkbox" data-ctx="pin" checked><span><b>引脚/外设：</b>USART1 · PA9/PA10 · 115200-8N1 <code>不留“自行选择”</code></span></label>
+          <label><input type="checkbox" data-ctx="cons" checked><span><b>硬约束：</b>禁动态内存；ISR 只置标志；DMA 接收 <code>可验证的边界</code></span></label>
+          <label><input type="checkbox" data-ctx="acc" checked><span><b>验收标准：</b>10 万字节环回零丢失；IDLE 定界误差 &lt;1 字符 <code>可执行断言</code></span></label>
+        </div>
+        <div class="ch9a-meter"><span>上下文完整度</span><div class="bar"><i id="ch9a-ctx-fill"></i></div><b id="ch9a-ctx-pct">100%</b></div>
+        <div class="ch9a-prompt" id="ch9a-prompt"></div>
+        <div class="ch9a-controls">
+          <button type="button" class="ch9a-btn primary" data-gen="run">生成并验证</button>
+          <button type="button" class="ch9a-btn ghost" data-gen="reset">重置</button>
+        </div>
+        <div class="ch9a-status" id="ch9a-gen-status"><b>待生成：</b>五项齐备时，生成结果仍需逐行对照手册，并跑完三关。</div>
+      </div>
+
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>验证三关</h3><span class="ch9a-hint">缺一不可</span></div>
+        <div class="ch9a-gates" id="ch9a-gates">
+          <div class="ch9a-gate" data-gen-gate="0"><span class="dot"></span><span><b>a) 编译关</b> · -Wall -Wextra -Werror 零警告</span><span class="st">待验证</span></div>
+          <div class="ch9a-gate" data-gen-gate="1"><span class="dot"></span><span><b>b) 仪器关</b> · 示波器 / 逻辑分析仪测时序</span><span class="st">待验证</span></div>
+          <div class="ch9a-gate" data-gen-gate="2"><span class="dot"></span><span><b>c) 测试关</b> · Unity / HIL 回归集</span><span class="st">待验证</span></div>
+        </div>
+        <div class="ch9a-gen" id="ch9a-gen"><span class="d">/* 生成结果将显示在这里 */</span></div>
+        <div class="ch9a-note warn" style="margin-top:9px">
+          <b>留痕：</b>AI 生成段统一标注 <code>/* AI-DRAFT: 已人工复核 2026-xx-xx by xxx */</code>。半年后出问题，能快速定位责任区，而不是全盘怀疑。
+        </div>
+        <pre class="ch9a-code"><span class="cm">/* 提示词模板（嵌入式特化） */</span>
+目标芯片 STM32F407ZGT6，HAL 库 v1.28.0。
+任务：USART1 PA9/PA10 115200-8N1，
+     空闲中断 + DMA 不定长接收。
+约束：禁止动态内存；ISR 内只置标志。
+输出：完整 main.c 片段 + 预期中断时序说明。</pre>
+        <div class="ch9a-note" style="margin-top:8px">
+          <b>为什么这些约束重要？</b>“禁止动态内存”排除 malloc；“ISR 只置标志”排除在中断里做解析；“输出时序说明”迫使它把假设写出来，方便你核对。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 2 -->
+  <section class="ch9a-scene" data-scene="2">
+    <div class="ch9a-scene-head">
+      <span class="tag">9A.4 · 幻觉猎杀</span>
+      <h2>“能编译”是最低标准，不是正确性证明</h2>
+      <p>这是一段 AI 生成的 SHT31 单次测量驱动。点击你认为与数据手册不符的行；提交后对照右侧事实清单。四颗地雷都藏得很“合理”，却分别对应地址、命令、测量时间和 CRC 参数。</p>
+    </div>
+
+    <div class="ch9a-grid2">
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>SHT31 驱动草稿 · 逐行审阅</h3><span class="ch9a-hint" id="ch9a-hall-count">0 / 4 已标记</span></div>
+        <div class="ch9a-hall" id="ch9a-hall"></div>
+        <div class="ch9a-controls">
+          <button type="button" class="ch9a-btn primary" data-hall="check">提交检查</button>
+          <button type="button" class="ch9a-btn ghost" data-hall="reset">重置</button>
+        </div>
+        <div class="ch9a-status" id="ch9a-hall-status"><b>待审阅：</b>先查地址与命令字，再核对延时和 CRC 多项式。不要被“看起来像标准写法”骗过。</div>
+        <div class="ch9a-note warn" style="margin-top:9px">
+          <b>为什么 AI 会错在这里？</b>地址、命令字、延时都是“局部看似合理”的数值；训练语料里不同型号、不同模式混在一起，模型会把它们拼接成一个语法完美但不存在的版本。
+        </div>
+        <div class="ch9a-note ok" style="margin-top:7px">
+          <b>正确流程：</b>生成草稿 → 逐行对照 datasheet → 列出偏差 → 修正 → 接入 Unity / CMock 验证 → 把偏差清单存档为提示词改进依据。
+        </div>
+      </div>
+
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>数据手册事实清单</h3><span class="ch9a-hint">SHT31-DIS</span></div>
+        <div class="ch9a-src" id="ch9a-src">
+          <div class="ch9a-fact" data-fact="addr"><span>默认 I²C 地址（7 位）</span><b>0x44</b></div>
+          <div class="ch9a-fact" data-fact="cmd"><span>单次测量 · 高重复性</span><b>0x2400</b></div>
+          <div class="ch9a-fact" data-fact="delay"><span>测量最大持续时间</span><b>15 ms</b></div>
+          <div class="ch9a-fact" data-fact="crc"><span>CRC-8 多项式 / 初值</span><b>0x31 / 0xFF</b></div>
+          <div class="ch9a-fact" data-fact="conv"><span>原始值换算</span><b>-45 + 175·S / 65535</b></div>
+          <div class="ch9a-fact" data-fact="alert"><span>地址冲突 / 时序</span><b>上电后等待 &gt;1 ms</b></div>
+        </div>
+        <div class="ch9a-note" style="margin-top:9px">
+          <b>审阅顺序：</b>地址 → 命令字 → 等待时间 → CRC → 换算公式。前四项错一个，读数要么全错，要么偶发 NACK；换算错则数值“看起来正常”但系统性偏移。
+        </div>
+        <div class="ch9a-note danger" style="margin-top:7px">
+          <b>不要直接采信“常见值”：</b>0x44 / 0x2400 / 15 ms 必须来自你手上那一版 datasheet，而不是模型记忆或别的项目。
+        </div>
+        <div class="ch9a-note ok" style="margin-top:7px">
+          <b>高价值副产物：</b>把“该模型常把地址写成 0x45、延时写成 5 ms”的记录沉淀成团队提示词与审阅 checklist——这比一段能跑的代码更长期。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 3 -->
+  <section class="ch9a-scene" data-scene="3">
+    <div class="ch9a-scene-head">
+      <span class="tag">9A.5–9A.8 · 规格驱动开发</span>
+      <h2>不要让 AI 猜，把规格变成一等公民</h2>
+      <p>SDD 的顺序是：原则 → 规格 → 澄清 → 计划 → 任务 → 实现 → 机器验收。点击六个阶段看每步的产物；先写清楚“什么算通过”，AI 才有可执行的目标。</p>
+    </div>
+
+    <div class="ch9a-grid2">
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>Spec Kit 六命令工作流</h3><span class="ch9a-hint">点击阶段</span></div>
+        <div class="ch9a-sdd" id="ch9a-sdd">
+          <button type="button" class="ch9a-sdd is-on" data-sdd="0"><b>/constitution</b><span>不可协商原则</span></button>
+          <button type="button" class="ch9a-sdd" data-sdd="1"><b>/specify</b><span>规格与验收</span></button>
+          <button type="button" class="ch9a-sdd" data-sdd="2"><b>/clarify</b><span>主动提问</span></button>
+          <button type="button" class="ch9a-sdd" data-sdd="3"><b>/plan</b><span>架构与选型</span></button>
+          <button type="button" class="ch9a-sdd" data-sdd="4"><b>/tasks</b><span>任务拆解</span></button>
+          <button type="button" class="ch9a-sdd" data-sdd="5"><b>/implement</b><span>逐任务实现</span></button>
+        </div>
+        <div class="ch9a-art" id="ch9a-sdd-art"></div>
+        <div class="ch9a-controls">
+          <button type="button" class="ch9a-btn ghost" data-sdd-next="1">下一步 →</button>
+        </div>
+        <div class="ch9a-note" style="margin-top:9px">
+          <b>关键差异：</b>传统 AI 编码流是“需求在脑内 → 提示词 → 代码 → 人肉检查 → 祈祷”；SDD 把需求变成可 diff、可评审、可自动验收的资产。
+        </div>
+        <pre class="ch9a-code"><span class="cm"># 入库版本化的目录</span>
+.specify/memory/constitution.md
+specs/001-uart-dma-driver/
+├── spec.md      <span class="cm"># 需求 + 时序断言</span>
+├── plan.md      <span class="cm"># bsp_uart 实现 uart_itf</span>
+├── tasks.md     <span class="cm"># T001… 每项绑定测试</span>
+└── checklists/  <span class="cm"># review 清单</span></pre>
+      </div>
+
+      <div class="ch9a-card">
+        <div class="ch9a-card-h"><h3>让 spec 可被机器验收</h3><span class="ch9a-hint">AC1–AC5</span></div>
+        <div class="ch9a-acs" id="ch9a-acs">
+          <div class="ch9a-ac" data-ac="0"><span><b>AC1</b> 115200bps 下 10 万字节回环零丢失</span><span class="mark">HIL</span></div>
+          <div class="ch9a-ac" data-ac="1"><span><b>AC2</b> 2MB/s 突发流下 CPU 占用 ≤35%</span><span class="mark">剖析器</span></div>
+          <div class="ch9a-ac" data-ac="2"><span><b>AC3</b> IDLE 定界误差 ≤1 字符时间</span><span class="mark">逻辑分析仪</span></div>
+          <div class="ch9a-ac" data-ac="3"><span><b>AC4</b> 缓冲区满时丢弃最旧且计数</span><span class="mark">Unity</span></div>
+          <div class="ch9a-ac" data-ac="4"><span><b>AC5</b> 连续 24h 无丢帧 / 无 HardFault</span><span class="mark">老化台架</span></div>
+        </div>
+        <label class="ch9a-note warn" style="display:flex;gap:7px;align-items:flex-start;margin-top:8px;cursor:pointer;font-size:10.5px">
+          <input type="checkbox" id="ch9a-acbug" style="margin-top:4px;accent-color:var(--warn)">
+          <span><b>模拟实现缺陷：</b>IDLE 中断里直接解析整帧，AC2 的 CPU 占用超标。</span>
+        </label>
+        <div class="ch9a-controls">
+          <button type="button" class="ch9a-btn primary" data-acrun="1">运行机器验收</button>
+          <button type="button" class="ch9a-btn ghost" data-acreset="1">重置</button>
+        </div>
+        <div class="ch9a-status" id="ch9a-ac-status"><b>待验收：</b>5 条 AC 都有对应的自动化证据，spec 才算真正完成。</div>
+
+        <div class="ch9a-card-h" style="margin-top:12px"><h3>两派怎么选</h3><span class="ch9a-hint">可组合</span></div>
+        <table class="ch9a-vs">
+          <thead><tr><th></th><th>spec-kit</th><th>superpowers</th></tr></thead>
+          <tbody>
+            <tr><td>强项</td><td>规格资产沉淀，需求可审计</td><td>过程纪律，brainstorm→plan→TDD</td></tr>
+            <tr><td>适合</td><td>多人协作 / 产品线 / 留档</td><td>个人 / 小团队快速有序推进</td></tr>
+            <tr><td>组合</td><td colspan="2">用 superpowers 的 TDD 纪律执行 spec-kit 产出的 tasks</td></tr>
+          </tbody>
+        </table>
+        <div class="ch9a-note ok" style="margin-top:8px">
+          <b>起步顺序：</b>先做 constitution + specify + clarify 三步（成本最低、收益最大），再引入 plan / tasks / implement。
+        </div>
+
+        <div class="ch9a-lab" style="margin-top:9px">
+          <div class="ch9a-card-h" style="margin-bottom:2px"><h3 style="font-size:12.5px">L9A：一次可验收的 AI 协作</h3><span class="ch9a-hint" id="ch9a-lab-count">0 / 5</span></div>
+          <label><input type="checkbox" data-lab9a>用模板生成 I2C 读 SHT31 草稿</label>
+          <label><input type="checkbox" data-lab9a>对照 datasheet 找出 ≥3 处偏差</label>
+          <label><input type="checkbox" data-lab9a>修正后接入 Unity + CMock 测试</label>
+          <label><input type="checkbox" data-lab9a>把偏差清单沉淀为提示词改进依据</label>
+          <label><input type="checkbox" data-lab9a>产出 .specify + specs 目录并绑定 AC</label>
+          <div class="ch9a-lab-progress"><span>进度</span><div class="ch9a-mini-bar"><i id="ch9a-lab-bar"></i></div><span id="ch9a-lab-pct">0%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ch9a-footer">
+    <span>第 9A 章 · AI 协作与规格驱动开发 · 下一卷：第 2 篇 开发调试工具链</span>
+    <div class="fbtns"><button type="button" class="ch9a-btn" data-goto="0">回到开头</button></div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var root = $('#ch9a-lesson');
+  var scenes = $$('.ch9a-scene', root);
+  var steps = $$('.ch9a-step', root);
+  function go(n){
+    n = Math.max(0, Math.min(scenes.length - 1, Number(n)));
+    scenes.forEach(function(s, i){ s.classList.toggle('is-active', i === n); });
+    steps.forEach(function(b){ b.classList.toggle('is-active', Number(b.getAttribute('data-goto')) === n); });
+    $('#ch9a-progress').style.width = ((n + 1) / scenes.length * 100) + '%';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  steps.forEach(function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+  $$('[data-goto]', root).forEach(function(b){ if(!b.classList.contains('ch9a-step')) b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+
+  /* scene 0 quiz */
+  var quiz = [
+    {cat:'擅长', cls:'ok', why:'样板代码有大量公开例程，产出可逐行核对；引脚映射仍需你自己确认。'},
+    {cat:'擅长', cls:'ok', why:'跨语言知识压缩是模型强项；关键位域必须回原文验证，摘要不能替代手册。'},
+    {cat:'不稳定', cls:'warn', why:'BRR/PSC 是精确数值计算，错一位就波特率漂移。必须用 RM 公式和示波器复算。'},
+    {cat:'禁区', cls:'bad', why:'寄存器配置直接采信 = 把硬件正确性外包给一个没有你板子上下文的人。'},
+    {cat:'擅长', cls:'ok', why:'用例骨架低风险高产出；断言强度与边界值仍需你设计。'},
+    {cat:'禁区', cls:'bad', why:'客户固件/密钥/产线参数严禁外发；合规优先，不是技术问题。'}
+  ];
+  var answered = {};
+  function quizUpdate(){
+    $('#ch9a-quiz-count').textContent = Object.keys(answered).length + ' / ' + quiz.length + ' 已判断';
+  }
+  $$('[data-q]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var i = Number(b.getAttribute('data-q'));
+      answered[i] = true;
+      b.classList.add('is-' + quiz[i].cls);
+      $('#ch9a-quiz-status').className = 'ch9a-status is-' + quiz[i].cls;
+      $('#ch9a-quiz-status').innerHTML = '<b>' + quiz[i].cat + '：</b>' + quiz[i].why;
+      quizUpdate();
+    });
+  });
+
+  /* scene 1 prompt builder */
+  var ctxState = {chip:true, hal:true, pin:true, cons:true, acc:true};
+  var ctxText = {
+    chip:'目标芯片 STM32F407ZGT6，主频 168MHz，USART1 挂 APB2。',
+    hal:'HAL 库 STM32CubeF4 v1.28.0，使用 HAL_UARTEx_ReceiveToIdle_DMA。',
+    pin:'USART1：PA9 TX / PA10 RX，115200-8N1，无硬件流控。',
+    cons:'禁止动态内存；ISR 内只置标志；DMA 双缓冲，队列容量 256。',
+    acc:'验收：10 万字节环回零丢失；IDLE 定界误差 ≤1 字符；连续 24h 无丢帧。'
+  };
+  var ctxOrder = ['chip','hal','pin','cons','acc'];
+  function ctxPrompt(){
+    var lines = ['$ 请实现一个 STM32 串口 IDLE + DMA 不定长接收驱动。'];
+    ctxOrder.forEach(function(k){
+      if(ctxState[k]) lines.push('· ' + ctxText[k]);
+    });
+    if(Object.keys(ctxState).filter(function(k){ return ctxState[k]; }).length < 5){
+      lines.push('\n<span class="k">/* 缺失项将由模型自行假设——这是幻觉的入口 */</span>');
+    }
+    return lines.join('<br>');
+  }
+  function ctxGates(){
+    var miss = Object.keys(ctxState).filter(function(k){ return !ctxState[k]; });
+    return {
+      compile: !miss.includes('hal'),
+      timing: !miss.includes('chip') && !miss.includes('pin'),
+      test: !miss.includes('cons') && !miss.includes('acc')
+    };
+  }
+  function renderCtx(){
+    var n = Object.keys(ctxState).filter(function(k){ return ctxState[k]; }).length;
+    $('#ch9a-ctx-pct').textContent = (n / 5 * 100) + '%';
+    $('#ch9a-ctx-fill').style.width = (n / 5 * 100) + '%';
+    $('#ch9a-prompt').innerHTML = ctxPrompt();
+    $$('[data-ctx]', root).forEach(function(cb){ cb.checked = !!ctxState[cb.getAttribute('data-ctx')]; });
+  }
+  function resetGen(){
+    $$('[data-gen-gate]', root).forEach(function(g){ g.classList.remove('is-run','is-pass','is-fail'); g.querySelector('.st').textContent = '待验证'; });
+    $('#ch9a-gen').innerHTML = '<span class="d">/* 生成结果将显示在这里 */</span>';
+    $('#ch9a-gen-status').className = 'ch9a-status';
+    $('#ch9a-gen-status').innerHTML = '<b>待生成：</b>五项齐备时，生成结果仍需逐行对照手册，并跑完三关。';
+  }
+  function runGen(){
+    var g = ctxGates();
+    var code = [
+      '<span class="d">/* AI-DRAFT：待人工复核 */</span>',
+      '#define RX_DMA_BUF  256',
+      'static uint8_t rx_dma[RX_DMA_BUF];',
+      'static QueueHandle_t q_rx;',
+      'void USART1_IRQHandler(void) {',
+      '  BaseType_t w = pdFALSE;',
+      '  if (LL_USART_IsActiveFlag_IDLE(USART1)) {',
+      '    LL_USART_ClearFlag_IDLE(USART1);',
+      '    <span class="' + (g.test ? 'g' : 'r') + '">xQueueSendFromISR(q_rx, &amp;len, &amp;w);</span>',
+      '  }',
+      '  portYIELD_FROM_ISR(w);',
+      '}'
+    ];
+    if(!g.compile) code.push('<span class="r">/* 缺少 HAL 版本：HAL_UARTEx_ReceiveToIdle_DMA 的签名可能已变化 */</span>');
+    if(!g.timing) code.push('<span class="r">/* 缺少芯片/引脚：BRR 与 APB2 时钟只能猜 */</span>');
+    if(!g.test) code.push('<span class="r">/* 缺少约束/验收：ISR 内可能被写成直接解析 */</span>');
+    $('#ch9a-gen').innerHTML = code.join('<br>');
+    $$('[data-gen-gate]', root).forEach(function(el, i){
+      el.classList.remove('is-run','is-pass','is-fail');
+      setTimeout(function(){
+        var pass = i === 0 ? g.compile : (i === 1 ? g.timing : g.test);
+        el.classList.add(pass ? 'is-pass' : 'is-fail');
+        el.querySelector('.st').textContent = pass ? 'PASS' : 'FAIL';
+      }, 500 + i * 520);
+    });
+    var all = g.compile && g.timing && g.test;
+    $('#ch9a-gen-status').className = 'ch9a-status ' + (all ? 'is-ok' : 'is-bad');
+    $('#ch9a-gen-status').innerHTML = all
+      ? '<b>三关全过：</b>但“通过验证”不等于“我会写”。把 AI-DRAFT 标注、复核日期和仪器证据一起留档，才能合并。'
+      : '<b>上下文不足：</b>' + (g.compile ? '' : '缺 HAL 版本 → 编译关风险；') + (g.timing ? '' : '缺芯片/引脚 → 时序关必挂；') + (g.test ? '' : '缺约束/验收 → 测试关不可验收。') + ' 补齐后再生成。';
+  }
+  $$('[data-ctx]', root).forEach(function(cb){
+    cb.addEventListener('change', function(){
+      ctxState[cb.getAttribute('data-ctx')] = cb.checked;
+      renderCtx();
+      resetGen();
+    });
+  });
+  $('[data-gen="run"]', root).addEventListener('click', runGen);
+  $('[data-gen="reset"]', root).addEventListener('click', function(){
+    ctxOrder.forEach(function(k){ ctxState[k] = true; });
+    renderCtx();
+    resetGen();
+  });
+  renderCtx();
+  resetGen();
+
+  /* scene 2 hallucination hunt */
+  var hall = [
+    {t:'#include "sht31.h"', err:false},
+    {t:'#define SHT31_ADDR  0x45', err:true, fact:'addr', note:'默认 7 位地址应为 0x44；0x45 可能是别的器件。'},
+    {t:'#define MEAS_HIGH  0x2C06', err:true, fact:'cmd', note:'单次高重复性命令是 0x2400；0x2C06 不是该模式。'},
+    {t:'', err:false},
+    {t:'int sht31_read(float *t) {', err:false},
+    {t:'  uint8_t cmd[2] = { MEAS_HIGH >> 8, MEAS_HIGH & 0xFF };', err:false},
+    {t:'  i2c_write(SHT31_ADDR, cmd, 2);', err:false},
+    {t:'  HAL_Delay(5);', err:true, fact:'delay', note:'最大测量时间 15 ms；5 ms 可能读到旧数据或 NACK。'},
+    {t:'  uint8_t raw[6]; i2c_read(SHT31_ADDR, raw, 6);', err:false},
+    {t:'  uint8_t crc = crc8(raw, 2, 0x07);', err:true, fact:'crc', note:'SHT31 使用 CRC-8 多项式 0x31、初值 0xFF。'},
+    {t:'  if (crc != raw[2]) return -EIO;', err:false},
+    {t:'  *t = -45.0f + 175.0f * ((raw[0] << 8) | raw[1]) / 65535.0f;', err:false},
+    {t:'  return 0;', err:false},
+    {t:'}', err:false}
+  ];
+  var flags = {};
+  function renderHall(){
+    $('#ch9a-hall').innerHTML = hall.map(function(l, i){
+      if(!l.t) return '<div style="height:6px"></div>';
+      var cls = flags[i] === true ? ' is-flag' : (flags[i] === false ? ' is-wrong' : '');
+      var mark = flags[i] === true ? ' <span class="m">✓ 已标记</span>' : '';
+      return '<button type="button" class="ch9a-hl' + cls + '" data-hall-line="' + i + '"><span class="ln">' + (i+1) + '</span><span>' + l.t.replace(/</g,'&lt;').replace(/>/g,'&gt;') + mark + '</span></button>';
+    }).join('');
+    $$('[data-hall-line]', root).forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = Number(b.getAttribute('data-hall-line'));
+        if(flags[i] !== undefined) return;
+        if(hall[i].err){
+          flags[i] = true;
+          $('#ch9a-hall-status').className = 'ch9a-status is-ok';
+          $('#ch9a-hall-status').innerHTML = '<b>命中：</b>' + hall[i].note;
+        } else {
+          flags[i] = false;
+          $('#ch9a-hall-status').className = 'ch9a-status is-bad';
+          $('#ch9a-hall-status').innerHTML = '<b>这行不是错误：</b>它符合驱动结构，但正确性仍取决于其他行。';
+        }
+        renderHall();
+        var n = Object.keys(flags).filter(function(k){ return flags[k]; }).length;
+        $('#ch9a-hall-count').textContent = n + ' / 4 已标记';
+        if(n === 4){
+          $$('.ch9a-fact', root).forEach(function(f){ f.classList.add('reveal'); });
+          $('#ch9a-hall-status').className = 'ch9a-status is-ok';
+          $('#ch9a-hall-status').innerHTML = '<b>四颗地雷全部找到：</b>地址、命令、延时、CRC。编译器不会报错，因为它们都是合法 C 代码——这就是 AI 生成硬件代码最危险的地方。';
+        }
+      });
+    });
+  }
+  $('[data-hall="check"]', root).addEventListener('click', function(){
+    var n = Object.keys(flags).filter(function(k){ return flags[k]; }).length;
+    if(n < 4){
+      $('#ch9a-hall-status').className = 'ch9a-status is-bad';
+      $('#ch9a-hall-status').innerHTML = '<b>还有 ' + (4-n) + ' 处未标记：</b>优先复核数值型常量（地址、命令、延时、CRC），而不是代码结构。';
+    }
+  });
+  $('[data-hall="reset"]', root).addEventListener('click', function(){
+    flags = {}; renderHall();
+    $$('.ch9a-fact', root).forEach(function(f){ f.classList.remove('reveal'); });
+    $('#ch9a-hall-count').textContent = '0 / 4 已标记';
+    $('#ch9a-hall-status').className = 'ch9a-status';
+    $('#ch9a-hall-status').innerHTML = '<b>待审阅：</b>先查地址与命令字，再核对延时和 CRC 多项式。不要被“看起来像标准写法”骗过。';
+  });
+  renderHall();
+
+  /* scene 3 SDD */
+  var sdd = [
+    {name:'/constitution', out:'const.md · 项目宪法', body:'写入不可协商的原则：禁止动态内存、ISR 只置标志、所有驱动必须过 Unity、MISRA mandatory 条款零豁免。后续每个阶段都自动受其约束。', code:['# 项目宪法','- 禁止 malloc/free','- ISR 只置标志，不做解析','- 每个驱动必须有 Unity 用例','- MISRA mandatory: 0 豁免']},
+    {name:'/specify', out:'spec.md · 规格与验收', body:'把需求写成可验收条款：功能、时序、错误注入、边界。嵌入式规格必须包含寄存器级与时序级断言，而不是“实现串口接收”。', code:['### AC1','- [ ] 115200bps 10 万字节回环零丢失','### AC2','- [ ] 2MB/s 突发 CPU ≤ 35%','### AC3','- [ ] IDLE 定界误差 ≤ 1 字符']},
+    {name:'/clarify', out:'AI 主动提问清单', body:'最有价值的一步：AI 会问“波特率误差容忍多少？缓冲满时丢弃还是阻塞？”。这些问题正是新手漏掉的边界，也是后续测试的输入。', code:['Q: 缓冲满时策略？','A: 丢弃最旧 + 计数','Q: IDLE 后多久判定帧结束？','A: ≤1 字符时间','Q: 允许动态内存？','A: 禁止']},
+    {name:'/plan', out:'plan.md · 架构计划', body:'指定目标芯片、HAL 版本、分层归属：bsp_uart 实现 uart_itf，App 不直接接触 HAL。防止 AI 自由发挥架构，破坏第 8 章的分层。', code:['bsp_uart.c -> uart_itf_t','app_proto.c 只依赖 itf','DMA 双缓冲 + IDLE 中断','错误码: -EIO / -ETIMEDOUT']},
+    {name:'/tasks', out:'tasks.md · 可验证提交', body:'任务粒度 = 一次可验证提交；每条任务绑定测试用例编号。T001 初始化骨架 → T002 DMA 环形 → T003 IDLE 定界 → T004 队列满策略。', code:['T001 初始化骨架  [test_uart_init]','T002 DMA 双缓冲  [test_dma_wrap]','T003 IDLE 定界    [test_idle_boundary]','T004 队列满策略  [test_drop_oldest]']},
+    {name:'/implement', out:'代码 + 自验证据', body:'AI 按 tasks 顺序执行，每完成一个任务跑 Unity/HIL 冒烟再进下一个。每个任务结束都有可回归的证据，而不是最后一次性“大爆炸”联调。', code:['$ make test','OK: 12 tests','$ ./hil_smoke --uart-loopback','AC1 PASS / AC3 PASS','/* AI-DRAFT: reviewed 2026-10-21 */']}
+  ];
+  var sddIndex = 0;
+  function renderSdd(){
+    var d = sdd[sddIndex];
+    $$('[data-sdd]', root).forEach(function(b){ b.classList.toggle('is-on', Number(b.getAttribute('data-sdd')) === sddIndex); });
+    $('#ch9a-sdd-art').innerHTML = '<h4>' + d.name + ' → <span style="color:var(--primary)">' + d.out + '</span></h4><p>' + d.body + '</p><pre>' + d.code.join('\n') + '</pre>';
+  }
+  $$('[data-sdd]', root).forEach(function(b){
+    b.addEventListener('click', function(){ sddIndex = Number(b.getAttribute('data-sdd')); renderSdd(); });
+  });
+  $('[data-sdd-next]', root).addEventListener('click', function(){
+    sddIndex = (sddIndex + 1) % sdd.length;
+    renderSdd();
+  });
+  renderSdd();
+
+  var acPass = false;
+  function renderACs(){
+    $$('.ch9a-ac', root).forEach(function(el, i){
+      el.classList.remove('is-pass','is-fail');
+    });
+  }
+  $('[data-acrun]', root).addEventListener('click', function(){
+    var bug = $('#ch9a-acbug').checked;
+    $$('.ch9a-ac', root).forEach(function(el, i){
+      el.classList.remove('is-pass','is-fail');
+      var fail = bug && i === 1;
+      setTimeout(function(){
+        el.classList.add(fail ? 'is-fail' : 'is-pass');
+        el.querySelector('.mark').textContent = fail ? 'FAIL' : 'PASS';
+      }, 300 + i * 360);
+    });
+    setTimeout(function(){
+      $('#ch9a-ac-status').className = 'ch9a-status ' + (bug ? 'is-bad' : 'is-ok');
+      $('#ch9a-ac-status').innerHTML = bug
+        ? '<b>验收失败：</b>AC2 FAIL（CPU 38% > 35%）。spec 未通过，AI 的“已完成”无效；修复 ISR 解析逻辑后重跑。'
+        : '<b>5/5 通过：</b>每条 AC 都有自动化证据。此时才可以说“这个驱动完成”，而不是“代码看起来写完了”。';
+    }, 300 + 5 * 360);
+  });
+  $('[data-acreset]', root).addEventListener('click', function(){
+    $$('.ch9a-ac', root).forEach(function(el){ el.classList.remove('is-pass','is-fail'); el.querySelector('.mark').textContent = 'HIL'; });
+    var marks = ['HIL','剖析器','逻辑分析仪','Unity','老化台架'];
+    $$('.ch9a-ac', root).forEach(function(el, i){ el.querySelector('.mark').textContent = marks[i]; });
+    $('#ch9a-ac-status').className = 'ch9a-status';
+    $('#ch9a-ac-status').innerHTML = '<b>待验收：</b>5 条 AC 都有对应的自动化证据，spec 才算真正完成。';
+  });
+
+  /* lab */
+  var lab = $$('[data-lab9a]', root);
+  function labUpdate(){
+    var n = lab.filter(function(x){ return x.checked; }).length;
+    $('#ch9a-lab-count').textContent = n + ' / ' + lab.length;
+    $('#ch9a-lab-bar').style.width = (n / lab.length * 100) + '%';
+    $('#ch9a-lab-pct').textContent = Math.round(n / lab.length * 100) + '%';
+  }
+  lab.forEach(function(x){ x.addEventListener('change', labUpdate); });
+  labUpdate();
+})();
+</script>
+</div>

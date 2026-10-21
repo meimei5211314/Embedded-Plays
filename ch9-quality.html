@@ -1,0 +1,858 @@
+<div id="ch9-lesson">
+<style>
+  #ch9-lesson{
+    --ink: var(--seed-fg, #0f172a);
+    --muted: var(--seed-muted, #64748b);
+    --surface: var(--card-bg, #ffffff);
+    --surface-2: var(--inset-bg, #f8fafc);
+    --line: var(--border-standard, rgba(15,23,42,.12));
+    --line-soft: var(--border-subtle, rgba(15,23,42,.07));
+    --primary: var(--seed-primary, #0f766e);
+    --primary-2: #0891b2;
+    --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+    --ok: #059669;
+    --ok-soft: color-mix(in srgb, #059669 10%, transparent);
+    --warn: #d97706;
+    --warn-soft: color-mix(in srgb, #d97706 11%, transparent);
+    --danger: #dc2626;
+    --danger-soft: color-mix(in srgb, #dc2626 10%, transparent);
+    --code-bg: #0f172a;
+    --code-ink: #dbeafe;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--ink);
+    font: 14px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #ch9-lesson *{ box-sizing:border-box; }
+  #ch9-lesson p{ margin:0; }
+  #ch9-lesson button{ font:inherit; color:inherit; }
+  #ch9-lesson code{ font-family:var(--mono); }
+  #ch9-lesson .ch9-hero{
+    position:relative; overflow:hidden; padding:28px 30px 22px;
+    border:1px solid var(--line); border-radius:20px;
+    background:
+      radial-gradient(680px 250px at 98% -25%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 66%),
+      linear-gradient(145deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface) 58%);
+  }
+  #ch9-lesson .ch9-hero::after{
+    content:""; position:absolute; right:-60px; top:-80px; width:250px; height:250px; border-radius:50%;
+    border:1px dashed color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+  #ch9-lesson .ch9-kicker{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+  #ch9-lesson h1{ margin:0; font-size:clamp(25px,3.4vw,40px); line-height:1.2; letter-spacing:-.02em; }
+  #ch9-lesson .ch9-sub{ margin-top:10px; max-width:860px; color:var(--muted); font-size:14px; }
+  #ch9-lesson .ch9-badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  #ch9-lesson .ch9-badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:7px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 75%, transparent); font-size:11px; color:var(--muted); }
+  #ch9-lesson .ch9-badge b{ color:var(--ink); font-weight:650; }
+  #ch9-lesson .ch9-meta{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); font-size:11px; color:var(--muted); }
+  #ch9-lesson .ch9-steps{
+    position:sticky; top:0; z-index:30; display:flex; gap:4px; overflow-x:auto; scrollbar-width:thin;
+    padding:8px; margin:14px 0 16px; border:1px solid var(--line); border-radius:14px;
+    background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(12px);
+  }
+  #ch9-lesson .ch9-step{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px; border:0; background:transparent; border-radius:9px; padding:7px 11px; cursor:pointer; color:var(--muted); text-align:left; min-width:96px; transition:.2s; }
+  #ch9-lesson .ch9-step .n{ font:10px/1 var(--mono); color:color-mix(in srgb, var(--muted) 75%, transparent); }
+  #ch9-lesson .ch9-step .t{ font-size:11.5px; font-weight:650; white-space:nowrap; }
+  #ch9-lesson .ch9-step:hover{ background:var(--primary-soft); color:var(--ink); }
+  #ch9-lesson .ch9-step.is-active{ background:var(--primary); color:#fff; }
+  #ch9-lesson .ch9-step.is-active .n{ color:rgba(255,255,255,.7); }
+  #ch9-lesson .ch9-progress{ height:3px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:-8px 0 18px; }
+  #ch9-lesson .ch9-progress i{ display:block; height:100%; width:20%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .35s; }
+  #ch9-lesson .ch9-scene{ display:none; }
+  #ch9-lesson .ch9-scene.is-active{ display:block; animation:ch9In .38s ease both; }
+  @keyframes ch9In{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  #ch9-lesson .ch9-scene-head{ margin:2px 0 14px; }
+  #ch9-lesson .ch9-scene-head .tag{ display:inline-flex; align-items:center; gap:6px; font:10px/1 var(--mono); color:var(--primary); border:1px solid color-mix(in srgb, var(--primary) 30%, transparent); background:var(--primary-soft); border-radius:99px; padding:4px 9px; margin-bottom:7px; }
+  #ch9-lesson .ch9-scene-head h2{ margin:0; font-size:clamp(20px,2.5vw,27px); line-height:1.3; letter-spacing:-.01em; }
+  #ch9-lesson .ch9-scene-head p{ margin-top:5px; color:var(--muted); font-size:12.5px; max-width:940px; }
+  #ch9-lesson .ch9-card{ border:1px solid var(--line); border-radius:15px; background:var(--surface); padding:16px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
+  #ch9-lesson .ch9-card + .ch9-card{ margin-top:12px; }
+  #ch9-lesson .ch9-card-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:11px; }
+  #ch9-lesson .ch9-card-h h3{ margin:0; font-size:14px; line-height:1.4; }
+  #ch9-lesson .ch9-hint{ font-size:10.5px; color:var(--muted); white-space:nowrap; }
+  #ch9-lesson .ch9-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+  #ch9-lesson .ch9-grid2 > .ch9-card{ margin-top:0; }
+  #ch9-lesson .ch9-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:31px; padding:5px 11px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); cursor:pointer; font-size:11.5px; font-weight:600; transition:.15s; }
+  #ch9-lesson .ch9-btn:hover{ border-color:var(--primary); color:var(--primary); background:var(--primary-soft); }
+  #ch9-lesson .ch9-btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch9-lesson .ch9-btn.primary:hover{ filter:brightness(1.06); color:#fff; }
+  #ch9-lesson .ch9-btn.ghost{ background:transparent; }
+  #ch9-lesson .ch9-btn.danger{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 35%, var(--line)); }
+  #ch9-lesson .ch9-controls{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+  #ch9-lesson .ch9-code{ margin:0; padding:12px 13px; border-radius:10px; background:var(--code-bg); color:var(--code-ink); font:10.5px/1.65 var(--mono); overflow:auto; }
+  #ch9-lesson .ch9-code .cm{ color:#7dd3fc; }
+  #ch9-lesson .ch9-code .kw{ color:#f0abfc; }
+  #ch9-lesson .ch9-code .st{ color:#86efac; }
+  #ch9-lesson .ch9-note{ border:1px solid var(--line); border-left:3px solid var(--primary); border-radius:8px; background:var(--surface-2); padding:9px 11px; font-size:11.5px; color:var(--muted); }
+  #ch9-lesson .ch9-note b{ color:var(--ink); }
+  #ch9-lesson .ch9-note.warn{ border-left-color:var(--warn); background:var(--warn-soft); }
+  #ch9-lesson .ch9-note.danger{ border-left-color:var(--danger); background:var(--danger-soft); }
+  #ch9-lesson .ch9-note.ok{ border-left-color:var(--ok); background:var(--ok-soft); }
+  #ch9-lesson .ch9-status{ margin-top:10px; border:1px dashed var(--line); border-radius:8px; padding:8px 10px; font-size:11px; min-height:38px; color:var(--muted); background:var(--surface-2); }
+  #ch9-lesson .ch9-status b{ color:var(--ink); }
+  #ch9-lesson .ch9-status.is-bad{ border-color:color-mix(in srgb, var(--danger) 40%, var(--line)); background:var(--danger-soft); color:var(--danger); }
+  #ch9-lesson .ch9-status.is-ok{ border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:var(--ok-soft); color:var(--ok); }
+  #ch9-lesson .ch9-chip{ display:inline-flex; align-items:center; gap:4px; border:1px solid var(--line); border-radius:6px; padding:2px 6px; font:9.5px/1.5 var(--mono); color:var(--muted); background:var(--surface-2); }
+  #ch9-lesson .ch9-chip.ok{ color:var(--ok); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); background:var(--ok-soft); }
+  #ch9-lesson .ch9-chip.bad{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 30%, var(--line)); background:var(--danger-soft); }
+  #ch9-lesson .ch9-mini-title{ font:10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+
+  /* pipeline */
+  #ch9-lesson .ch9-gates{ display:grid; gap:5px; }
+  #ch9-lesson .ch9-gate{ display:grid; grid-template-columns:26px 1fr auto; align-items:center; gap:9px; border:1px solid var(--line); border-radius:9px; padding:7px 9px; background:var(--surface-2); transition:.2s; }
+  #ch9-lesson .ch9-gate .ic{ width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center; font:11px/1 var(--mono); background:var(--surface); border:1px solid var(--line); color:var(--muted); }
+  #ch9-lesson .ch9-gate b{ font-size:11.5px; display:block; }
+  #ch9-lesson .ch9-gate small{ font:9px/1.4 var(--mono); color:var(--muted); }
+  #ch9-lesson .ch9-gate .res{ font:9.5px/1.5 var(--mono); padding:2px 6px; border-radius:5px; background:var(--surface); border:1px solid var(--line-soft); color:var(--muted); white-space:nowrap; }
+  #ch9-lesson .ch9-gate.is-active{ border-color:var(--primary); background:var(--primary-soft); transform:translateX(3px); }
+  #ch9-lesson .ch9-gate.is-active .ic{ border-color:var(--primary); color:var(--primary); }
+  #ch9-lesson .ch9-gate.is-pass{ border-color:color-mix(in srgb, var(--ok) 32%, var(--line)); }
+  #ch9-lesson .ch9-gate.is-pass .ic{ background:var(--ok-soft); border-color:var(--ok); color:var(--ok); }
+  #ch9-lesson .ch9-gate.is-pass .res{ color:var(--ok); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); }
+  #ch9-lesson .ch9-gate.is-fail{ border-color:var(--danger); background:var(--danger-soft); }
+  #ch9-lesson .ch9-gate.is-fail .ic{ background:var(--danger-soft); border-color:var(--danger); color:var(--danger); }
+  #ch9-lesson .ch9-gate.is-fail .res{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 35%, var(--line)); }
+  #ch9-lesson .ch9-log{ margin-top:9px; border-radius:8px; background:var(--code-bg); color:#cbd5e1; font:9.5px/1.7 var(--mono); padding:8px 10px; min-height:80px; max-height:150px; overflow:auto; }
+  #ch9-lesson .ch9-log .ok{ color:#86efac; }
+  #ch9-lesson .ch9-log .bad{ color:#fca5a5; }
+  #ch9-lesson .ch9-log .dim{ color:#64748b; }
+  #ch9-lesson .ch9-cost{ display:grid; gap:6px; margin-top:5px; }
+  #ch9-lesson .ch9-cost-row{ display:grid; grid-template-columns:64px 1fr 58px; align-items:center; gap:8px; font-size:10px; color:var(--muted); }
+  #ch9-lesson .ch9-cost-row .bar{ height:9px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch9-lesson .ch9-cost-row .bar i{ display:block; height:100%; background:linear-gradient(90deg,var(--primary),var(--warning,#d97706)); }
+  #ch9-lesson .ch9-cost-row b{ font:10px/1 var(--mono); color:var(--ink); text-align:right; }
+
+  /* MISRA code clinic */
+  #ch9-lesson .ch9-misra-wrap{ display:grid; grid-template-columns:1.15fr .85fr; gap:10px; align-items:start; }
+  #ch9-lesson .ch9-code-lines{ border-radius:9px; background:var(--code-bg); padding:7px; font:10px/1.6 var(--mono); color:#dbeafe; overflow:auto; }
+  #ch9-lesson .ch9-cl{ display:grid; grid-template-columns:22px 1fr; gap:5px; border:0; background:transparent; color:inherit; width:100%; text-align:left; padding:3px 5px; border-radius:5px; cursor:pointer; font:inherit; }
+  #ch9-lesson .ch9-cl .ln{ color:#64748b; text-align:right; }
+  #ch9-lesson .ch9-cl:hover{ background:rgba(148,163,184,.13); }
+  #ch9-lesson .ch9-cl.is-sel{ background:rgba(45,212,191,.15); box-shadow:inset 2px 0 0 #2dd4bf; }
+  #ch9-lesson .ch9-cl.has-rule .ln{ color:#fca5a5; }
+  #ch9-lesson .ch9-cl.is-fixed .ln{ color:#86efac; }
+  #ch9-lesson .ch9-cl.is-fixed .tx{ color:#86efac; }
+  #ch9-lesson .ch9-cl .badge{ color:#fca5a5; font-size:8px; margin-left:5px; }
+  #ch9-lesson .ch9-cl.is-fixed .badge{ color:#86efac; }
+  #ch9-lesson .ch9-misra-detail{ border:1px dashed var(--line); border-radius:9px; padding:10px; background:var(--surface-2); min-height:176px; font-size:11px; }
+  #ch9-lesson .ch9-misra-detail h4{ margin:0 0 4px; font-size:12px; }
+  #ch9-lesson .ch9-misra-detail .rule{ font:9px/1.5 var(--mono); color:var(--primary); background:var(--primary-soft); border:1px solid color-mix(in srgb, var(--primary) 22%, var(--line)); border-radius:5px; padding:2px 6px; display:inline-block; margin:1px 0 6px; }
+  #ch9-lesson .ch9-misra-detail p{ color:var(--muted); }
+  #ch9-lesson .ch9-misra-detail .fix{ background:var(--code-bg); color:#86efac; font:9px/1.6 var(--mono); border-radius:6px; padding:6px 8px; margin-top:6px; overflow:auto; }
+  #ch9-lesson .ch9-count{ font:10px/1 var(--mono); color:var(--danger); border:1px solid color-mix(in srgb, var(--danger) 30%, var(--line)); background:var(--danger-soft); padding:3px 7px; border-radius:5px; }
+  #ch9-lesson .ch9-count.is-clear{ color:var(--ok); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); background:var(--ok-soft); }
+
+  /* tool lab */
+  #ch9-lesson .ch9-defects{ display:grid; grid-template-columns:repeat(4,1fr); gap:5px; }
+  #ch9-lesson .ch9-defects.five{ grid-template-columns:repeat(5,1fr); }
+  #ch9-lesson .ch9-split{ grid-template-columns:1.15fr .85fr; }
+  #ch9-lesson .ch9-defect{ border:1px solid var(--line); border-radius:8px; padding:6px; background:var(--surface-2); cursor:pointer; font-size:10px; text-align:left; transition:.15s; }
+  #ch9-lesson .ch9-defect b{ display:block; font-size:10.5px; }
+  #ch9-lesson .ch9-defect span{ font:8.5px/1.4 var(--mono); color:var(--muted); }
+  #ch9-lesson .ch9-defect:hover{ border-color:var(--primary); }
+  #ch9-lesson .ch9-defect.is-on{ border-color:var(--primary); background:var(--primary-soft); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch9-lesson .ch9-tools{ display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:7px; }
+  #ch9-lesson .ch9-tool{ border:1px solid var(--line); border-radius:8px; padding:7px; background:var(--surface); cursor:pointer; font-size:10px; text-align:center; transition:.15s; }
+  #ch9-lesson .ch9-tool b{ display:block; font-size:11px; }
+  #ch9-lesson .ch9-tool span{ font:8.5px/1.4 var(--mono); color:var(--muted); }
+  #ch9-lesson .ch9-tool:hover{ border-color:var(--primary); }
+  #ch9-lesson .ch9-tool.is-on{ border-color:var(--primary); background:var(--primary-soft); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch9-lesson .ch9-toolresult{ margin-top:8px; border-radius:8px; border:1px dashed var(--line); background:var(--surface-2); padding:9px; font-size:10.5px; min-height:92px; }
+  #ch9-lesson .ch9-toolresult b{ font-size:11.5px; }
+  #ch9-lesson .ch9-toolresult .msg{ font:9px/1.6 var(--mono); color:var(--muted); margin-top:5px; }
+  #ch9-lesson .ch9-toolresult.is-found{ border-color:color-mix(in srgb,var(--ok) 35%,var(--line)); background:var(--ok-soft); }
+  #ch9-lesson .ch9-toolresult.is-miss{ border-color:color-mix(in srgb,var(--danger) 35%,var(--line)); background:var(--danger-soft); }
+  #ch9-lesson .ch9-matrix{ width:100%; border-collapse:collapse; font:9.5px/1.5 var(--mono); }
+  #ch9-lesson .ch9-matrix th{ text-align:left; color:var(--muted); font-weight:500; border-bottom:1px solid var(--line); padding:4px 5px; }
+  #ch9-lesson .ch9-matrix td{ border-bottom:1px solid var(--line-soft); padding:4px 5px; }
+  #ch9-lesson .ch9-matrix .b{ height:5px; border-radius:99px; background:var(--line-soft); min-width:44px; overflow:hidden; }
+  #ch9-lesson .ch9-matrix .b i{ display:block; height:100%; background:var(--primary); }
+
+  /* unity */
+  #ch9-lesson .ch9-tests{ display:grid; gap:5px; }
+  #ch9-lesson .ch9-test{ display:flex; align-items:center; gap:7px; border:1px solid var(--line); border-radius:7px; padding:5px 8px; background:var(--surface-2); font-size:10.5px; }
+  #ch9-lesson .ch9-test .dot{ width:8px; height:8px; border-radius:50%; background:var(--line); flex:0 0 auto; }
+  #ch9-lesson .ch9-test .st{ margin-left:auto; font:8.5px/1.4 var(--mono); color:var(--muted); }
+  #ch9-lesson .ch9-test.is-run .dot{ background:var(--warn); }
+  #ch9-lesson .ch9-test.is-pass{ border-color:color-mix(in srgb,var(--ok) 28%,var(--line)); }
+  #ch9-lesson .ch9-test.is-pass .dot{ background:var(--ok); }
+  #ch9-lesson .ch9-test.is-pass .st{ color:var(--ok); }
+  #ch9-lesson .ch9-test.is-fail{ border-color:var(--danger); background:var(--danger-soft); }
+  #ch9-lesson .ch9-test.is-fail .dot{ background:var(--danger); }
+  #ch9-lesson .ch9-test.is-fail .st{ color:var(--danger); }
+  #ch9-lesson .ch9-asout{ margin-top:8px; border-radius:8px; background:var(--code-bg); color:#cbd5e1; font:9px/1.65 var(--mono); padding:8px 10px; min-height:92px; max-height:140px; overflow:auto; }
+  #ch9-lesson .ch9-asout .g{ color:#86efac; }
+  #ch9-lesson .ch9-asout .r{ color:#fca5a5; }
+  #ch9-lesson .ch9-asout .d{ color:#64748b; }
+  #ch9-lesson .ch9-mock{ display:grid; gap:5px; margin-top:4px; }
+  #ch9-lesson .ch9-exp{ display:flex; align-items:center; gap:7px; border:1px solid var(--line); border-radius:7px; padding:5px 8px; font:9.5px/1.5 var(--mono); background:var(--surface-2); color:var(--muted); }
+  #ch9-lesson .ch9-exp .ck{ margin-left:auto; color:var(--muted); }
+  #ch9-lesson .ch9-exp.is-ok{ border-color:color-mix(in srgb,var(--ok) 30%,var(--line)); color:var(--ink); }
+  #ch9-lesson .ch9-exp.is-ok .ck{ color:var(--ok); }
+  #ch9-lesson .ch9-exp.is-bad{ border-color:var(--danger); background:var(--danger-soft); color:var(--danger); }
+  #ch9-lesson .ch9-exp.is-bad .ck{ color:var(--danger); }
+
+  /* coverage */
+  #ch9-lesson .ch9-cov-code{ border-radius:9px; background:var(--code-bg); padding:8px; font:9.5px/1.65 var(--mono); color:#cbd5e1; overflow:auto; }
+  #ch9-lesson .ch9-cov-line{ display:grid; grid-template-columns:22px 1fr; gap:5px; padding:1px 5px; border-radius:4px; border-left:2px solid transparent; }
+  #ch9-lesson .ch9-cov-line .ln{ color:#64748b; text-align:right; }
+  #ch9-lesson .ch9-cov-line.is-cov{ background:rgba(5,150,105,.16); border-left-color:#059669; }
+  #ch9-lesson .ch9-cov-line.is-unc{ background:rgba(220,38,38,.17); border-left-color:#dc2626; }
+  #ch9-lesson .ch9-cov-line.is-unc .ln{ color:#fca5a5; }
+  #ch9-lesson .ch9-covbar{ display:flex; align-items:center; gap:9px; margin-top:8px; font-size:10px; color:var(--muted); }
+  #ch9-lesson .ch9-covbar .bar{ flex:1; height:10px; border-radius:99px; background:var(--line-soft); overflow:hidden; position:relative; }
+  #ch9-lesson .ch9-covbar .bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--primary),var(--ok)); transition:width .3s; }
+  #ch9-lesson .ch9-covbar .bar .gate{ position:absolute; top:-2px; bottom:-2px; left:80%; width:2px; background:var(--danger); }
+  #ch9-lesson .ch9-covbar b{ font:11px/1 var(--mono); color:var(--ink); min-width:38px; text-align:right; }
+  #ch9-lesson .ch9-tests-pick{ display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+  #ch9-lesson .ch9-tpick{ border:1px solid var(--line); border-radius:99px; background:var(--surface); padding:3px 9px; font-size:9.5px; cursor:pointer; color:var(--muted); transition:.15s; }
+  #ch9-lesson .ch9-tpick:hover{ border-color:var(--primary); }
+  #ch9-lesson .ch9-tpick.is-on{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch9-lesson .ch9-lab{ display:grid; gap:5px; margin-top:4px; }
+  #ch9-lesson .ch9-lab label{ display:flex; align-items:flex-start; gap:7px; border:1px solid var(--line-soft); border-radius:7px; padding:6px 8px; font-size:10.5px; cursor:pointer; background:var(--surface-2); }
+  #ch9-lesson .ch9-lab label:has(input:checked){ border-color:color-mix(in srgb, var(--ok) 35%, var(--line)); background:var(--ok-soft); }
+  #ch9-lesson .ch9-lab input{ margin-top:3px; accent-color:var(--ok); }
+  #ch9-lesson .ch9-lab-progress{ display:flex; align-items:center; gap:8px; font-size:10px; color:var(--muted); margin-top:7px; }
+  #ch9-lesson .ch9-mini-bar{ flex:1; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch9-lesson .ch9-mini-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--ok),var(--primary)); transition:width .25s; }
+  #ch9-lesson .ch9-footer{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; padding:11px 2px 0; border-top:1px dashed var(--line); font-size:10.5px; color:var(--muted); }
+  #ch9-lesson .ch9-footer .fbtns{ display:flex; gap:6px; }
+
+  @media(max-width:860px){
+    #ch9-lesson .ch9-grid2{ grid-template-columns:1fr; }
+  }
+  @media(max-width:620px){
+    #ch9-lesson{ font-size:13px; }
+    #ch9-lesson .ch9-hero{ padding:20px 18px 16px; border-radius:15px; }
+    #ch9-lesson .ch9-step{ min-width:84px; padding:6px 8px; }
+    #ch9-lesson .ch9-card{ padding:12px; border-radius:12px; }
+    #ch9-lesson .ch9-scene-head h2{ font-size:20px; }
+    #ch9-lesson .ch9-misra-wrap{ grid-template-columns:1fr; }
+    #ch9-lesson .ch9-defects, #ch9-lesson .ch9-defects.five{ grid-template-columns:1fr 1fr; }
+    #ch9-lesson .ch9-split{ grid-template-columns:1fr; }
+    #ch9-lesson .ch9-toolresult{ min-height:auto; }
+  }
+</style>
+
+<header class="ch9-hero">
+  <div class="ch9-kicker">第 1 篇 · 编程基础 / 第 9 章</div>
+  <h1>代码质量与测试</h1>
+  <p class="ch9-sub">质量不是最后“测一下”，而是一条从提交到上板的门禁流水线。这一章把 MISRA、静态分析、Unity/CMock、覆盖率与 CI 串成一条可执行的链：每条规则都对应一个真实故障，每个工具都回答“它到底能拦住什么”。</p>
+  <div class="ch9-badges">
+    <span class="ch9-badge">🚦 <b>五道门禁</b> 缺陷左移</span>
+    <span class="ch9-badge">📏 <b>MISRA</b> 条款诊所</span>
+    <span class="ch9-badge">🔍 <b>静态分析</b> 双轨</span>
+    <span class="ch9-badge">🧪 <b>Unity + CMock</b></span>
+    <span class="ch9-badge">📊 <b>覆盖率</b> 与 CI</span>
+  </div>
+  <div class="ch9-meta">
+    <span>学习时长约 55 分钟 · 5 个互动实验</span>
+    <span>建议前置：第 3 章工程化、第 7 章数据结构、第 8 章分层架构</span>
+  </div>
+</header>
+
+<nav class="ch9-steps" aria-label="章节导航">
+  <button type="button" class="ch9-step is-active" data-goto="0"><span class="n">01</span><span class="t">门禁流水线</span></button>
+  <button type="button" class="ch9-step" data-goto="1"><span class="n">02</span><span class="t">MISRA 诊所</span></button>
+  <button type="button" class="ch9-step" data-goto="2"><span class="n">03</span><span class="t">工具选型</span></button>
+  <button type="button" class="ch9-step" data-goto="3"><span class="n">04</span><span class="t">Unity 与 CMock</span></button>
+  <button type="button" class="ch9-step" data-goto="4"><span class="n">05</span><span class="t">覆盖率与 CI</span></button>
+</nav>
+<div class="ch9-progress"><i id="ch9-progress"></i></div>
+
+<main>
+  <!-- scene 0 -->
+  <section class="ch9-scene is-active" data-scene="0">
+    <div class="ch9-scene-head">
+      <span class="tag">9.5 · 质量门禁</span>
+      <h2>同一条缺陷，越晚发现越贵</h2>
+      <p>选择一种缺陷注入，然后运行流水线。编译、静态检查、单元测试、覆盖率和 HIL 各拦一类问题；第一道失败的门就会终止发布。真正要建立的能力，是知道“该由哪道门拦住它”。</p>
+    </div>
+
+    <div class="ch9-grid2">
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>五道质量门禁</h3><span class="ch9-hint">注入 → 运行</span></div>
+        <div class="ch9-defects five" style="margin-bottom:8px">
+          <button type="button" class="ch9-defect is-on" data-defect="none"><b>无缺陷</b><span>基线</span></button>
+          <button type="button" class="ch9-defect" data-defect="compile"><b>未使用变量</b><span>编译门</span></button>
+          <button type="button" class="ch9-defect" data-defect="misra"><b>隐式符号混算</b><span>静态门</span></button>
+          <button type="button" class="ch9-defect" data-defect="unit"><b>环形缓冲越界</b><span>单测门</span></button>
+          <button type="button" class="ch9-defect" data-defect="race"><b>ISR 竞态</b><span>HIL 门</span></button>
+        </div>
+        <div class="ch9-gates" id="ch9-gates">
+          <div class="ch9-gate" data-gate="0"><span class="ic">C</span><span><b>编译 · -Werror</b><small>零警告才进入下一步</small></span><span class="res">待运行</span></div>
+          <div class="ch9-gate" data-gate="1"><span class="ic">S</span><span><b>静态分析 · MISRA</b><small>cppcheck + misra.py</small></span><span class="res">待运行</span></div>
+          <div class="ch9-gate" data-gate="2"><span class="ic">U</span><span><b>单元测试 · Unity</b><small>主机编译，毫秒级反馈</small></span><span class="res">待运行</span></div>
+          <div class="ch9-gate" data-gate="3"><span class="ic">%</span><span><b>覆盖率 · ≥80%</b><small>分支与异常路径都跑到</small></span><span class="res">待运行</span></div>
+          <div class="ch9-gate" data-gate="4"><span class="ic">H</span><span><b>HIL 冒烟 · 上板</b><small>上电→自检→心跳→环回</small></span><span class="res">待运行</span></div>
+        </div>
+        <div class="ch9-controls">
+          <button type="button" class="ch9-btn primary" data-run="pipeline">运行质量流水线</button>
+          <button type="button" class="ch9-btn ghost" data-run="reset">重置</button>
+        </div>
+        <div class="ch9-log" id="ch9-log"><span class="dim">$ ./ci quality-gate</span><br><span class="dim">选择缺陷类型后运行。</span></div>
+      </div>
+
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>缺陷成本左移</h3><span class="ch9-hint">相对修复成本</span></div>
+        <div class="ch9-cost">
+          <div class="ch9-cost-row"><span>编码时</span><div class="bar"><i style="width:6%"></i></div><b>$1</b></div>
+          <div class="ch9-cost-row"><span>编译/静态</span><div class="bar"><i style="width:12%"></i></div><b>$5</b></div>
+          <div class="ch9-cost-row"><span>单元测试</span><div class="bar"><i style="width:24%"></i></div><b>$10</b></div>
+          <div class="ch9-cost-row"><span>集成测试</span><div class="bar"><i style="width:50%"></i></div><b>$100</b></div>
+          <div class="ch9-cost-row"><span>现场/召回</span><div class="bar"><i style="width:100%"></i></div><b>$1000+</b></div>
+        </div>
+        <div class="ch9-note" style="margin-top:10px">
+          <b>门禁的意义不是“更严格”，而是“更早”。</b>编译器能抓的绝不留给 reviewer，单测能抓的绝不留给 HIL。每一层只承诺它擅长的那类缺陷。
+        </div>
+        <div class="ch9-note ok" style="margin-top:7px">
+          <b>个人项目最低配三件套：</b><code>-Werror</code> + Unity 主机测试 + <code>cppcheck --enable=warning</code>。半天投入，换每次重构都有安全网。
+        </div>
+        <div class="ch9-note warn" style="margin-top:7px">
+          <b>门禁会失败，流程不能靠人记：</b>把命令写进 Makefile / CI，失败即阻断合并；本地能用 <code>make check</code> 一条命令复现，才不会出现“CI 挂了但我本地是好的”。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 1 -->
+  <section class="ch9-scene" data-scene="1">
+    <div class="ch9-scene-head">
+      <span class="tag">9.1 · MISRA C:2012</span>
+      <h2>不要背条款，先理解每条规则在防哪种事故</h2>
+      <p>下面六行代码各踩一条高频 MISRA 规则。点击任意一行，查看规则编号、真实动机和修复方式；逐条修复后，报告从 6 条降到 0 条。企业落地时，先卡 mandatory 条款的增量代码，存量按目录分批清零。</p>
+    </div>
+
+    <div class="ch9-grid2 ch9-split">
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>代码诊所：UART 采样模块</h3><span class="ch9-count" id="ch9-misra-count">6 处违规</span></div>
+        <div class="ch9-misra-wrap">
+          <div class="ch9-code-lines" id="ch9-misra-code"></div>
+          <div class="ch9-misra-detail" id="ch9-misra-detail">
+            <b>点击左侧红色行号</b>
+            <p style="margin-top:5px">每一行对应一条规则。重点不是记住编号，而是能说出：如果不改，会在什么场景下出错？</p>
+          </div>
+        </div>
+        <div class="ch9-controls">
+          <button type="button" class="ch9-btn ghost" data-misra="reset">还原全部</button>
+        </div>
+        <div class="ch9-note" style="margin-top:9px">
+          <b>误报怎么办？</b>行内豁免必须带理由，而不是全局降级：<br>
+          <code style="font-size:9.5px">// cppcheck-suppress misra-c2012-11.3 ; 已评审的 DMA 对齐方案</code>
+        </div>
+      </div>
+
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>必懂条款 TOP 6</h3><span class="ch9-hint">先懂动机</span></div>
+        <div class="ch9-rules" style="display:grid;gap:6px">
+          <div class="ch9-note"><b>R10.x 隐式类型转换</b><br>有符号/无符号混算是 C 最深的坑，显式转换让意图可审查。</div>
+          <div class="ch9-note"><b>R11.x 指针强转</b><br>别名与对齐违规会破坏优化假设，DMA / 寄存器映射是重灾区。</div>
+          <div class="ch9-note"><b>R17.7 返回值必须使用</b><br>忽略 <code>write()/memcpy()</code> 返回值，等于把错误静默丢掉。</div>
+          <div class="ch9-note"><b>R18.x 指针运算受限</b><br>数组越界是 UB 重灾区，长度必须来自同一处可信来源。</div>
+          <div class="ch9-note"><b>R13.6 sizeof 不得有副作用</b><br><code>sizeof(i++)</code> 的求值次数不可靠，跨编译器结果会变。</div>
+          <div class="ch9-note"><b>R21.x 禁用裸 malloc</b><br>动态内存让最坏执行时间不可分析；嵌入式优先静态池。</div>
+        </div>
+        <div class="ch9-note warn" style="margin-top:8px">
+          <b>单一出口是讨论项，不是教条。</b>R15.5 的动机是便于插桩与资源回收；现代实践允许提前 return + RAII / goto cleanup，但必须保证所有路径释放资源。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 2 -->
+  <section class="ch9-scene" data-scene="2">
+    <div class="ch9-scene-head">
+      <span class="tag">9.2 / 9.7 · 静态分析工具链</span>
+      <h2>没有一把工具能通吃，正确姿势是双轨并行</h2>
+      <p>选一个缺陷样本和一把工具，看看它是否检出、报了什么。MISRA 合规用 cppcheck + 插件；逻辑缺陷交给 clang-tidy 或 GCC <code>-fanalyzer</code>。工具的价值不在于“零误报”，而在于稳定地重复审查。</p>
+    </div>
+
+    <div class="ch9-grid2">
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>缺陷探测台</h3><span class="ch9-hint">选样本 + 选工具</span></div>
+        <div class="ch9-defects">
+          <button type="button" class="ch9-defect is-on" data-threat="null"><b>空指针解引用</b><span>逻辑缺陷</span></button>
+          <button type="button" class="ch9-defect" data-threat="oob"><b>常量索引越界</b><span>内存安全</span></button>
+          <button type="button" class="ch9-defect" data-threat="leak"><b>资源泄漏</b><span>路径敏感</span></button>
+          <button type="button" class="ch9-defect" data-threat="misra"><b>符号混算</b><span>MISRA 条款</span></button>
+        </div>
+        <div class="ch9-tools">
+          <button type="button" class="ch9-tool is-on" data-tool="cpp"><b>cppcheck</b><span>MISRA 插件</span></button>
+          <button type="button" class="ch9-tool" data-tool="clang"><b>clang-tidy</b><span>bugprone-*</span></button>
+          <button type="button" class="ch9-tool" data-tool="gcc"><b>GCC -fanalyzer</b><span>零额外安装</span></button>
+        </div>
+        <div class="ch9-toolresult" id="ch9-toolresult"><b>cppcheck × 空指针解引用：检出。</b><div class="msg">Null pointer dereference: p (line 42)</div></div>
+        <div class="ch9-controls">
+          <button type="button" class="ch9-btn" data-toolrun="1">运行检测</button>
+        </div>
+        <div class="ch9-note" style="margin-top:9px">
+          <b>把编译器武装到牙齿：</b><br>
+          <code style="font-size:9px">-Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wdouble-promotion -Wformat=2 -Wundef -fanalyzer</code>
+        </div>
+      </div>
+
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>检出率实测</h3><span class="ch9-hint">同一批 30 例注入缺陷</span></div>
+        <table class="ch9-matrix">
+          <thead><tr><th>缺陷</th><th>cppcheck</th><th>clang-tidy</th><th>-fanalyzer</th></tr></thead>
+          <tbody>
+            <tr><td>空指针</td><td>18/30 <div class="b"><i style="width:60%"></i></div></td><td>24/30 <div class="b"><i style="width:80%"></i></div></td><td>26/30 <div class="b"><i style="width:87%"></i></div></td></tr>
+            <tr><td>数组越界</td><td>22/30 <div class="b"><i style="width:73%"></i></div></td><td>27/30 <div class="b"><i style="width:90%"></i></div></td><td>25/30 <div class="b"><i style="width:83%"></i></div></td></tr>
+            <tr><td>资源泄漏</td><td>12/30 <div class="b"><i style="width:40%"></i></div></td><td>20/30 <div class="b"><i style="width:67%"></i></div></td><td>21/30 <div class="b"><i style="width:70%"></i></div></td></tr>
+            <tr><td>MISRA</td><td>29/30 <div class="b"><i style="width:97%"></i></div></td><td>8/30 <div class="b"><i style="width:27%"></i></div></td><td>2/30 <div class="b"><i style="width:7%"></i></div></td></tr>
+          </tbody>
+        </table>
+        <div class="ch9-note ok" style="margin-top:10px">
+          <b>结论：</b>MISRA 合规用 <code>cppcheck --addon=misra.py</code>；逻辑缺陷用 <code>clang-tidy</code> 或 <code>-fanalyzer</code>。两轨并行，互相补盲，误报用行内豁免治理。
+        </div>
+        <div class="ch9-note" style="margin-top:7px">
+          <b>工具也会漏：</b>检出率来自注入样本，不代表真实项目。静态分析是“稳定复查”，不能替代边界测试与 HIL。
+        </div>
+        <pre class="ch9-code" style="margin-top:8px"><span class="cm"># 一条命令产出 MISRA 报告</span>
+cppcheck --enable=all --inline-suppr \
+  --addon=misra.py -I inc src/ 2&gt; misra_report.txt
+
+<span class="cm"># clang-tidy 可自动修复</span>
+clang-tidy src/app_sensor.c \
+  -checks=<span class="st">'bugprone-*,performance-*'</span> --fix \
+  -- -Iinc --target=arm-none-eabi -mcpu=cortex-m4</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 3 -->
+  <section class="ch9-scene" data-scene="3">
+    <div class="ch9-scene-head">
+      <span class="tag">9.3 / 9.4 · Unity + CMock</span>
+      <h2>在主机上把逻辑跑穿，再用桩把硬件隔开</h2>
+      <p>Unity 负责断言与测试夹具，ASan 把越界当场爆出来；CMock 负责“预期调用”——业务代码以为自己在调驱动，其实在调桩。先运行一次全绿的测试，再注入 bug 看它们如何失败。</p>
+    </div>
+
+    <div class="ch9-grid2">
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>环形缓冲区测试集</h3><span class="ch9-hint">主机 gcc + ASan</span></div>
+        <label class="ch9-note danger" style="display:flex;gap:7px;align-items:flex-start;cursor:pointer;font-size:10.5px">
+          <input type="checkbox" id="ch9-bug" style="margin-top:4px;accent-color:var(--danger)">
+          <span><b>注入缺陷：</b>把满判断写成 <code>head &gt;= size</code>，并在回绕时多写一字节。</span>
+        </label>
+        <div class="ch9-tests" style="margin-top:8px" id="ch9-tests">
+          <div class="ch9-test" data-test="0"><span class="dot"></span><span>test_put_get_roundtrip</span><span class="st">待运行</span></div>
+          <div class="ch9-test" data-test="1"><span class="dot"></span><span>test_full_rejects</span><span class="st">待运行</span></div>
+          <div class="ch9-test" data-test="2"><span class="dot"></span><span>test_wraparound</span><span class="st">待运行</span></div>
+          <div class="ch9-test" data-test="3"><span class="dot"></span><span>test_null_buffer_rejected</span><span class="st">待运行</span></div>
+        </div>
+        <div class="ch9-controls">
+          <button type="button" class="ch9-btn primary" data-unity="run">运行 Unity</button>
+          <button type="button" class="ch9-btn ghost" data-unity="reset">重置</button>
+        </div>
+        <div class="ch9-asout" id="ch9-asout"><span class="d">UNITY_BEGIN ... 等待运行</span></div>
+        <div class="ch9-note ok" style="margin-top:8px">
+          <b>setUp / tearDown：</b>每个用例前重建夹具，避免用例之间共享状态。测试必须能单独运行、任意顺序运行。
+        </div>
+      </div>
+
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>CMock：硬件调用的“剧本”</h3><span class="ch9-hint">期望 2 次调用</span></div>
+        <div class="ch9-mini-title">被测：link_send_hello()</div>
+        <div class="ch9-mock" id="ch9-mock">
+          <div class="ch9-exp" data-exp="0"><span>bsp_uart_send(UART1, "AT+HELLO\\r\\n", 11, 0)</span><span class="ck">—</span></div>
+          <div class="ch9-exp" data-exp="1"><span>bsp_uart_send(UART1, "AT+JOIN\\r\\n", 10, 0)</span><span class="ck">—</span></div>
+        </div>
+        <label class="ch9-note warn" style="display:flex;gap:7px;align-items:flex-start;margin-top:8px;cursor:pointer;font-size:10.5px">
+          <input type="checkbox" id="ch9-mockbug" style="margin-top:4px;accent-color:var(--warn)">
+          <span><b>注入缺陷：</b>固件只发送第一条命令就返回成功。</span>
+        </label>
+        <div class="ch9-controls">
+          <button type="button" class="ch9-btn primary" data-mock="run">运行 mock 用例</button>
+          <button type="button" class="ch9-btn ghost" data-mock="reset">重置</button>
+        </div>
+        <div class="ch9-status" id="ch9-mock-status"><b>待运行：</b>CMock 将比对“期望调用”与“实际调用”的参数、次数和顺序。</div>
+        <div class="ch9-note" style="margin-top:8px">
+          <b>桩的粒度：</b>函数级 mock（CMock）适合驱动边界；模块级假实现（Mock 传感器）更适合业务规则。先想清楚“要隔离哪种不确定性”。
+        </div>
+        <div class="ch9-note warn" style="margin-top:7px">
+          <b>ASan 误伤第三方库？</b>用 <code>-fsanitize-blacklist</code> 排除无法重编的库，或把该模块的 sanitizer 单独关闭——不要因此关掉整个测试集的 sanitizer。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 4 -->
+  <section class="ch9-scene" data-scene="4">
+    <div class="ch9-scene-head">
+      <span class="tag">9.8 / Lab L9-1 · 覆盖率</span>
+      <h2>覆盖率不是分数，是“哪些分支还没被质疑过”</h2>
+      <p>选择测试用例，观察 q15_mul 的哪些行被执行。80% 是常见门槛，但真正的目标是补上饱和、零值、边界这些最容易出错的分支。试着补齐正、负饱和用例，看红色行如何消失——注意 80% 行覆盖仍可能漏掉关键边界。</p>
+    </div>
+
+    <div class="ch9-grid2">
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>q15_mul 行覆盖</h3><span class="ch9-hint">gcc --coverage</span></div>
+        <div class="ch9-cov-code" id="ch9-cov-code"></div>
+        <div class="ch9-covbar">
+          <span>行覆盖</span><div class="bar"><i id="ch9-cov-fill"></i><span class="gate"></span></div><b id="ch9-cov-pct">0%</b>
+        </div>
+        <div class="ch9-tests-pick" id="ch9-tests-pick">
+          <button type="button" class="ch9-tpick is-on" data-covtest="normal">正常相乘</button>
+          <button type="button" class="ch9-tpick" data-covtest="pos">正饱和</button>
+          <button type="button" class="ch9-tpick" data-covtest="neg">负饱和</button>
+          <button type="button" class="ch9-tpick" data-covtest="zero">零值</button>
+          <button type="button" class="ch9-tpick" data-covtest="edge">±满量程</button>
+        </div>
+        <div class="ch9-status" id="ch9-cov-status"><b>当前 80%：</b>刚好达线，但正/负饱和返回语句尚未执行——覆盖率达标不等于边界测充分。</div>
+        <pre class="ch9-code" style="margin-top:9px"><span class="cm"># 一条龙：单测 + 覆盖率 + HTML 报告</span>
+gcc --coverage -DUNIT_TEST Tests/test_q15.c Src/q15.c \
+    -o build/t &amp;&amp; ./build/t
+lcov --capture --directory . -o cov.info
+lcov -e cov.info <span class="st">'*/Src/*'</span> -o cov.f
+genhtml cov.f -o build/cov
+<span class="cm"># CI 阈值：TOTAL &lt; 80% 则 exit 1</span></pre>
+      </div>
+
+      <div class="ch9-card">
+        <div class="ch9-card-h"><h3>CI 门禁最小集</h3><span class="ch9-hint">GitHub Actions</span></div>
+        <pre class="ch9-code"><span class="kw">name</span>: fw-ci
+<span class="kw">on</span>: [push, pull_request]
+<span class="kw">jobs</span>:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install -y \
+          gcc-arm-none-eabi cppcheck lcov
+      - name: Build firmware
+        run: make all          <span class="cm"># -Werror</span>
+      - name: Unit tests
+        run: make test         <span class="cm"># Unity + ASan</span>
+      - name: Static analysis
+        run: cppcheck --error-exitcode=1 \
+          --enable=warning,performance -Iinc src/
+      - name: Coverage gate
+        run: ./scripts/cov_gate.sh 80</pre>
+        <div class="ch9-note ok" style="margin-top:9px">
+          <b>最小集就够跑起来：</b>编译 + 单测 + cppcheck warning。覆盖率与 MISRA 增量门禁第二步再加，避免一开始被几千条存量报告淹没。
+        </div>
+        <div class="ch9-note" style="margin-top:7px">
+          <b>主机测试过、上板就崩？</b>测试替身掩盖了时序/中断/对齐问题。主机测逻辑正确性，板级另建 HIL 冒烟集（上电→自检→心跳），两层缺一不可。
+        </div>
+        <div class="ch9-lab" id="ch9-lab" style="margin-top:9px">
+          <div class="ch9-card-h" style="margin-bottom:2px"><h3 style="font-size:12.5px">L9-1：把 q15_mul 推到 90%</h3><span class="ch9-hint" id="ch9-lab-count">0 / 5</span></div>
+          <label><input type="checkbox" data-lab9>配好覆盖率环境（gcc --coverage + lcov）</label>
+          <label><input type="checkbox" data-lab9>写正常 / 正饱和 / 负饱和 / 零值 / ±满量程用例</label>
+          <label><input type="checkbox" data-lab9>用 genhtml 找出未覆盖的饱和分支</label>
+          <label><input type="checkbox" data-lab9>构造命中该分支的输入并补齐</label>
+          <label><input type="checkbox" data-lab9>把 80% 阈值写进 CI，失败即阻断</label>
+          <div class="ch9-lab-progress"><span>进度</span><div class="ch9-mini-bar"><i id="ch9-lab-bar"></i></div><span id="ch9-lab-pct">0%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ch9-footer">
+    <span>第 9 章 · 代码质量与测试 · 下一章：9A AI 协作与规格驱动开发</span>
+    <div class="fbtns"><button type="button" class="ch9-btn" data-goto="0">回到开头</button></div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var root = $('#ch9-lesson');
+  var scenes = $$('.ch9-scene', root);
+  var steps = $$('.ch9-step', root);
+  function go(n){
+    n = Math.max(0, Math.min(scenes.length - 1, Number(n)));
+    scenes.forEach(function(s, i){ s.classList.toggle('is-active', i === n); });
+    steps.forEach(function(b){ b.classList.toggle('is-active', Number(b.getAttribute('data-goto')) === n); });
+    $('#ch9-progress').style.width = ((n + 1) / scenes.length * 100) + '%';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  steps.forEach(function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+  $$('[data-goto]', root).forEach(function(b){ if(!b.classList.contains('ch9-step')) b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+
+  /* scene 0: pipeline */
+  var defect = 'none', runTimer = null, pipeId = 0;
+  var gateNames = ['编译', '静态分析', '单元测试', '覆盖率', 'HIL'];
+  var defectAt = { compile:0, misra:1, unit:2, race:4, none:99 };
+  function gateResult(i){
+    if(i < defectAt[defect]) return {pass:true};
+    if(i > defectAt[defect]) return {pass:true};
+    return {pass:false};
+  }
+  function resetGates(){
+    pipeId++;
+    if(runTimer){ clearTimeout(runTimer); runTimer = null; }
+    $$('.ch9-gate', root).forEach(function(g){
+      g.classList.remove('is-active','is-pass','is-fail');
+      g.querySelector('.res').textContent = '待运行';
+    });
+    $('#ch9-log').innerHTML = '<span class="dim">$ ./ci quality-gate</span><br><span class="dim">选择缺陷类型后运行。</span>';
+  }
+  function gateDetail(i, pass){
+    var res = ['0 warnings','0 mandatory','12/12 pass','84% ≥ 80%','10k 帧 0 丢失'];
+    var fail = {
+      compile:'error: unused variable tmp [-Werror]',
+      misra:'misra-c2012-10.3: signed/unsigned mismatch',
+      unit:'test_ring_full: Expected 0 Was 7',
+      race:'HIL: 1/10000 帧丢失 (ISR race)'
+    };
+    if(i === 3 && defect === 'unit') return '41% < 80%';
+    return pass ? res[i] : (fail[defect] || 'FAIL');
+  }
+  function runPipeline(){
+    resetGates();
+    var myRun = pipeId;
+    var i = 0;
+    function next(){
+      if(myRun !== pipeId) return;
+      if(i > 0){
+        var prev = $('.ch9-gate[data-gate="' + (i-1) + '"]', root);
+        prev.classList.remove('is-active');
+      }
+      if(i >= 5){
+        var failed = defect !== 'none';
+        $('#ch9-log').innerHTML += failed
+          ? '<br><span class="bad">发布阻断：门禁 ' + (defectAt[defect]+1) + ' 未通过。修复后重跑。</span>'
+          : '<br><span class="ok">发布放行：五道门禁全部通过。</span>';
+        return;
+      }
+      var g = $('.ch9-gate[data-gate="' + i + '"]', root);
+      g.classList.add('is-active');
+      $('#ch9-log').innerHTML += '<span class="dim">[' + (i+1) + '/5] ' + gateNames[i] + ' ... </span>';
+      setTimeout(function(){
+        if(myRun !== pipeId) return;
+        var r = gateResult(i);
+        g.classList.remove('is-active');
+        g.classList.add(r.pass ? 'is-pass' : 'is-fail');
+        g.querySelector('.res').textContent = r.pass ? 'PASS' : 'FAIL';
+        $('#ch9-log').innerHTML += r.pass
+          ? '<span class="ok">PASS</span> <span class="dim">(' + gateDetail(i, true) + ')</span><br>'
+          : '<span class="bad">FAIL</span> ' + gateDetail(i, false) + '<br>';
+        if(!r.pass){
+          $('#ch9-log').innerHTML += '<span class="bad">流水线在该门终止，no release。</span>';
+          return;
+        }
+        i++;
+        runTimer = setTimeout(next, 300);
+      }, 480);
+    }
+    next();
+  }
+  $$('[data-defect]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      defect = b.getAttribute('data-defect');
+      $$('[data-defect]', root).forEach(function(x){ x.classList.toggle('is-on', x === b); });
+      resetGates();
+    });
+  });
+  $('[data-run="pipeline"]', root).addEventListener('click', runPipeline);
+  $('[data-run="reset"]', root).addEventListener('click', resetGates);
+  resetGates();
+
+  /* scene 1: MISRA clinic */
+  var misra = [
+    {ln: 8, tx:'uint8_t n = sizeof(buf++);', rule:'R13.6', name:'sizeof 的操作数不得有副作用', why:'sizeof 在编译期求值，buf++ 是否执行、执行几次都不可靠；换编译器可能直接不执行。', fix:'uint8_t n = sizeof(buf); /* 移出副作用 */', fixed:'uint8_t n = sizeof(buf); /* 已移除 buf++ */'},
+    {ln: 12, tx:'int16_t sum = a + b; /* a:uint16_t b:int16_t */', rule:'R10.3', name:'不得隐式转换为更窄的基本类型', why:'有符号与无符号混算后转窄，负数会变成巨大正数；这类 bug 在传感器差值、时间戳相减时最常见。', fix:'int32_t sum = (int32_t)a + (int32_t)b;', fixed:'int32_t sum = (int32_t)a + (int32_t)b;'},
+    {ln: 17, tx:'uint32_t *p = (uint32_t *)rx_buf;', rule:'R11.3', name:'不得在不同对象指针类型间强转', why:'对齐与别名违规会破坏优化假设；DMA 缓冲尤其容易踩坑，M4 上非对齐访问可能直接 HardFault。', fix:'uint32_t v; memcpy(&v, rx_buf, sizeof(v));', fixed:'uint32_t v; memcpy(&v, rx_buf, sizeof(v));'},
+    {ln: 23, tx:'write(fd, buf, len);', rule:'R17.7', name:'返回值必须被使用', why:'短写、EINTR、ENOSPC 都被静默忽略；日志“看起来写了”但数据已丢。', fix:'ssize_t w = write(fd, buf, len);\nif (w != (ssize_t)len) return -EIO;', fixed:'ssize_t w = write(fd, buf, len);\nif (w != (ssize_t)len) return -EIO;'},
+    {ln: 28, tx:'if (ptr) { ... } /* ptr 是整数 */', rule:'R14.4', name:'条件表达式必须是布尔本质', why:'整数或指针直接当条件，读者无法区分“判空”还是“判非零”；显式比较让意图可审查。', fix:'if (ptr != NULL) { ... }', fixed:'if (ptr != NULL) { ... }'},
+    {ln: 33, tx:'uint8_t *pool = malloc(64);', rule:'R21.3', name:'禁止使用 malloc / free', why:'堆的最坏执行时间、碎片与失败路径不可分析；嵌入式应使用静态对象池（第 7 章）。', fix:'static uint8_t pool[64]; /* 静态池，零碎片 */', fixed:'static uint8_t pool[64]; /* 静态池，零碎片 */'}
+  ];
+  var fixed = {}, sel = 0;
+  function renderMisra(){
+    $('#ch9-misra-code').innerHTML = misra.map(function(m, i){
+      var isFixed = !!fixed[i];
+      return '<button type="button" class="ch9-cl' + (i===sel?' is-sel':'') + (isFixed?' is-fixed':' has-rule') + '" data-misra-line="' + i + '"><span class="ln">' + m.ln + '</span><span class="tx">' + (isFixed ? m.fixed : m.tx) + (isFixed ? '<span class="badge">✓ fixed</span>' : '<span class="badge">● ' + m.rule + '</span>') + '</span></button>';
+    }).join('');
+    $$('[data-misra-line]', root).forEach(function(b){
+      b.addEventListener('click', function(){ sel = Number(b.getAttribute('data-misra-line')); showMisra(sel); });
+    });
+    var left = misra.length - Object.keys(fixed).length;
+    var c = $('#ch9-misra-count');
+    c.textContent = left ? left + ' 处违规' : '0 处违规 · 可提交';
+    c.classList.toggle('is-clear', !left);
+  }
+  function showMisra(i){
+    var m = misra[i];
+    var d = $('#ch9-misra-detail');
+    if(fixed[i]){
+      d.innerHTML = '<h4><span style="color:var(--ok)">✓ 已修复</span> · ' + m.name + '</h4><span class="rule">' + m.rule + '</span><p>修复后的代码已通过规则检查。注意：豁免和修复都要留痕，评审时能解释为什么。</p><div class="fix">' + m.fixed.replace(/\n/g, '<br>') + '</div>';
+      renderMisra();
+      return;
+    }
+    d.innerHTML = '<h4>' + m.name + '</h4><span class="rule">' + m.rule + '</span><p><b>动机：</b>' + m.why + '</p><div class="fix">' + m.fix.replace(/\n/g, '<br>') + '</div><div class="ch9-controls"><button type="button" class="ch9-btn primary" data-misra-fix="' + i + '">应用修复</button></div>';
+    $('[data-misra-fix]', root).addEventListener('click', function(){
+      fixed[i] = true;
+      showMisra(i);
+    });
+    renderMisra();
+  }
+  $('[data-misra="reset"]', root).addEventListener('click', function(){ fixed = {}; sel = 0; renderMisra(); showMisra(0); });
+  renderMisra();
+  showMisra(0);
+
+  /* scene 2: tool bench */
+  var threat = 'null', tool = 'cpp';
+  var threats = {
+    null: {name:'空指针解引用', code:'p = find();\nreturn p->value;', rates:{cpp:18, clang:24, gcc:26}, found:{cpp:true, clang:true, gcc:true}, msg:{cpp:'Null pointer dereference: p', clang:'clang-analyzer-core.NullDereference', gcc:'warning: dereference of NULL \'p\' [-Wanalyzer-null-dereference]'}},
+    oob: {name:'常量索引越界', code:'int a[8];\na[8] = 0;', rates:{cpp:22, clang:27, gcc:25}, found:{cpp:true, clang:true, gcc:true}, msg:{cpp:'Array index 8 is out of bounds', clang:'clang-analyzer-security.ArrayBound', gcc:'warning: array subscript 8 is above array bounds'}},
+    leak: {name:'资源泄漏', code:'fd = open(path);\nif (!ready) return -1;', rates:{cpp:12, clang:20, gcc:21}, found:{cpp:false, clang:true, gcc:true}, msg:{cpp:'(路径敏感不足，未报告)', clang:'bugprone-resource-leak', gcc:'warning: leak of \'fd\' [-Wanalyzer-fd-leak]'}},
+    misra: {name:'符号混算', code:'uint16_t u = 1;\nint16_t s = -1;\nif (u > s) { ... }', rates:{cpp:29, clang:8, gcc:2}, found:{cpp:true, clang:false, gcc:false}, msg:{cpp:'misra-c2012-10.4: essential type mismatch', clang:'(未启用 MISRA 检查)', gcc:'(无对应诊断)'}}
+  };
+  function renderTool(){
+    var t = threats[threat];
+    var found = t.found[tool];
+    var r = $('#ch9-toolresult');
+    r.className = 'ch9-toolresult ' + (found ? 'is-found' : 'is-miss');
+    r.innerHTML = '<b>' + ({cpp:'cppcheck', clang:'clang-tidy', gcc:'GCC -fanalyzer'})[tool] + ' × ' + t.name + '：' + (found ? '检出' : '漏报') + '。</b><div class="msg">' + t.msg[tool] + '<br>该工具在这个缺陷类型上的样本检出率：' + t.rates[tool] + '/30</div>';
+  }
+  $$('[data-threat]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      threat = b.getAttribute('data-threat');
+      $$('[data-threat]', root).forEach(function(x){ x.classList.toggle('is-on', x === b); });
+      renderTool();
+    });
+  });
+  $$('[data-tool]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      tool = b.getAttribute('data-tool');
+      $$('[data-tool]', root).forEach(function(x){ x.classList.toggle('is-on', x === b); });
+      renderTool();
+    });
+  });
+  $('[data-toolrun]', root).addEventListener('click', renderTool);
+  renderTool();
+
+  /* scene 3: Unity */
+  var uTimer = null;
+  function unityReset(){
+    if(uTimer){ clearTimeout(uTimer); uTimer = null; }
+    $$('.ch9-test', root).forEach(function(t){ t.classList.remove('is-run','is-pass','is-fail'); t.querySelector('.st').textContent = '待运行'; });
+    $('#ch9-asout').innerHTML = '<span class="d">UNITY_BEGIN ... 等待运行</span>';
+  }
+  function runUnity(){
+    unityReset();
+    var bug = $('#ch9-bug').checked;
+    var out = $('#ch9-asout');
+    out.innerHTML = '<span class="d">$ ./build/test_ring</span><br><span class="d">UNITY_BEGIN</span><br>';
+    var i = 0;
+    function next(){
+      if(i >= 4){
+        out.innerHTML += bug
+          ? '<br><span class="r">FAIL: 4 tests, 2 failures</span><br><span class="r">==ERROR: AddressSanitizer: stack-buffer-overflow</span><br><span class="d">WRITE of size 1 at ring.c:31</span>'
+          : '<br><span class="g">OK: 4 tests, 0 failures</span><br><span class="d">ASan: no errors</span>';
+        return;
+      }
+      var t = $('.ch9-test[data-test="' + i + '"]', root);
+      t.classList.add('is-run');
+      t.querySelector('.st').textContent = 'RUN';
+      setTimeout(function(){
+        var fail = bug && (i === 1 || i === 2);
+        t.classList.remove('is-run');
+        t.classList.add(fail ? 'is-fail' : 'is-pass');
+        t.querySelector('.st').textContent = fail ? 'FAIL' : 'PASS';
+        out.innerHTML += fail && i === 1
+          ? '<span class="r">[FAIL] test_full_rejects: Expected 0 Was 7</span><br>'
+          : (fail ? '<span class="r">[FAIL] test_wraparound: stack-buffer-overflow</span><br>' : '<span class="g">[PASS] test ' + i + '</span><br>');
+        i++;
+        uTimer = setTimeout(next, 300);
+      }, 380);
+    }
+    next();
+  }
+  $('[data-unity="run"]', root).addEventListener('click', runUnity);
+  $('[data-unity="reset"]', root).addEventListener('click', unityReset);
+  $('#ch9-bug').addEventListener('change', unityReset);
+  unityReset();
+
+  /* CMock */
+  var mockTimer = null;
+  function mockReset(){
+    if(mockTimer){ clearTimeout(mockTimer); mockTimer = null; }
+    $$('.ch9-exp', root).forEach(function(e){ e.classList.remove('is-ok','is-bad'); e.querySelector('.ck').textContent = '—'; });
+    $('#ch9-mock-status').className = 'ch9-status';
+    $('#ch9-mock-status').innerHTML = '<b>待运行：</b>CMock 将比对“期望调用”与“实际调用”的参数、次数和顺序。';
+  }
+  function runMock(){
+    mockReset();
+    var bug = $('#ch9-mockbug').checked;
+    var exps = $$('.ch9-exp', root);
+    exps[0].classList.add('is-ok'); exps[0].querySelector('.ck').textContent = '✓';
+    mockTimer = setTimeout(function(){
+      if(bug){
+        exps[1].classList.add('is-bad'); exps[1].querySelector('.ck').textContent = '✗';
+        $('#ch9-mock-status').className = 'ch9-status is-bad';
+        $('#ch9-mock-status').innerHTML = '<b>验证失败：</b>Expected 2 calls to bsp_uart_send(), but was called 1 time. 第 2 条命令没有发出，业务逻辑看似“成功”却是错的。';
+      } else {
+        exps[1].classList.add('is-ok'); exps[1].querySelector('.ck').textContent = '✓';
+        $('#ch9-mock-status').className = 'ch9-status is-ok';
+        $('#ch9-mock-status').innerHTML = '<b>验证通过：</b>2 次调用、参数与顺序全部符合预期；真实串口从未参与测试。';
+      }
+    }, 520);
+  }
+  $('[data-mock="run"]', root).addEventListener('click', runMock);
+  $('[data-mock="reset"]', root).addEventListener('click', mockReset);
+  $('#ch9-mockbug').addEventListener('change', mockReset);
+  mockReset();
+
+  /* scene 4: coverage */
+  var covTests = {normal:true, pos:false, neg:false, zero:false, edge:false};
+  var covLines = [
+    {n:1, tx:'int16_t q15_mul(int16_t a, int16_t b) {', tests:['normal','pos','neg','zero','edge']},
+    {n:2, tx:'  int32_t p = (int32_t)a * b;', tests:['normal','pos','neg','zero','edge']},
+    {n:3, tx:'  if (p > 0x3FFFFFFF) {', tests:['normal','pos','zero','edge']},
+    {n:4, tx:'    g_q15_sat = 1; return INT16_MAX;', tests:['pos','edge']},
+    {n:5, tx:'  } else if (p < -0x40000000) {', tests:['normal','neg','zero','edge']},
+    {n:6, tx:'    g_q15_sat = 1; return INT16_MIN;', tests:['neg','edge']},
+    {n:7, tx:'  }', tests:['normal','pos','neg','zero','edge']},
+    {n:8, tx:'  g_q15_sat = 0;', tests:['normal','zero','edge']},
+    {n:9, tx:'  return (int16_t)(p >> 15);', tests:['normal','zero','edge']},
+    {n:10, tx:'}', tests:['normal','pos','neg','zero','edge']}
+  ];
+  function renderCov(){
+    var active = Object.keys(covTests).filter(function(k){ return covTests[k]; });
+    var covered = 0;
+    $('#ch9-cov-code').innerHTML = covLines.map(function(l){
+      var hit = active.some(function(t){ return l.tests.indexOf(t) >= 0; });
+      if(hit) covered++;
+      return '<div class="ch9-cov-line ' + (hit ? 'is-cov' : 'is-unc') + '"><span class="ln">' + l.n + '</span><span>' + l.tx.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span></div>';
+    }).join('');
+    var pct = Math.round(covered / covLines.length * 100);
+    $('#ch9-cov-fill').style.width = pct + '%';
+    $('#ch9-cov-pct').textContent = pct + '%';
+    var st = $('#ch9-cov-status');
+    if(pct >= 80){
+      st.className = 'ch9-status is-ok';
+      st.innerHTML = pct < 100
+        ? '<b>达线 ' + pct + '% ≥ 80%：</b>但红色饱和返回行仍未执行。覆盖率过门不等于边界测充分，补上正/负饱和用例。'
+        : '<b>通过 ' + pct + '%：</b>饱和返回行与主路径都已执行。下一步检查断言是否真的验证了输出，而不是只跑过。';
+    } else {
+      st.className = 'ch9-status is-bad';
+      st.innerHTML = '<b>当前 ' + pct + '%：</b>低于 80% 门禁，CI 会阻断合并。红色行是尚未执行的饱和分支。';
+    }
+    $$('[data-covtest]', root).forEach(function(b){ b.classList.toggle('is-on', !!covTests[b.getAttribute('data-covtest')]); });
+  }
+  $$('[data-covtest]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var k = b.getAttribute('data-covtest');
+      covTests[k] = !covTests[k];
+      renderCov();
+    });
+  });
+  renderCov();
+
+  /* lab */
+  var lab = $$('[data-lab9]', root);
+  function labUpdate(){
+    var n = lab.filter(function(x){ return x.checked; }).length;
+    $('#ch9-lab-count').textContent = n + ' / ' + lab.length;
+    $('#ch9-lab-bar').style.width = (n / lab.length * 100) + '%';
+    $('#ch9-lab-pct').textContent = Math.round(n / lab.length * 100) + '%';
+  }
+  lab.forEach(function(x){ x.addEventListener('change', labUpdate); });
+  labUpdate();
+})();
+</script>
+</div>

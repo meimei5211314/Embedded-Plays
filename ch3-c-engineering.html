@@ -1,0 +1,2765 @@
+<div id="ch3-lesson" class="ch3">
+<style>
+  #ch3-lesson{
+    --c-ink: var(--seed-fg, #1f2328);
+    --c-muted: var(--seed-muted, #667085);
+    --c-line: var(--border-standard, rgba(15, 23, 42, .14));
+    --c-subtle: var(--border-subtle, rgba(15, 23, 42, .075));
+    --c-card: var(--card-bg, #ffffff);
+    --c-inset: var(--inset-bg, #f5f7fa);
+    --c-fill: var(--fill-1, rgba(15, 23, 42, .035));
+    --c-primary: var(--seed-primary, #2f6fed);
+    --c-primary-soft: color-mix(in srgb, var(--c-primary) 12%, transparent);
+    --c-ok: color-mix(in oklab, #1f9d63 72%, var(--seed-fg, #1f2328));
+    --c-ok-soft: color-mix(in srgb, var(--c-ok) 12%, transparent);
+    --c-warn: color-mix(in oklab, #c77a12 72%, var(--seed-fg, #1f2328));
+    --c-warn-soft: color-mix(in srgb, var(--c-warn) 13%, transparent);
+    --c-danger: color-mix(in oklab, #d04444 72%, var(--seed-fg, #1f2328));
+    --c-danger-soft: color-mix(in srgb, var(--c-danger) 10%, transparent);
+    --c-cyan: color-mix(in oklab, #0e7490 72%, var(--seed-fg, #1f2328));
+    --c-violet: color-mix(in oklab, #7c3aed 70%, var(--seed-fg, #1f2328));
+    --mono: var(--font-code, "SFMono-Regular", Consolas, "Liberation Mono", monospace);
+    --sans: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif);
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--c-ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.66;
+    background: var(--c-card);
+    border: 1px solid var(--c-line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 22px 55px -34px color-mix(in srgb, var(--c-ink) 32%, transparent);
+  }
+  #ch3-lesson *{ box-sizing: border-box; }
+  #ch3-lesson button, #ch3-lesson input, #ch3-lesson select{ font: inherit; }
+  #ch3-lesson button{ -webkit-tap-highlight-color: transparent; }
+  #ch3-lesson button:focus-visible,
+  #ch3-lesson input:focus-visible,
+  #ch3-lesson select:focus-visible,
+  #ch3-lesson summary:focus-visible{
+    outline: 2px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+  #ch3-lesson code{
+    font-family: var(--mono);
+    font-size: .94em;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background: var(--c-fill);
+  }
+  #ch3-lesson h1, #ch3-lesson h2, #ch3-lesson h3, #ch3-lesson h4, #ch3-lesson p{ margin: 0; }
+
+  /* header */
+  #ch3-lesson .ch3-header{
+    position: relative;
+    padding: 24px 26px 18px;
+    background:
+      radial-gradient(620px 180px at 88% -20%, color-mix(in srgb, var(--c-primary) 16%, transparent), transparent 70%),
+      linear-gradient(180deg, color-mix(in srgb, var(--c-primary) 4%, var(--c-card)), var(--c-card));
+    border-bottom: 1px solid var(--c-subtle);
+  }
+  #ch3-lesson .ch3-header::before{
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--c-primary), var(--c-cyan), var(--c-warn));
+  }
+  #ch3-lesson .ch3-kicker{
+    display: flex; align-items: center; gap: 8px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+  }
+  #ch3-lesson .ch3-kicker::before{
+    content: "";
+    width: 22px; height: 1px;
+    background: var(--c-primary);
+  }
+  #ch3-lesson .ch3-title{
+    margin-top: 7px;
+    font-size: clamp(24px, 3.2vw, 37px);
+    line-height: 1.16;
+    letter-spacing: -.035em;
+    font-weight: 800;
+  }
+  #ch3-lesson .ch3-title em{
+    font-style: normal;
+    color: var(--c-primary);
+  }
+  #ch3-lesson .ch3-sub{
+    max-width: 820px;
+    margin-top: 8px;
+    color: var(--c-muted);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  #ch3-lesson .ch3-sub b{ color: var(--c-ink); }
+  #ch3-lesson .ch3-chips{
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 13px;
+  }
+  #ch3-lesson .ch3-chip{
+    display: inline-flex; align-items: baseline; gap: 5px;
+    padding: 4px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--c-card) 80%, transparent);
+    color: var(--c-muted);
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  #ch3-lesson .ch3-chip b{
+    color: var(--c-ink);
+    font-family: var(--mono);
+    font-size: 9.5px;
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-progress-row{
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 15px;
+  }
+  #ch3-lesson .ch3-progress-text{
+    display: flex; align-items: baseline; gap: 7px;
+    flex: none;
+    color: var(--c-muted);
+    font-size: 11.5px;
+  }
+  #ch3-lesson .ch3-progress-text b{
+    color: var(--c-ink);
+    font-family: var(--mono);
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-bar{
+    flex: 1;
+    min-width: 70px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--c-fill);
+    overflow: hidden;
+  }
+  #ch3-lesson .ch3-bar span{
+    display: block;
+    width: 12.5%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--c-primary), var(--c-cyan));
+    transition: width .35s ease;
+  }
+
+  /* stepper */
+  #ch3-lesson .ch3-stepper{
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 6px;
+    padding: 11px 26px;
+    border-bottom: 1px solid var(--c-subtle);
+    background: color-mix(in srgb, var(--c-inset) 52%, var(--c-card));
+  }
+  #ch3-lesson .ch3-step{
+    display: flex; align-items: center; gap: 6px;
+    min-width: 0;
+    padding: 6px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-card);
+    color: var(--c-muted);
+    cursor: pointer;
+    text-align: left;
+    transition: background .18s, border-color .18s, color .18s, transform .18s;
+  }
+  #ch3-lesson .ch3-step:hover{
+    border-color: color-mix(in srgb, var(--c-primary) 35%, var(--c-subtle));
+    color: var(--c-ink);
+  }
+  #ch3-lesson .ch3-step span:first-child{
+    color: color-mix(in srgb, var(--c-muted) 75%, var(--c-card));
+    font-family: var(--mono);
+    font-size: 9px;
+    flex: none;
+  }
+  #ch3-lesson .ch3-step span:last-child{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10.5px;
+  }
+  #ch3-lesson .ch3-step.is-active{
+    border-color: color-mix(in srgb, var(--c-primary) 38%, var(--c-subtle));
+    background: var(--c-primary-soft);
+    color: var(--c-ink);
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-step.is-active span:first-child{ color: var(--c-primary); }
+
+  /* stage / scene */
+  #ch3-lesson .ch3-stage{ padding: 20px 26px 8px; }
+  #ch3-lesson .ch3-scene{ display: none; }
+  #ch3-lesson .ch3-scene.is-active{
+    display: block;
+    animation: ch3-scene-in .32s ease both;
+  }
+  @keyframes ch3-scene-in{
+    from{ opacity: 0; transform: translateY(7px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+  #ch3-lesson .ch3-scene-head{
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--c-subtle);
+  }
+  #ch3-lesson .ch3-scene-title{
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: clamp(17px, 2.1vw, 22px);
+    line-height: 1.35;
+    letter-spacing: -.015em;
+    font-weight: 750;
+  }
+  #ch3-lesson .ch3-scene-num{
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 38px;
+    padding: 3px 8px;
+    border: 1px solid color-mix(in srgb, var(--c-primary) 22%, transparent);
+    border-radius: 7px;
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: .02em;
+  }
+  #ch3-lesson .ch3-scene-desc{
+    margin-top: 5px;
+    color: var(--c-muted);
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+
+  /* layout */
+  #ch3-lesson .ch3-grid2{
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+    gap: 12px;
+    align-items: start;
+  }
+  #ch3-lesson .ch3-grid2-equal{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+  #ch3-lesson .ch3-grid3{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
+  #ch3-lesson .ch3-grid2 > *, #ch3-lesson .ch3-grid2-equal > *, #ch3-lesson .ch3-grid3 > *{ min-width: 0; }
+  #ch3-lesson .ch3-stack{ display: grid; gap: 12px; }
+  #ch3-lesson .ch3-mt{ margin-top: 10px; }
+  #ch3-lesson .ch3-mt-s{ margin-top: 7px; }
+
+  /* cards */
+  #ch3-lesson .ch3-card{
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 13px;
+    background: var(--c-card);
+  }
+  #ch3-lesson .ch3-card-head{
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px 8px;
+    margin-bottom: 8px;
+  }
+  #ch3-lesson .ch3-card-title{
+    display: inline-flex; align-items: center; gap: 7px;
+    min-width: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  #ch3-lesson .ch3-card-title::before{
+    content: "";
+    width: 5px; height: 5px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--c-primary);
+    box-shadow: 0 0 0 3px var(--c-primary-soft);
+  }
+  #ch3-lesson .ch3-tag{
+    flex: none;
+    padding: 2px 6px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 5px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8.5px;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  #ch3-lesson .ch3-tag-primary{
+    border-color: color-mix(in srgb, var(--c-primary) 24%, transparent);
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+  }
+  #ch3-lesson .ch3-tag-warn{
+    border-color: color-mix(in srgb, var(--c-warn) 28%, transparent);
+    background: var(--c-warn-soft);
+    color: var(--c-warn);
+  }
+  #ch3-lesson .ch3-muted{ color: var(--c-muted); }
+  #ch3-lesson .ch3-small{ font-size: 10.5px; line-height: 1.65; }
+  #ch3-lesson .ch3-mono{ font-family: var(--mono); }
+
+  /* code */
+  #ch3-lesson .ch3-code{
+    display: block;
+    margin: 0;
+    padding: 11px 12px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 9px;
+    background: var(--c-inset);
+    color: var(--c-ink);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    line-height: 1.72;
+    tab-size: 4;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  #ch3-lesson .ch3-code.ch3-code-wrap{ white-space: pre-wrap; word-break: break-word; }
+  #ch3-lesson .ch3-code .cm{ color: var(--c-muted); }
+  #ch3-lesson .ch3-code .kw{ color: var(--c-primary); font-weight: 650; }
+  #ch3-lesson .ch3-code .ty{ color: var(--c-cyan); }
+  #ch3-lesson .ch3-code .nu{ color: var(--c-warn); }
+  #ch3-lesson .ch3-code .st{ color: var(--c-ok); }
+  #ch3-lesson .ch3-code .pp{ color: var(--c-violet); }
+  #ch3-lesson .ch3-code .bad{ color: var(--c-danger); font-weight: 650; }
+  #ch3-lesson .ch3-code .good{ color: var(--c-ok); font-weight: 650; }
+  #ch3-lesson .ch3-code .line-bad{
+    display: inline-block;
+    margin: 0 -4px;
+    padding: 0 4px;
+    border-radius: 4px;
+    background: var(--c-danger-soft);
+    color: var(--c-danger);
+  }
+  #ch3-lesson .ch3-code .mark{
+    display: inline-block;
+    padding: 0 2px;
+    border-radius: 3px;
+    background: var(--c-warn-soft);
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--c-warn) 40%, transparent);
+  }
+  #ch3-lesson .ch3-terminal{
+    background: #0f172a;
+    border-color: #263247;
+    color: #dbe7ff;
+  }
+  #ch3-lesson .ch3-terminal .cm{ color: #8492ad; }
+  #ch3-lesson .ch3-terminal .bad{ color: #ff9d9d; }
+  #ch3-lesson .ch3-terminal .good{ color: #8ee0b0; }
+
+  /* buttons / inputs */
+  #ch3-lesson .ch3-btnrow{
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    margin-top: 9px;
+  }
+  #ch3-lesson .ch3-btn{
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 29px;
+    padding: 5px 10px;
+    border: 1px solid var(--c-line);
+    border-radius: 7px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    font-size: 10.5px;
+    line-height: 1.3;
+    cursor: pointer;
+    transition: border-color .16s, background .16s, color .16s, transform .16s;
+  }
+  #ch3-lesson .ch3-btn:hover{
+    border-color: color-mix(in srgb, var(--c-primary) 38%, var(--c-line));
+    background: color-mix(in srgb, var(--c-primary) 4%, var(--c-card));
+  }
+  #ch3-lesson .ch3-btn:active{ transform: translateY(1px); }
+  #ch3-lesson .ch3-btn-primary{
+    border-color: var(--c-primary);
+    background: var(--c-primary);
+    color: #fff;
+  }
+  #ch3-lesson .ch3-btn-primary:hover{
+    background: color-mix(in srgb, var(--c-primary) 88%, #000);
+    border-color: color-mix(in srgb, var(--c-primary) 88%, #000);
+  }
+  #ch3-lesson .ch3-btn-quiet{
+    border-color: transparent;
+    background: transparent;
+    color: var(--c-muted);
+  }
+  #ch3-lesson .ch3-btn-quiet:hover{ background: var(--c-fill); color: var(--c-ink); }
+  #ch3-lesson .ch3-btn.is-active,
+  #ch3-lesson .ch3-tab.is-active{
+    border-color: color-mix(in srgb, var(--c-primary) 38%, var(--c-line));
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-tabs{
+    display: flex; flex-wrap: wrap; gap: 5px;
+  }
+  #ch3-lesson .ch3-tab{
+    padding: 5px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: transparent;
+    color: var(--c-muted);
+    font-size: 10px;
+    cursor: pointer;
+  }
+  #ch3-lesson .ch3-tab:hover{ color: var(--c-ink); border-color: var(--c-line); }
+  #ch3-lesson .ch3-num, #ch3-lesson .ch3-select{
+    height: 29px;
+    padding: 3px 7px;
+    border: 1px solid var(--c-line);
+    border-radius: 7px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    font-family: var(--mono);
+    font-size: 10.5px;
+  }
+  #ch3-lesson .ch3-num{ width: 58px; }
+  #ch3-lesson .ch3-field{
+    display: inline-flex; align-items: center; flex-wrap: wrap; gap: 5px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9.5px;
+  }
+  #ch3-lesson input[type="range"]{
+    width: 100%;
+    accent-color: var(--c-primary);
+    cursor: pointer;
+  }
+  #ch3-lesson .ch3-range-row{
+    display: flex; align-items: center; gap: 9px;
+    margin-top: 7px;
+  }
+  #ch3-lesson .ch3-range-row span{ flex: none; }
+  #ch3-lesson .ch3-range-row input{ flex: 1; min-width: 0; }
+
+  /* notes */
+  #ch3-lesson .ch3-note, #ch3-lesson .ch3-warn, #ch3-lesson .ch3-ok{
+    position: relative;
+    padding: 8px 10px 8px 32px;
+    border-radius: 8px;
+    color: var(--c-ink);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+  #ch3-lesson .ch3-note{ background: var(--c-primary-soft); }
+  #ch3-lesson .ch3-warn{ background: var(--c-warn-soft); }
+  #ch3-lesson .ch3-ok{ background: var(--c-ok-soft); }
+  #ch3-lesson .ch3-note::before,
+  #ch3-lesson .ch3-warn::before,
+  #ch3-lesson .ch3-ok::before{
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+  }
+  #ch3-lesson .ch3-note::before{ content: "i"; background: var(--c-primary); }
+  #ch3-lesson .ch3-warn::before{ content: "!"; background: var(--c-warn); }
+  #ch3-lesson .ch3-ok::before{ content: "✓"; background: var(--c-ok); }
+
+  /* scene 1 macro */
+  #ch3-lesson .ch3-macro-tabs{ display: flex; flex-wrap: wrap; gap: 5px; }
+  #ch3-lesson .ch3-macro-stage{
+    margin-top: 9px;
+    padding: 10px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 10px;
+    background: var(--c-inset);
+  }
+  #ch3-lesson .ch3-macro-dots{
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-bottom: 8px;
+  }
+  #ch3-lesson .ch3-dot{
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 6px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 999px;
+    background: var(--c-card);
+    color: var(--c-muted);
+    font-size: 8.5px;
+    line-height: 1.5;
+  }
+  #ch3-lesson .ch3-dot b{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--c-fill);
+    font-family: var(--mono);
+    font-size: 7.5px;
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-dot.is-on{
+    border-color: color-mix(in srgb, var(--c-primary) 30%, transparent);
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+  }
+  #ch3-lesson .ch3-dot.is-on b{ background: var(--c-primary); color: #fff; }
+  #ch3-lesson .ch3-macro-line{
+    min-height: 54px;
+    display: flex; align-items: center;
+    padding: 9px 10px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-card);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    transition: background .2s;
+  }
+  #ch3-lesson .ch3-macro-line.is-pop{ animation: ch3-pop .28s ease; }
+  @keyframes ch3-pop{
+    0%{ transform: scale(.985); background: var(--c-primary-soft); }
+    100%{ transform: scale(1); background: var(--c-card); }
+  }
+  #ch3-lesson .ch3-arrow{
+    padding: 4px 0;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9px;
+    text-align: center;
+  }
+  #ch3-lesson .ch3-macro-explain{
+    margin-top: 8px;
+    color: var(--c-muted);
+    font-size: 10.5px;
+    line-height: 1.65;
+  }
+  #ch3-lesson .ch3-wrap-toggle{
+    display: flex; gap: 5px;
+    margin-bottom: 8px;
+  }
+  #ch3-lesson .ch3-expandbox{
+    margin-top: 8px;
+    padding: 9px 10px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #ch3-lesson .ch3-expandbox .badline{ background: var(--c-danger-soft); color: var(--c-danger); }
+
+  /* scene 2 bits */
+  #ch3-lesson .ch3-reg-readout{
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 9px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--c-muted);
+  }
+  #ch3-lesson .ch3-reg-readout b{
+    color: var(--c-ink);
+    font-size: 12px;
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-reg-readout .ch3-hex{ color: var(--c-primary); }
+  #ch3-lesson .ch3-bits{
+    display: grid;
+    grid-template-columns: repeat(16, minmax(0, 1fr));
+    gap: 5px;
+    margin-top: 10px;
+  }
+  #ch3-lesson .ch3-bit{
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    padding: 8px 2px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    line-height: 1.1;
+    cursor: pointer;
+    transition: background .16s, color .16s, border-color .16s;
+  }
+  #ch3-lesson .ch3-bit:hover{ border-color: var(--c-primary); }
+  #ch3-lesson .ch3-bit .idx{ font-size: 8.5px; opacity: .68; }
+  #ch3-lesson .ch3-bit b{ font-size: 14px; }
+  #ch3-lesson .ch3-bit.is-on{
+    border-color: var(--c-primary);
+    background: var(--c-primary);
+    color: #fff;
+  }
+  #ch3-lesson .ch3-bit.is-field{
+    box-shadow: 0 0 0 2px var(--c-warn);
+    border-color: var(--c-warn);
+  }
+  #ch3-lesson .ch3-bit.is-field.is-on{ background: var(--c-warn); }
+  #ch3-lesson .ch3-bit.is-focus{ outline: 2px dashed var(--c-primary); outline-offset: 1px; }
+  #ch3-lesson .ch3-bit-legend{
+    display: flex; flex-wrap: wrap; gap: 9px;
+    margin-top: 8px;
+    color: var(--c-muted);
+    font-size: 9.5px;
+  }
+  #ch3-lesson .ch3-bit-legend b{ color: var(--c-warn); font-weight: 650; }
+  #ch3-lesson .ch3-legend-dot{
+    display: inline-block;
+    width: 8px; height: 8px;
+    margin-right: 3px;
+    border-radius: 2px;
+    background: var(--c-primary);
+    vertical-align: -1px;
+  }
+  #ch3-lesson .ch3-legend-dot.field{ background: var(--c-warn); }
+  #ch3-lesson .ch3-bit-ops{
+    display: grid;
+    gap: 7px;
+    margin-top: 9px;
+  }
+  #ch3-lesson .ch3-op-line{
+    display: flex; flex-wrap: wrap; align-items: center; gap: 5px;
+  }
+  #ch3-lesson .ch3-op-result{
+    min-height: 31px;
+    padding: 6px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9.5px;
+    line-height: 1.55;
+  }
+  #ch3-lesson .ch3-op-result b{ color: var(--c-ink); }
+  #ch3-lesson .ch3-trick-result{
+    margin-top: 7px;
+    padding: 8px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    font-family: var(--mono);
+    font-size: 9.5px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #ch3-lesson .ch3-binary-strip{
+    display: flex; flex-wrap: wrap; gap: 2px;
+    margin-top: 7px;
+  }
+  #ch3-lesson .ch3-bin-bit{
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 19px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 3px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8px;
+  }
+  #ch3-lesson .ch3-bin-bit.is-on{
+    border-color: var(--c-primary);
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+    font-weight: 650;
+  }
+
+  /* scene 3 X-macro */
+  #ch3-lesson .ch3-x-def{
+    margin-top: 0;
+    font-size: 9.8px;
+  }
+  #ch3-lesson .ch3-xcols{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #ch3-lesson .ch3-xcol-label{
+    margin-bottom: 4px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: .03em;
+  }
+  #ch3-lesson .ch3-xcol .ch3-code,
+  #ch3-lesson .ch3-code.ch3-xcol{ font-size: 9.3px; min-height: 106px; }
+  #ch3-lesson .ch3-xcols,
+  #ch3-lesson #ch3-x-name{ transition: opacity .22s, filter .22s; }
+  #ch3-lesson .ch3-xcols.is-broken,
+  #ch3-lesson #ch3-x-name.is-broken{ opacity: .3; filter: grayscale(1); }
+  #ch3-lesson .ch3-x-status{
+    margin-top: 8px;
+    padding: 7px 9px;
+    border-radius: 7px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 10px;
+    line-height: 1.55;
+  }
+  #ch3-lesson .ch3-x-status.is-error{
+    background: var(--c-danger-soft);
+    color: var(--c-danger);
+  }
+  #ch3-lesson .ch3-x-status.is-good{
+    background: var(--c-ok-soft);
+    color: var(--c-ok);
+  }
+  #ch3-lesson .ch3-co{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  #ch3-lesson .ch3-co-struct{
+    overflow: hidden;
+    border: 1px solid var(--c-line);
+    border-radius: 9px;
+    background: var(--c-inset);
+  }
+  #ch3-lesson .ch3-co-title{
+    padding: 5px 9px;
+    border-bottom: 1px solid var(--c-subtle);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  #ch3-lesson .ch3-co-field{
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 5px 9px;
+    border-bottom: 1px dashed var(--c-subtle);
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--c-muted);
+    transition: background .2s, color .2s;
+  }
+  #ch3-lesson .ch3-co-field:last-child{ border-bottom: 0; }
+  #ch3-lesson .ch3-co-field b{ color: var(--c-ink); font-weight: 600; }
+  #ch3-lesson .ch3-co-field.is-target{
+    background: var(--c-warn-soft);
+    color: var(--c-warn);
+  }
+  #ch3-lesson .ch3-co-field.is-base{
+    background: var(--c-ok-soft);
+    color: var(--c-ok);
+  }
+  #ch3-lesson .ch3-co-side{
+    display: grid; gap: 7px;
+    justify-items: start;
+  }
+  #ch3-lesson .ch3-co-result{
+    min-height: 31px;
+    padding: 6px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9.5px;
+    line-height: 1.55;
+  }
+  #ch3-lesson .ch3-co-result b{ color: var(--c-ok); }
+
+  /* scene 4 Q15 */
+  #ch3-lesson .ch3-q15-big{
+    display: flex; align-items: baseline; gap: 8px;
+    margin-top: 4px;
+  }
+  #ch3-lesson .ch3-q15-big b{
+    color: var(--c-primary);
+    font-family: var(--mono);
+    font-size: 29px;
+    line-height: 1.1;
+    letter-spacing: -.03em;
+  }
+  #ch3-lesson .ch3-q15-big span{ color: var(--c-muted); font-size: 9.5px; }
+  #ch3-lesson .ch3-q15-meta{
+    display: flex; flex-wrap: wrap; gap: 7px 14px;
+    margin-top: 8px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9.5px;
+  }
+  #ch3-lesson .ch3-q15-meta b{ color: var(--c-ink); font-weight: 600; }
+  #ch3-lesson .ch3-q15-bin{
+    margin-top: 7px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  #ch3-lesson .ch3-scale{
+    position: relative;
+    height: 20px;
+    margin: 12px 2px 2px;
+    border-top: 1px solid var(--c-line);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8px;
+  }
+  #ch3-lesson .ch3-scale span{
+    position: absolute;
+    top: 5px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  #ch3-lesson .ch3-scale span:first-child{ left: 0; transform: none; }
+  #ch3-lesson .ch3-scale span:nth-child(2){ left: 50%; }
+  #ch3-lesson .ch3-scale span:last-child{ right: 0; transform: none; }
+  #ch3-lesson .ch3-scale i{
+    position: absolute;
+    top: -5px;
+    left: 75%;
+    width: 2px; height: 9px;
+    border-radius: 2px;
+    background: var(--c-primary);
+    transition: left .2s;
+  }
+  #ch3-lesson .ch3-mul-flow{
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1.15fr) auto minmax(0,1fr);
+    align-items: center;
+    gap: 5px;
+    margin-top: 9px;
+  }
+  #ch3-lesson .ch3-mul-box{
+    min-width: 0;
+    padding: 7px 6px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-inset);
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 8.5px;
+    line-height: 1.5;
+    color: var(--c-muted);
+  }
+  #ch3-lesson .ch3-mul-box b{
+    display: block;
+    margin-top: 2px;
+    color: var(--c-ink);
+    font-size: 11px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+  #ch3-lesson .ch3-mul-box.is-sat b{ color: var(--c-warn); }
+  #ch3-lesson .ch3-mul-op{ color: var(--c-muted); font-family: var(--mono); font-size: 11px; }
+  #ch3-lesson .ch3-q15-warn{
+    margin-top: 8px;
+    padding: 7px 9px;
+    border-radius: 7px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 9.8px;
+    line-height: 1.55;
+  }
+  #ch3-lesson .ch3-q15-warn.is-sat{
+    background: var(--c-warn-soft);
+    color: var(--c-warn);
+  }
+  #ch3-lesson .ch3-q15-warn.is-ok{
+    background: var(--c-ok-soft);
+    color: var(--c-ok);
+  }
+  #ch3-lesson .ch3-q15-warn b{ color: var(--c-ink); }
+  #ch3-lesson .ch3-table-wrap{
+    overflow-x: auto;
+    margin-top: 7px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+  }
+  #ch3-lesson .ch3-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5px;
+    line-height: 1.5;
+  }
+  #ch3-lesson .ch3-table th,
+  #ch3-lesson .ch3-table td{
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--c-subtle);
+    text-align: left;
+    white-space: nowrap;
+  }
+  #ch3-lesson .ch3-table th{
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8.5px;
+    font-weight: 600;
+  }
+  #ch3-lesson .ch3-table tr:last-child td{ border-bottom: 0; }
+  #ch3-lesson .ch3-table code{ font-size: .95em; }
+
+  /* scene 5 filter */
+  #ch3-lesson .ch3-chart-wrap{
+    padding: 7px 6px 4px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 10px;
+    background: var(--c-inset);
+  }
+  #ch3-lesson .ch3-chart{
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  #ch3-lesson .ch3-chart .grid{ stroke: var(--c-line); stroke-width: .7; }
+  #ch3-lesson .ch3-chart .axis{ fill: var(--c-muted); font-family: var(--mono); font-size: 7.5px; }
+  #ch3-lesson .ch3-chart .step{ fill: none; stroke: var(--c-cyan); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #ch3-lesson .ch3-chart .curve{ fill: none; stroke: var(--c-primary); stroke-width: 2.1; stroke-linejoin: round; stroke-linecap: round; }
+  #ch3-lesson .ch3-chart .dot{ fill: var(--c-card); stroke: var(--c-primary); stroke-width: 2; }
+  #ch3-lesson .ch3-filter-controls{
+    display: flex; flex-wrap: wrap; align-items: end; gap: 8px;
+    margin-top: 8px;
+  }
+  #ch3-lesson .ch3-filter-controls .ch3-alpha{
+    flex: 1;
+    min-width: 130px;
+  }
+  #ch3-lesson .ch3-filter-controls .ch3-alpha .ch3-range-row{ margin-top: 2px; }
+  #ch3-lesson .ch3-readouts{
+    display: flex; flex-wrap: wrap; gap: 6px 12px;
+    margin-top: 8px;
+    padding-top: 7px;
+    border-top: 1px dashed var(--c-subtle);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  #ch3-lesson .ch3-readouts b{ color: var(--c-ink); font-weight: 600; }
+  #ch3-lesson .ch3-filter-status{
+    margin-top: 7px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 9.5px;
+    line-height: 1.5;
+  }
+  #ch3-lesson .ch3-filter-status.is-ok{ background: var(--c-ok-soft); color: var(--c-ok); }
+  #ch3-lesson .ch3-pid-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  #ch3-lesson .ch3-pid-point{
+    padding: 8px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 9.5px;
+    line-height: 1.6;
+  }
+  #ch3-lesson .ch3-pid-point b{
+    display: block;
+    margin-bottom: 2px;
+    color: var(--c-ink);
+    font-size: 10px;
+  }
+
+  /* scene 6 tree */
+  #ch3-lesson .ch3-tree{
+    margin-top: 6px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 9px;
+    overflow: hidden;
+    background: var(--c-inset);
+  }
+  #ch3-lesson .ch3-tree-item{
+    display: flex; align-items: center; gap: 7px;
+    width: 100%;
+    padding: 6px 9px;
+    border: 0;
+    border-bottom: 1px solid var(--c-subtle);
+    background: transparent;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: background .16s, color .16s;
+  }
+  #ch3-lesson .ch3-tree-item:last-child{ border-bottom: 0; }
+  #ch3-lesson .ch3-tree-item:hover{ background: var(--c-card); color: var(--c-ink); }
+  #ch3-lesson .ch3-tree-item.is-active{
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-tree-item .ch3-indent{ width: 12px; flex: none; }
+  #ch3-lesson .ch3-tree-item .ch3-folder{ color: var(--c-warn); }
+  #ch3-lesson .ch3-tree-item.is-active .ch3-folder{ color: var(--c-primary); }
+  #ch3-lesson .ch3-tree-item small{
+    margin-left: auto;
+    color: var(--c-muted);
+    font-family: var(--sans);
+    font-size: 8.5px;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  #ch3-lesson .ch3-dir-body{
+    margin-top: 8px;
+    padding: 9px 10px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  #ch3-lesson .ch3-dir-body h4{ margin: 0 0 4px; font-size: 11.5px; }
+  #ch3-lesson .ch3-dir-list{
+    display: grid; gap: 5px;
+    margin-top: 6px;
+  }
+  #ch3-lesson .ch3-dir-list div{
+    display: flex; flex-wrap: wrap; gap: 4px 8px;
+    color: var(--c-muted);
+  }
+  #ch3-lesson .ch3-dir-list b{ color: var(--c-ink); font-weight: 600; }
+  #ch3-lesson .ch3-magic-code{ min-height: 132px; }
+  #ch3-lesson .ch3-rule-chips{ display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  #ch3-lesson .ch3-rule{
+    padding: 3px 7px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 999px;
+    color: var(--c-muted);
+    font-size: 8.5px;
+    line-height: 1.6;
+  }
+  #ch3-lesson .ch3-rule.bad{
+    border-color: color-mix(in srgb, var(--c-danger) 25%, transparent);
+    background: var(--c-danger-soft);
+    color: var(--c-danger);
+  }
+  #ch3-lesson .ch3-rule.good{
+    border-color: color-mix(in srgb, var(--c-ok) 25%, transparent);
+    background: var(--c-ok-soft);
+    color: var(--c-ok);
+  }
+
+  /* scene 7 pitfalls */
+  #ch3-lesson .ch3-square-grid{
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+  #ch3-lesson .ch3-sq-box{
+    padding: 8px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    font-family: var(--mono);
+    font-size: 9.5px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  #ch3-lesson .ch3-sq-box .badline{ color: var(--c-danger); background: var(--c-danger-soft); }
+  #ch3-lesson .ch3-sq-box .goodline{ color: var(--c-ok); }
+  #ch3-lesson .ch3-qa-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 7px;
+  }
+  #ch3-lesson .ch3-qa{
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    overflow: hidden;
+  }
+  #ch3-lesson .ch3-qa summary{
+    padding: 7px 9px;
+    color: var(--c-ink);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+    list-style-position: inside;
+  }
+  #ch3-lesson .ch3-qa summary::marker{ color: var(--c-primary); }
+  #ch3-lesson .ch3-qa-body{
+    padding: 0 9px 8px 24px;
+    color: var(--c-muted);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+  #ch3-lesson .ch3-qa-body b{ color: var(--c-ink); }
+  #ch3-lesson .ch3-qa-body code{ font-size: .95em; }
+  #ch3-lesson .ch3-prep{ display: none; }
+  #ch3-lesson .ch3-prep.is-visible{ display: block; animation: ch3-scene-in .25s ease both; }
+
+  /* scene 8 platform/lab */
+  #ch3-lesson .ch3-platforms{
+    display: grid;
+    gap: 6px;
+    margin-top: 7px;
+  }
+  #ch3-lesson .ch3-platform{
+    display: grid;
+    grid-template-columns: 72px minmax(0,1fr);
+    gap: 8px;
+    padding: 7px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    font-size: 9.5px;
+    line-height: 1.6;
+  }
+  #ch3-lesson .ch3-platform b{
+    color: var(--c-primary);
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-platform span{ color: var(--c-muted); }
+  #ch3-lesson .ch3-measure td:first-child{ white-space: normal; }
+  #ch3-lesson .ch3-check-list{
+    display: grid; gap: 6px;
+    margin-top: 7px;
+  }
+  #ch3-lesson .ch3-check{
+    display: flex; align-items: flex-start; gap: 7px;
+    padding: 7px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 9.8px;
+    line-height: 1.55;
+    cursor: pointer;
+  }
+  #ch3-lesson .ch3-check input{
+    flex: none;
+    width: 14px; height: 14px;
+    margin: 1px 0 0;
+    accent-color: var(--c-primary);
+  }
+  #ch3-lesson .ch3-check.is-done{
+    border-color: color-mix(in srgb, var(--c-ok) 24%, transparent);
+    background: var(--c-ok-soft);
+    color: var(--c-ink);
+  }
+  #ch3-lesson .ch3-lab-progress{
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  #ch3-lesson .ch3-lab-progress .ch3-bar{ height: 4px; }
+  #ch3-lesson .ch3-lab-progress .ch3-bar span{ width: 0; }
+  #ch3-lesson .ch3-takeaways{
+    display: grid; gap: 5px;
+    margin-top: 7px;
+  }
+  #ch3-lesson .ch3-takeaways div{
+    display: flex; align-items: flex-start; gap: 6px;
+    color: var(--c-muted);
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  #ch3-lesson .ch3-takeaways div::before{
+    content: "→";
+    flex: none;
+    color: var(--c-primary);
+    font-family: var(--mono);
+  }
+  #ch3-lesson .ch3-takeaways b{ color: var(--c-ink); }
+
+  /* footer */
+  #ch3-lesson .ch3-footer{
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 26px 15px;
+    border-top: 1px solid var(--c-subtle);
+    background: color-mix(in srgb, var(--c-inset) 55%, var(--c-card));
+  }
+  #ch3-lesson .ch3-footer-mid{
+    text-align: center;
+    color: var(--c-muted);
+    font-size: 9.5px;
+    line-height: 1.5;
+  }
+  #ch3-lesson .ch3-footer-mid b{
+    display: block;
+    color: var(--c-ink);
+    font-size: 10.5px;
+    font-weight: 650;
+  }
+  #ch3-lesson .ch3-footer .ch3-btn{ min-width: 72px; }
+  #ch3-lesson .ch3-footer .ch3-btn[disabled]{
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 980px){
+    #ch3-lesson .ch3-grid2{ grid-template-columns: minmax(0, 1fr); }
+    #ch3-lesson .ch3-co{ grid-template-columns: minmax(0, 1fr); }
+    #ch3-lesson .ch3-co-side{ grid-auto-flow: column; justify-content: start; }
+    #ch3-lesson .ch3-square-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch3-lesson .ch3-pid-grid{ grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px){
+    #ch3-lesson .ch3-header{ padding: 20px 16px 15px; }
+    #ch3-lesson .ch3-stepper{ grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 9px 16px; }
+    #ch3-lesson .ch3-stage{ padding: 15px 16px 6px; }
+    #ch3-lesson .ch3-footer{ padding: 10px 16px 13px; }
+    #ch3-lesson .ch3-grid3, #ch3-lesson .ch3-grid2-equal{ grid-template-columns: minmax(0, 1fr); }
+    #ch3-lesson .ch3-xcols{ grid-template-columns: minmax(0, 1fr); }
+    #ch3-lesson .ch3-mul-flow{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    #ch3-lesson .ch3-mul-op{ display: none; }
+    #ch3-lesson .ch3-qa-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch3-lesson .ch3-sub{ font-size: 11.5px; }
+    #ch3-lesson .ch3-chip{ font-size: 9px; }
+    #ch3-lesson .ch3-footer-mid{ font-size: 8.5px; }
+    #ch3-lesson .ch3-footer-mid b{ font-size: 9.5px; }
+  }
+  @media (max-width: 520px){
+    #ch3-lesson{ border-radius: 14px; }
+    #ch3-lesson .ch3-bits{ grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+    #ch3-lesson .ch3-bit{ padding: 5px 0; gap: 1px; }
+    #ch3-lesson .ch3-bit .idx{ font-size: 7.5px; }
+    #ch3-lesson .ch3-bit b{ font-size: 11px; }
+    #ch3-lesson .ch3-co-side{ grid-auto-flow: row; }
+    #ch3-lesson .ch3-footer{ flex-wrap: wrap; justify-content: center; }
+    #ch3-lesson .ch3-footer-mid{ order: 3; flex-basis: 100%; }
+    #ch3-lesson .ch3-step{ padding: 5px 6px; gap: 4px; }
+    #ch3-lesson .ch3-step span:last-child{ font-size: 9.5px; }
+    #ch3-lesson .ch3-progress-text span{ display: none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #ch3-lesson *, #ch3-lesson *::before, #ch3-lesson *::after{
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
+</style>
+
+<header class="ch3-header">
+  <div class="ch3-kicker">第 1 篇 · 编程基础 / 第 3 章</div>
+  <h1 class="ch3-title">C 工程化：<em>预处理、位操作与定点数</em></h1>
+  <p class="ch3-sub">把重复劳动交给宏，把魔法数字赶出代码，在没有 FPU 的 M0 上优雅地做小数。这一章练的是<b>工程肌肉记忆</b>：每个宏、每个位、每个 Q 值，都要能被解释、被测试、被复查。</p>
+  <div class="ch3-chips">
+    <span class="ch3-chip"><b># / ## / XSTR</b> 宏三件套</span>
+    <span class="ch3-chip"><b>BIT / MASK / FIELD</b> 位操作库</span>
+    <span class="ch3-chip"><b>X-Macro</b> 一处定义多处生成</span>
+    <span class="ch3-chip"><b>Q15 / Q31</b> 定点数与饱和</span>
+    <span class="ch3-chip"><b>App / Bsp / Drivers</b> 目录即架构</span>
+    <span class="ch3-chip"><b>Lab</b> 编译期断言与边界测试</span>
+  </div>
+  <div class="ch3-progress-row">
+    <div class="ch3-progress-text"><b id="ch3-progress-label">01 / 08 · 宏三件套</b><span>全章约 50 分钟</span></div>
+    <div class="ch3-bar" id="ch3-progress" role="progressbar" aria-label="章节学习进度" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
+      <span id="ch3-progress-fill"></span>
+    </div>
+  </div>
+</header>
+
+<nav class="ch3-stepper" aria-label="第3章场景导航">
+  <button type="button" class="ch3-step is-active" data-goto="0"><span>01</span><span>宏三件套</span></button>
+  <button type="button" class="ch3-step" data-goto="1"><span>02</span><span>位操作库</span></button>
+  <button type="button" class="ch3-step" data-goto="2"><span>03</span><span>X-Macro</span></button>
+  <button type="button" class="ch3-step" data-goto="3"><span>04</span><span>Q15 定点</span></button>
+  <button type="button" class="ch3-step" data-goto="4"><span>05</span><span>滤波实验</span></button>
+  <button type="button" class="ch3-step" data-goto="5"><span>06</span><span>工程目录</span></button>
+  <button type="button" class="ch3-step" data-goto="6"><span>07</span><span>宏陷阱</span></button>
+  <button type="button" class="ch3-step" data-goto="7"><span>08</span><span>平台与 Lab</span></button>
+</nav>
+
+<main class="ch3-stage">
+
+  <!-- ================= scene 0: macros ================= -->
+  <section class="ch3-scene is-active" data-scene="0" aria-labelledby="ch3-s0-title">
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s0-title"><span class="ch3-scene-num">3.1</span>宏：编译器最前端的文本手术</h2>
+      <p class="ch3-scene-desc">宏不是函数，它只做一件事：在预处理阶段把记号原样替换。理解展开顺序，比背十条技巧更重要。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">宏展开工作台</span>
+          <span class="ch3-tag">预处理 · 文本替换</span>
+        </div>
+        <div class="ch3-macro-tabs" role="group" aria-label="宏展开示例">
+          <button type="button" class="ch3-tab is-active" data-macro="str"># 字符串化</button>
+          <button type="button" class="ch3-tab" data-macro="concat">## 记号拼接</button>
+          <button type="button" class="ch3-tab" data-macro="xstr">XSTR 两级展开</button>
+        </div>
+        <div class="ch3-macro-stage">
+          <div class="ch3-macro-dots" id="ch3-macro-dots"></div>
+          <div class="ch3-macro-line" id="ch3-macro-line" aria-live="polite">STR(hello)</div>
+          <div class="ch3-arrow">↓ 预处理阶段逐级替换</div>
+          <div class="ch3-macro-explain" id="ch3-macro-explain"></div>
+        </div>
+        <div class="ch3-btnrow">
+          <button type="button" class="ch3-btn ch3-btn-primary" id="ch3-macro-next">展开下一步</button>
+          <button type="button" class="ch3-btn ch3-btn-quiet" id="ch3-macro-reset">从头看</button>
+        </div>
+        <div class="ch3-note ch3-mt-s">宏不检查类型，也不理解作用域；它只认记号和括号。能写成 <code>static inline</code> 的，优先用函数。</div>
+      </div>
+
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">do-while(0) 包裹律</span>
+          <span class="ch3-tag">if / else 安全</span>
+        </div>
+        <div class="ch3-wrap-toggle" role="group" aria-label="宏包裹方式">
+          <button type="button" class="ch3-btn is-active" data-wrap="bad">裸宏</button>
+          <button type="button" class="ch3-btn" data-wrap="good">do-while(0)</button>
+        </div>
+        <pre class="ch3-code" id="ch3-wrap-code"></pre>
+        <div class="ch3-expandbox" id="ch3-wrap-expand" aria-live="polite"></div>
+        <div class="ch3-note ch3-mt-s" id="ch3-wrap-note"></div>
+      </div>
+    </div>
+    <div class="ch3-stack ch3-mt">
+      <div class="ch3-grid3">
+        <div class="ch3-card">
+          <div class="ch3-card-head"><span class="ch3-card-title">#：字符串化</span><span class="ch3-tag">生成名字</span></div>
+          <p class="ch3-small ch3-muted"><code>#x</code> 把参数变成字符串字面量，常用于日志、断言和调试打印。它不会展开参数本身，所以需要 <code>XSTR</code>。</p>
+        </div>
+        <div class="ch3-card">
+          <div class="ch3-card-head"><span class="ch3-card-title">##：记号拼接</span><span class="ch3-tag">生成标识符</span></div>
+          <p class="ch3-small ch3-muted"><code>a##b</code> 把两个记号粘成一个新标识符，适合批量生成 <code>uart_init</code>、<code>spi_init</code> 这类符号。不能拼接字符串或数字字面量。</p>
+        </div>
+        <div class="ch3-card">
+          <div class="ch3-card-head"><span class="ch3-card-title">do-while(0)：语法封装</span><span class="ch3-tag">多语句宏</span></div>
+          <p class="ch3-small ch3-muted">让宏在 <code>if/else</code>、<code>for</code> 里表现得像一个单条语句。末尾不写分号，调用处照常写一个分号。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 1: bitops ================= -->
+  <section class="ch3-scene" data-scene="1" aria-labelledby="ch3-s1-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s1-title"><span class="ch3-scene-num">3.2</span>位操作：把寄存器当成 32 个开关</h2>
+      <p class="ch3-scene-desc">嵌入式的地基不是指针，而是位。SET / CLR / TGL / GET、掩码和字段操作，必须写到不用想。</p>
+    </div>
+    <div class="ch3-card">
+      <div class="ch3-card-head">
+        <span class="ch3-card-title">16 位寄存器实验室</span>
+        <span class="ch3-tag">点任意位也能翻转</span>
+      </div>
+        <div class="ch3-reg-readout">
+          <span>REG <b class="ch3-hex" id="ch3-reg-hex">0x0000</b></span>
+          <span>高字节 <b id="ch3-reg-hi">0x00</b></span>
+          <span>低字节 <b id="ch3-reg-lo">0x00</b></span>
+        </div>
+        <div class="ch3-bits" id="ch3-bits" role="group" aria-label="16 位寄存器，点击翻转对应位"></div>
+        <div class="ch3-bit-legend"><span><i class="ch3-legend-dot"></i>位为 1</span><span><i class="ch3-legend-dot field"></i>当前字段 <b id="ch3-field-legend">[8..12]</b></span></div>
+        <div class="ch3-bit-ops">
+          <div class="ch3-op-line">
+            <span class="ch3-field">bit <input class="ch3-num" id="ch3-bit-index" type="number" min="0" max="15" value="5" aria-label="位序号"></span>
+            <button type="button" class="ch3-btn" data-bitop="set">SET_BIT</button>
+            <button type="button" class="ch3-btn" data-bitop="clr">CLR_BIT</button>
+            <button type="button" class="ch3-btn" data-bitop="tgl">TGL_BIT</button>
+            <button type="button" class="ch3-btn" data-bitop="get">GET_BIT</button>
+          </div>
+          <div class="ch3-op-line">
+            <span class="ch3-field">field [<input class="ch3-num" id="ch3-field-lo" type="number" min="0" max="15" value="8" aria-label="字段低位">..<input class="ch3-num" id="ch3-field-hi" type="number" min="0" max="15" value="12" aria-label="字段高位">]</span>
+            <span class="ch3-field">v <input class="ch3-num" id="ch3-field-val" type="number" min="0" max="255" value="21" aria-label="字段值"></span>
+            <button type="button" class="ch3-btn" id="ch3-field-set">SET_FIELD</button>
+            <button type="button" class="ch3-btn" id="ch3-field-get">GET_FIELD</button>
+          </div>
+          <div class="ch3-op-result" id="ch3-op-result" aria-live="polite">等待操作：先点一个宏，或直接点上面的寄存器位。</div>
+        </div>
+      </div>
+
+    <div class="ch3-grid2 ch3-mt">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">位操作标准库</span>
+          <span class="ch3-tag">背下来</span>
+        </div>
+          <pre class="ch3-code"><span class="pp">#define</span> BIT(n)        (<span class="nu">1UL</span> &lt;&lt; (n))
+<span class="pp">#define</span> SET_BIT(x,n)  ((x) |=  BIT(n))
+<span class="pp">#define</span> CLR_BIT(x,n)  ((x) &amp;= ~BIT(n))
+<span class="pp">#define</span> TGL_BIT(x,n)  ((x) ^=  BIT(n))
+<span class="pp">#define</span> GET_BIT(x,n)  (((x) &gt;&gt; (n)) &amp; <span class="nu">1UL</span>)
+<span class="pp">#define</span> MASK(lo,hi) \
+  (~(<span class="nu">~0UL</span> &lt;&lt; (hi)) &amp; ~((<span class="nu">1UL</span>&lt;&lt;(lo))-<span class="nu">1</span>))
+<span class="pp">#define</span> SET_FIELD(x,lo,hi,v) \
+  (((x) &amp; ~MASK(lo,hi)) | \
+   (((v)&lt;&lt;(lo)) &amp; MASK(lo,hi)))
+<span class="pp">#define</span> GET_FIELD(x,lo,hi) \
+  (((x) &amp; MASK(lo,hi)) &gt;&gt; (lo))</pre>
+          <div class="ch3-warn ch3-mt-s">所有参数都要加括号；宏会重复求值，<code>SET_BIT(x++, 3)</code> 这类写法不要用。位数达到 32 时，改用 <code>1ULL</code> 的 BIT64 变体。</div>
+        </div>
+        <div class="ch3-card">
+          <div class="ch3-card-head">
+            <span class="ch3-card-title">位技巧三连</span>
+            <span class="ch3-tag">面试 + 实战</span>
+          </div>
+          <div class="ch3-tabs" role="group" aria-label="位技巧">
+            <button type="button" class="ch3-tab is-active" data-trick="pow2">是不是 2 的幂</button>
+            <button type="button" class="ch3-tab" data-trick="ones">数 1 的个数</button>
+            <button type="button" class="ch3-tab" data-trick="round">向上取整</button>
+          </div>
+          <div class="ch3-range-row">
+            <span class="ch3-field">v <input class="ch3-num" id="ch3-trick-input" type="number" min="0" max="65535" value="37" aria-label="位技巧输入值"></span>
+            <button type="button" class="ch3-btn" id="ch3-trick-run">计算</button>
+          </div>
+          <div class="ch3-binary-strip" id="ch3-trick-bits" aria-label="输入值的 16 位二进制"></div>
+          <div class="ch3-trick-result" id="ch3-trick-result" aria-live="polite">选一个技巧，输入 0..65535。</div>
+          <pre class="ch3-code ch3-mt-s"><span class="cm">/* 生产版补一个循环左移 */</span>
+inline <span class="ty">uint32_t</span> rotl32(<span class="ty">uint32_t</span> v, <span class="kw">unsigned</span> n){
+    n &amp;= 31;
+    <span class="kw">return</span> (v &lt;&lt; n) | (v &gt;&gt; ((32 - n) &amp; 31));
+}</pre>
+          <div class="ch3-note ch3-mt-s">完整模块收口到 <code>include/bitops.h</code>，自测放 <code>tests/test_bitops.c</code>；<code>(32-n)&amp;31</code> 保证 n=0 时不会移 32 位，bit 32 以上用 <code>BIT64(n) (1ULL &lt;&lt; (n))</code>。</div>
+      </div>
+    </div>
+    <div class="ch3-warn ch3-mt">无符号加法的溢出判断：<code>a + b</code> 溢出 ⇔ <code>a &gt; UINT_MAX - b</code>。不要让“回绕”悄悄发生，再拿错误的结果去算长度或校验和。</div>
+  </section>
+
+  <!-- ================= scene 2: X-Macro ================= -->
+  <section class="ch3-scene" data-scene="2" aria-labelledby="ch3-s2-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s2-title"><span class="ch3-scene-num">3.3</span>X-Macro 与 container_of：一处定义，多处生成</h2>
+      <p class="ch3-scene-desc">错误码表、寄存器表、命令表，本质都是“一份列表驱动多个视图”。X-Macro 把手工同步变成编译期生成。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">errors.def · 唯一维护点</span>
+          <span class="ch3-tag">X-Macro</span>
+        </div>
+        <pre class="ch3-code ch3-x-def" id="ch3-x-def"></pre>
+        <div class="ch3-btnrow">
+          <button type="button" class="ch3-btn ch3-btn-primary" id="ch3-x-add">新增 ERR_CHECKSUM</button>
+          <button type="button" class="ch3-btn" id="ch3-x-break">故意漏掉反斜杠</button>
+          <button type="button" class="ch3-btn ch3-btn-quiet" id="ch3-x-reset">复位</button>
+        </div>
+        <div class="ch3-x-status" id="ch3-x-status" aria-live="polite">4 个错误码；下面三处视图都由这一份列表生成。</div>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">三处视图，同步生成</span>
+          <span class="ch3-tag">枚举 / 字符串 / 查表</span>
+        </div>
+        <div class="ch3-xcols" id="ch3-x-views">
+          <div class="ch3-xcol">
+            <div class="ch3-xcol-label">enum err_code</div>
+            <pre class="ch3-code ch3-xcol" id="ch3-x-enum"></pre>
+          </div>
+          <div class="ch3-xcol">
+            <div class="ch3-xcol-label">static const char *err_str[]</div>
+            <pre class="ch3-code ch3-xcol" id="ch3-x-str"></pre>
+          </div>
+        </div>
+        <pre class="ch3-code ch3-mt-s" id="ch3-x-name"></pre>
+        <div class="ch3-ok ch3-mt-s" id="ch3-x-note">新增一行 → 枚举、字符串表、名字查询同时更新；不需要在三个文件里找“另一个地方”。</div>
+      </div>
+    </div>
+
+    <div class="ch3-card ch3-mt">
+      <div class="ch3-card-head">
+        <span class="ch3-card-title">container_of：从成员指针反推宿主</span>
+        <span class="ch3-tag">第 7 章链表的地基</span>
+      </div>
+      <div class="ch3-co">
+        <div class="ch3-co-struct" id="ch3-co-struct">
+          <div class="ch3-co-title">struct uart_dev · 起始地址 0x20001000</div>
+          <div class="ch3-co-field" data-co-field="regs"><span>regs</span><span>offset 0</span></div>
+          <div class="ch3-co-field" data-co-field="baud"><span>baud</span><span>offset 4</span></div>
+          <div class="ch3-co-field is-target" data-co-field="node"><b>list_node node</b><span>offset 8 · 0x20001008</span></div>
+          <div class="ch3-co-field" data-co-field="tx"><span>tx_buf[16]</span><span>offset 24</span></div>
+        </div>
+        <div class="ch3-co-side">
+          <pre class="ch3-code" style="margin:0"><span class="pp">#define</span> container_of(ptr,type,member) \
+  ((type*)((<span class="kw">char</span>*)(ptr) - \
+    offsetof(type,member)))</pre>
+          <button type="button" class="ch3-btn ch3-btn-primary" id="ch3-co-btn">执行 container_of</button>
+          <div class="ch3-co-result" id="ch3-co-result" aria-live="polite">已知 node* = 0x20001008，求 uart_dev*。</div>
+        </div>
+      </div>
+      <div class="ch3-note ch3-mt-s">关键不是“减去一个魔法数”，而是 <code>offsetof</code> 在编译期算出的成员偏移。业务结构体把 <code>list_node</code> 内嵌进去，就能同时挂链表、还原业务对象。</div>
+    </div>
+  </section>
+
+  <!-- ================= scene 3: Q15 ================= -->
+  <section class="ch3-scene" data-scene="3" aria-labelledby="ch3-s3-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s3-title"><span class="ch3-scene-num">3.4</span>Q15 定点数：没有 FPU 也能做小数</h2>
+      <p class="ch3-scene-desc">Q15 不是“近似浮点”，而是“把小数点固定在第 15 位”。理解比例、扩宽和饱和，就不会把滤波器写成随机数发生器。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">浮点 → Q15 转换器</span>
+          <span class="ch3-tag">raw / 32768</span>
+        </div>
+        <div class="ch3-q15-big"><b id="ch3-q15-float">0.50000</b><span>归一化值</span></div>
+        <div class="ch3-q15-meta">
+          <span>raw <b id="ch3-q15-raw">16384</b></span>
+          <span>hex <b id="ch3-q15-hex">0x4000</b></span>
+          <span>范围 <b>-1.00000 .. 0.99997</b></span>
+        </div>
+        <input type="range" id="ch3-q15-slider" min="-32768" max="32767" step="1" value="16384" aria-label="Q15 原始值">
+        <div class="ch3-q15-bin" id="ch3-q15-bin"></div>
+        <div class="ch3-scale" aria-hidden="true"><span>-1.0</span><span>0</span><span>+0.99997</span><i id="ch3-q15-marker"></i></div>
+        <div class="ch3-btnrow">
+          <button type="button" class="ch3-btn" data-q15-preset="16384">0.5</button>
+          <button type="button" class="ch3-btn" data-q15-preset="-32768">-1.0</button>
+          <button type="button" class="ch3-btn" data-q15-preset="32767">0.99997</button>
+          <button type="button" class="ch3-btn" data-q15-preset="0">0</button>
+        </div>
+        <div class="ch3-note ch3-mt-s"><code>q15_t</code> 是 <code>int16_t</code>；<code>Q15_ONE = 32768</code> 不能塞进 int16_t，转换时先算 int32，再截断/舍入回 Q15。团队常量统一写成 <code>#define K_ALPHA ((q15_t)(0.85 * 32768))</code>，让 27853 有出处。</div>
+      </div>
+
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">q15_mul：乘完必须饱和</span>
+          <span class="ch3-tag">Q30 → Q15</span>
+        </div>
+        <div class="ch3-range-row"><span class="ch3-field">a <b id="ch3-q15-a-val">0.50000</b></span><input type="range" id="ch3-q15-a" min="-32768" max="32767" step="1" value="16384" aria-label="乘数 a"></div>
+        <div class="ch3-range-row"><span class="ch3-field">b <b id="ch3-q15-b-val">0.25000</b></span><input type="range" id="ch3-q15-b" min="-32768" max="32767" step="1" value="8192" aria-label="乘数 b"></div>
+        <div class="ch3-mul-flow">
+          <div class="ch3-mul-box">a<b id="ch3-mul-a">16384</b></div>
+          <div class="ch3-mul-op">×</div>
+          <div class="ch3-mul-box">b<b id="ch3-mul-b">8192</b></div>
+          <div class="ch3-mul-op">→</div>
+          <div class="ch3-mul-box" id="ch3-mul-prod-box">Q30 积<b id="ch3-mul-prod">134217728</b></div>
+          <div class="ch3-mul-op">→</div>
+          <div class="ch3-mul-box" id="ch3-mul-out-box">饱和后 Q15<b id="ch3-mul-out">4096</b></div>
+        </div>
+        <div class="ch3-q15-warn" id="ch3-q15-warn" aria-live="polite"></div>
+        <div class="ch3-btnrow">
+          <button type="button" class="ch3-btn" data-q15-mul="16384,8192">0.5 × 0.25</button>
+          <button type="button" class="ch3-btn" data-q15-mul="-32768,-32768">-1 × -1</button>
+          <button type="button" class="ch3-btn" data-q15-mul="32767,32767">0.99997²</button>
+        </div>
+        <pre class="ch3-code ch3-mt-s" id="ch3-q15-code"><span class="kw">q15_t</span> q15_mul(<span class="kw">q15_t</span> a, <span class="kw">q15_t</span> b){
+    <span class="kw">q31_t</span> p = (<span class="kw">q31_t</span>)a * b;  <span class="cm">/* Q30 */</span>
+    p &gt;&gt;= <span class="nu">15</span>;
+    <span class="kw">if</span> (p &gt; <span class="nu">32767</span>)  p = <span class="nu">32767</span>;
+    <span class="kw">if</span> (p &lt; <span class="nu">-32768</span>) p = <span class="nu">-32768</span>;
+    <span class="kw">return</span> (<span class="kw">q15_t</span>)p;
+}</pre>
+      </div>
+    </div>
+
+    <div class="ch3-card ch3-mt">
+      <div class="ch3-card-head">
+        <span class="ch3-card-title">Q 格式速查与三大坑</span>
+        <span class="ch3-tag">选型参考</span>
+      </div>
+      <div class="ch3-table-wrap">
+        <table class="ch3-table">
+          <thead><tr><th>格式</th><th>容器</th><th>范围</th><th>分辨率</th><th>典型用途</th></tr></thead>
+          <tbody>
+            <tr><td>Q7</td><td><code>int8_t</code></td><td>-1 .. 0.992</td><td>7.8e-3</td><td>音频样本粗处理</td></tr>
+            <tr><td>Q15</td><td><code>int16_t</code></td><td>-1 .. 0.99997</td><td>3.05e-5</td><td>DSP 滤波、电机电流环</td></tr>
+            <tr><td>Q31</td><td><code>int32_t</code></td><td>-1 .. 0.9999999995</td><td>4.66e-10</td><td>高精度 PLL / NCO 相位累加</td></tr>
+            <tr><td>UQ16.16</td><td><code>uint32_t</code></td><td>0 .. 65535.99998</td><td>1.53e-5</td><td>坐标、缩放因子</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ch3-grid3 ch3-mt-s">
+        <div class="ch3-warn"><b>① 中间结果要扩宽。</b> Q15 × Q15 = Q30，必须先用 32 位承载；直接存回 int16_t 会当场溢出。</div>
+        <div class="ch3-warn"><b>② 除法改成乘倒数。</b> ÷1.5 写成 ×(Q15)(2/3)，但要注意倒数本身的量化误差。</div>
+        <div class="ch3-warn"><b>③ 打印要手动展开。</b> 用 <code>printf("%d.%02u", q&gt;&gt;8, ((q&amp;0xFF)*100+128)&gt;&gt;8)</code> 看小数，别拿 %f 硬套。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 4: filter lab ================= -->
+  <section class="ch3-scene" data-scene="4" aria-labelledby="ch3-s4-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s4-title"><span class="ch3-scene-num">3.5</span>定点滤波实验室：从阶跃到稳定</h2>
+      <p class="ch3-scene-desc">一阶 IIR 只有一行核心运算，却同时暴露三个问题：系数怎么定点化、中间结果多宽、输出如何饱和。拖动 α，观察响应速度与稳定性的权衡。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">阶跃响应</span>
+          <span class="ch3-tag">Q15 实时计算</span>
+        </div>
+        <div class="ch3-chart-wrap">
+          <svg class="ch3-chart" viewBox="0 0 560 250" role="img" aria-label="一阶 IIR 低通滤波器的阶跃响应曲线">
+            <g>
+              <line class="grid" x1="52" y1="208" x2="540" y2="208"></line>
+              <line class="grid" x1="52" y1="165" x2="540" y2="165"></line>
+              <line class="grid" x1="52" y1="122" x2="540" y2="122"></line>
+              <line class="grid" x1="52" y1="79" x2="540" y2="79"></line>
+              <line class="grid" x1="52" y1="36" x2="540" y2="36"></line>
+              <line class="grid" x1="52" y1="36" x2="52" y2="208"></line>
+              <line class="grid" x1="174" y1="36" x2="174" y2="208"></line>
+              <line class="grid" x1="296" y1="36" x2="296" y2="208"></line>
+              <line class="grid" x1="418" y1="36" x2="418" y2="208"></line>
+              <line class="grid" x1="540" y1="36" x2="540" y2="208"></line>
+              <text class="axis" x="44" y="212" text-anchor="end">0</text>
+              <text class="axis" x="44" y="169" text-anchor="end">0.25</text>
+              <text class="axis" x="44" y="126" text-anchor="end">0.5</text>
+              <text class="axis" x="44" y="83" text-anchor="end">0.75</text>
+              <text class="axis" x="44" y="40" text-anchor="end">1.0</text>
+              <text class="axis" x="52" y="226" text-anchor="middle">0</text>
+              <text class="axis" x="174" y="226" text-anchor="middle">16</text>
+              <text class="axis" x="296" y="226" text-anchor="middle">32</text>
+              <text class="axis" x="418" y="226" text-anchor="middle">48</text>
+              <text class="axis" x="540" y="226" text-anchor="middle">64</text>
+              <text class="axis" x="540" y="243" text-anchor="end">样本 n</text>
+            </g>
+            <polyline id="ch3-filter-input" class="step" points=""></polyline>
+            <polyline id="ch3-filter-curve" class="curve" points=""></polyline>
+            <circle id="ch3-filter-dot" class="dot" cx="52" cy="208" r="3.6"></circle>
+          </svg>
+        </div>
+        <div class="ch3-filter-controls">
+          <div class="ch3-alpha">
+            <div class="ch3-field">α <b id="ch3-filter-alpha-val">0.200</b></div>
+            <div class="ch3-range-row"><input type="range" id="ch3-filter-alpha" min="1" max="90" step="1" value="20" aria-label="滤波系数 alpha"></div>
+          </div>
+          <button type="button" class="ch3-btn ch3-btn-primary" id="ch3-filter-play">播放</button>
+          <button type="button" class="ch3-btn" id="ch3-filter-step">单步</button>
+          <button type="button" class="ch3-btn ch3-btn-quiet" id="ch3-filter-reset">复位</button>
+        </div>
+        <div class="ch3-readouts">
+          <span>n <b id="ch3-filter-n">0</b></span>
+          <span>输入 <b id="ch3-filter-x">0.00000</b></span>
+          <span>输出 <b id="ch3-filter-y">0.00000</b></span>
+          <span>raw <b id="ch3-filter-raw">0</b></span>
+        </div>
+        <div class="ch3-filter-status" id="ch3-filter-status" aria-live="polite">点“播放”看阶跃响应；拖动 α 会重置实验。</div>
+      </div>
+
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">定点滤波代码</span>
+          <span class="ch3-tag">y += α(x-y)</span>
+        </div>
+        <pre class="ch3-code"><span class="kw">q15_t</span> lp_filter1(<span class="kw">q15_t</span> xn, <span class="kw">q15_t</span> *state,
+                 <span class="kw">q15_t</span> alpha){
+    <span class="kw">q31_t</span> d = ((<span class="kw">q31_t</span>)(xn - *state)) * alpha;
+    *state = (<span class="kw">q15_t</span>)(*state + (d &gt;&gt; <span class="nu">15</span>));
+    <span class="kw">return</span> *state;
+}</pre>
+        <div class="ch3-note ch3-mt-s"><code>xn - state</code> 是 Q15，乘 α 后变成 Q30；右移 15 位回到 Q15。α 越小，滤波越强，但跟随越慢；α 越大，跟随越快，但噪声也更容易通过。</div>
+        <div class="ch3-readouts">
+          <span>α raw <b id="ch3-filter-alpha-raw">6554</b></span>
+          <span>时间常数 <b id="ch3-filter-tau">≈ 5 样本</b></span>
+        </div>
+        <div class="ch3-warn ch3-mt-s">若输入可能超出 Q15 范围，先在入口饱和；若状态可能积累，乘法中间量用 Q31。别把“溢出回绕”当成滤波特性。</div>
+      </div>
+    </div>
+
+    <div class="ch3-card ch3-mt">
+      <div class="ch3-card-head">
+        <span class="ch3-card-title">从滤波到 PID：定点控制的三条护栏</span>
+        <span class="ch3-tag">扩展 · 第 53 章 FOC 会用到</span>
+      </div>
+      <div class="ch3-pid-grid">
+        <div class="ch3-pid-point"><b>误差与输出都用 Q15</b>设定值与反馈值相减得到误差；P/I/D 三项先扩到 Q31 累加，最后统一饱和回 Q15，避免每步截断引入偏差。</div>
+        <div class="ch3-pid-point"><b>积分项用 Q31，并抗饱和</b>积分是“记忆”，位宽必须比比例项更宽；输出饱和时停止同方向积分，或用积分分离，防止退饱和时大幅超调。</div>
+        <div class="ch3-pid-point"><b>微分作用在测量值上</b>对误差求微分会在设定值阶跃时产生冲击；改为对反馈值求微分，并用低通滤波抑制噪声。</div>
+        <div class="ch3-pid-point"><b>固定采样周期</b>定点 PID 的积分/微分系数隐含采样周期；改变控制频率必须重新标定 Ki、Kd，不能直接复用旧参数。</div>
+      </div>
+      <pre class="ch3-code ch3-mt-s"><span class="cm">/* 增量式 PID 的核心运算（示意，工程版需加完整抗饱和） */</span>
+<span class="kw">q15_t</span> pid_step(<span class="kw">q15_t</span> sp, <span class="kw">q15_t</span> fb){
+    <span class="kw">q15_t</span> e = sp - fb;
+    <span class="kw">q31_t</span> p = (<span class="kw">q31_t</span>)kp * e;          <span class="cm">/* Q30 */</span>
+    integ += (<span class="kw">q31_t</span>)ki * e;           <span class="cm">/* Q30 累加 */</span>
+    <span class="kw">q15_t</span> d = e - e_prev;
+    <span class="kw">q31_t</span> out = (p &gt;&gt; <span class="nu">15</span>) + (integ &gt;&gt; <span class="nu">15</span>)
+                 + (((<span class="kw">q31_t</span>)kd * d) &gt;&gt; <span class="nu">15</span>);
+    <span class="kw">if</span> (out &gt; <span class="nu">32767</span>)  { out = <span class="nu">32767</span>;  integ -= (<span class="kw">q31_t</span>)ki * e; }
+    <span class="kw">if</span> (out &lt; <span class="nu">-32768</span>) { out = <span class="nu">-32768</span>; integ -= (<span class="kw">q31_t</span>)ki * e; }
+    e_prev = e;
+    <span class="kw">return</span> (<span class="kw">q15_t</span>)out;
+}</pre>
+    </div>
+  </section>
+
+  <!-- ================= scene 5: project structure ================= -->
+  <section class="ch3-scene" data-scene="5" aria-labelledby="ch3-s5-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s5-title"><span class="ch3-scene-num">3.6</span>工程化：目录即架构，命名即文档</h2>
+      <p class="ch3-scene-desc">代码写在哪一层、谁能碰寄存器、魔数叫什么名字，这些看似“非技术”的约定，决定了三个月后项目还能不能改。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">工程目录</span>
+          <span class="ch3-tag">点击目录看职责</span>
+        </div>
+        <div class="ch3-tree" id="ch3-tree">
+          <button type="button" class="ch3-tree-item is-active" data-dir="App"><span class="ch3-folder">▸</span><span>App/</span><small>业务模块</small></button>
+          <button type="button" class="ch3-tree-item" data-dir="Bsp"><span class="ch3-folder">▸</span><span>Bsp/</span><small>板级支持</small></button>
+          <button type="button" class="ch3-tree-item" data-dir="Drivers"><span class="ch3-folder">▸</span><span>Drivers/</span><small>HAL / CMSIS</small></button>
+          <button type="button" class="ch3-tree-item" data-dir="Core"><span class="ch3-folder">▸</span><span>Core/</span><small>启动与 main</small></button>
+          <button type="button" class="ch3-tree-item" data-dir="Middleware"><span class="ch3-folder">▸</span><span>Middleware/</span><small>协议栈 / GUI</small></button>
+          <button type="button" class="ch3-tree-item" data-dir="Tests"><span class="ch3-folder">▸</span><span>Tests/</span><small>单元测试</small></button>
+          <button type="button" class="ch3-tree-item" data-dir="Tools"><span class="ch3-folder">▸</span><span>Tools/</span><small>脚本工具</small></button>
+        </div>
+        <div class="ch3-rule-chips">
+          <span class="ch3-rule good">Bsp 是唯一允许业务侧碰寄存器的地方</span>
+          <span class="ch3-rule bad">App 直接写寄存器 → 越层</span>
+          <span class="ch3-rule bad">手改 Drivers/ 生成代码 → 下轮被覆盖</span>
+        </div>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title" id="ch3-dir-title">App/ · 业务模块</span><span class="ch3-tag" id="ch3-dir-tag">应用层</span></div>
+        <div class="ch3-dir-body" id="ch3-dir-body"></div>
+        <div class="ch3-note ch3-mt-s" id="ch3-dir-note"></div>
+      </div>
+    </div>
+    <div class="ch3-grid2 ch3-mt">
+      <div class="ch3-card">
+        <div class="ch3-card-head">
+          <span class="ch3-card-title">把魔法数字赶出代码</span>
+          <span class="ch3-tag">可读性 = 可维护性</span>
+        </div>
+        <div class="ch3-wrap-toggle" role="group" aria-label="魔法数字重构前后">
+          <button type="button" class="ch3-btn is-active" data-magic="before">重构前</button>
+          <button type="button" class="ch3-btn" data-magic="after">重构后</button>
+        </div>
+        <pre class="ch3-code ch3-magic-code" id="ch3-magic-code"></pre>
+        <div class="ch3-note ch3-mt-s" id="ch3-magic-note"></div>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">命名约定：一眼看懂归属</span><span class="ch3-tag">贯穿全库</span></div>
+        <pre class="ch3-code"><span class="cm">/* 模块前缀_动作()，谁家的函数一眼可见 */</span>
+<span class="kw">void</span> bsp_uart_send(<span class="kw">const</span> <span class="ty">uint8_t</span> *buf, <span class="ty">size_t</span> len);
+<span class="kw">void</span> app_sensor_task(<span class="kw">void</span>);
+
+<span class="cm">/* 文件私有：static 收口，别污染全局符号表 */</span>
+<span class="kw">static</span> <span class="ty">uint32_t</span> s_rx_count;
+
+<span class="cm">/* 头文件守卫：二选一，不要混用 */</span>
+<span class="pp">#pragma once</span>
+<span class="cm">/* 或 #ifndef APP_SENSOR_H ... #endif */</span>
+
+<span class="cm">/* 魔数具名化 */</span>
+<span class="pp">#define</span> FRAME_SOF  <span class="nu">0x2AU</span>
+<span class="pp">#define</span> UART_RX_TIMEOUT_MS <span class="nu">50U</span></pre>
+        <div class="ch3-note ch3-mt-s">命名不是审美问题：<code>bsp_uart_send()</code> 让 review 一眼知道它属于板级层；<code>FRAME_SOF</code> 让协议文档和代码使用同一个词。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 6: macro pitfalls ================= -->
+  <section class="ch3-scene" data-scene="6" aria-labelledby="ch3-s6-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s6-title"><span class="ch3-scene-num">3.7</span>宏陷阱与故障排查：看见展开后的世界</h2>
+      <p class="ch3-scene-desc">宏的问题几乎都能用一句话解释：你看到的是一行，编译器看到的是一整段。遇到怪现象，先展开，再怀疑。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">SQUARE(i++)：宏不是函数</span><span class="ch3-tag">副作用 · UB</span></div>
+        <div class="ch3-wrap-toggle" role="group" aria-label="平方实现方式">
+          <button type="button" class="ch3-btn is-active" data-square="macro">宏展开</button>
+          <button type="button" class="ch3-btn" data-square="inline">static inline</button>
+        </div>
+        <pre class="ch3-code" id="ch3-square-code"></pre>
+        <div class="ch3-square-grid">
+          <div class="ch3-sq-box" id="ch3-square-expand" aria-live="polite"></div>
+          <div class="ch3-sq-box" id="ch3-square-note"></div>
+        </div>
+        <div class="ch3-warn ch3-mt-s">宏把参数替换两次，<code>i++</code> 就执行两次；两个自增之间没有序列点，属于未定义行为。即使某次编译“算对了”，也不能依赖。</div>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">gcc -E：只看预处理</span><span class="ch3-tag">排障第一板斧</span></div>
+        <pre class="ch3-code ch3-terminal" id="ch3-prep-out">$ gcc -E macro.c
+<span class="cm"># 等待运行：输出只经过预处理，不生成机器码</span></pre>
+        <div class="ch3-btnrow">
+          <button type="button" class="ch3-btn ch3-btn-primary" id="ch3-prep-run">运行 gcc -E</button>
+          <button type="button" class="ch3-btn ch3-btn-quiet" id="ch3-prep-reset">清空</button>
+        </div>
+        <div class="ch3-note ch3-mt-s">`-E` 能看到宏展开、条件编译和头文件展开，但看不到类型错误和运行时问题。它是“确认文本长什么样”，不是万能调试器。</div>
+        <div class="ch3-warn ch3-mt-s">宏调试三板斧：<code>gcc -E</code> 看展开 → <code>#pragma message</code> 注入版本/分支信息 → 临时改成同名 <code>static inline</code> 获得类型检查。</div>
+      </div>
+    </div>
+    <div class="ch3-card ch3-mt">
+      <div class="ch3-card-head"><span class="ch3-card-title">展开顺序：参数先展开，# / ## 后应用，只扫描一遍</span><span class="ch3-tag">原理深挖</span></div>
+      <div class="ch3-grid3">
+        <div class="ch3-pid-point"><b>① 参数完全展开</b>嵌套宏由内向外先展开；<code>XSTR(__LINE__)</code> 先得到 <code>STR(42)</code>。</div>
+        <div class="ch3-pid-point"><b>② # / ## 才应用</b>如果一开始就字符串化，拿到的是 <code>"__LINE__"</code>，不是行号。两级包装正是为了绕开这一点。</div>
+        <div class="ch3-pid-point"><b>③ 结果只重扫一次</b>本轮已展开的名字会被“画蓝”，不再递归。<code>#define A B</code> / <code>#define B A</code> 展开到 A 就停。</div>
+      </div>
+      <pre class="ch3-code ch3-mt-s"><span class="pp">#define</span> A B
+<span class="pp">#define</span> B A
+
+<span class="kw">int</span> x = A;   <span class="cm">/* 展开一次后停回 A，而不是永远循环 */</span></pre>
+      <div class="ch3-note ch3-mt-s">“蓝色画布”是 GCC cpp 手册里的说法：本轮已经展开过的宏名会被标记，防止自引用死循环。看到奇怪的自引用结果，先想这条规则。</div>
+    </div>
+    <div class="ch3-card ch3-mt">
+      <div class="ch3-card-head"><span class="ch3-card-title">故障排障：四个高频现场</span><span class="ch3-tag">点击展开</span></div>
+      <div class="ch3-qa-grid">
+        <details class="ch3-qa" open>
+          <summary>宏展开后语法错乱 / else 悬空</summary>
+          <div class="ch3-qa-body"><b>根因：</b>多语句宏没有 do-while 包裹，参数没有括号。<b>定位：</b><code>gcc -E</code> 看展开结果；先补括号，再用 <code>do { ... } while (0)</code> 包住多语句。</div>
+        </details>
+        <details class="ch3-qa">
+          <summary>定点滤波输出跳变、溢出</summary>
+          <div class="ch3-qa-body"><b>根因：</b>中间量位数不够、缺少饱和、系数超出 Q15 范围。<b>定位：</b>用 ±满量程、0、-1 做边界单测；打印中间 Q30 值；优先复用 CMSIS-DSP 的饱和函数。</div>
+        </details>
+        <details class="ch3-qa">
+          <summary>同一份代码，两块板子行为不同</summary>
+          <div class="ch3-qa-body"><b>根因：</b>端序不同、结构体对齐不同、编译器版本/优化等级不同。<b>定位：</b>打印 <code>sizeof</code>、<code>offsetof</code> 和端序自检；统一工具链版本；协议边界用 <code>memcpy</code> + 明确字节序。</div>
+        </details>
+        <details class="ch3-qa">
+          <summary>X-Macro 新增项后链接错误</summary>
+          <div class="ch3-qa-body"><b>根因：</b>枚举数量、字符串表长度、查表边界不同步；或 def 文件漏了续行反斜杠。<b>定位：</b>检查 <code>\</code>；用 <code>_Static_assert(sizeof(err_str)/sizeof(char*) == ERR_COUNT, "desync")</code> 在编译期兜底。</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 7: platform + lab ================= -->
+  <section class="ch3-scene" data-scene="7" aria-labelledby="ch3-s7-title" hidden>
+    <div class="ch3-scene-head">
+      <h2 class="ch3-scene-title" id="ch3-s7-title"><span class="ch3-scene-num">3.8</span>平台差异、实测与实战 Lab</h2>
+      <p class="ch3-scene-desc">同样是 Q15 乘法，在 M0、M4F、RISC-V 上的代价并不一样。最后用一组编译期断言和边界测试，把本章变成可复现的证据。</p>
+    </div>
+    <div class="ch3-grid2">
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">Q15 vs 浮点：F407 上的数量级</span><span class="ch3-tag">原课程实测 · -O2</span></div>
+        <div class="ch3-table-wrap">
+          <table class="ch3-table ch3-measure">
+            <thead><tr><th>操作（1000 次均值）</th><th>Q15 定点</th><th>float（FPU）</th><th>double（软浮点）</th></tr></thead>
+            <tbody>
+              <tr><td>一次乘加 MAC</td><td>~6 cycles</td><td>~4 cycles（VMLA）</td><td>~120 cycles（库调用）</td></tr>
+              <tr><td>一阶 IIR 单步</td><td>~18 cycles</td><td>~14 cycles</td><td>&gt;800 cycles</td></tr>
+              <tr><td>1024 点 FFT（CMSIS）</td><td>q15 ~11 µs</td><td>f32 ~14 µs</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ch3-note ch3-mt-s">结论不是“定点永远更快”。在 M4F 上 float 已经很快；选定点的核心理由是<b>确定性 + 可移植到 M0/无 FPU 型号 + 无异常路径</b>。高频信号链可以定点，UI/统计用浮点。</div>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">平台差异：同一份 C，不同代价</span><span class="ch3-tag">选型感知</span></div>
+        <div class="ch3-platforms">
+          <div class="ch3-platform"><b>Cortex-M0</b><span>无 FPU、无硬件除法、无桶形移位器；变量移位和 double 都很贵。定点是默认选项，热循环里少做变长移位。</span></div>
+          <div class="ch3-platform"><b>Cortex-M4F</b><span>单精度 FPU + DSP 指令；<code>__SSAT</code>/<code>__USAT</code> 一条完成饱和，<code>smlabb</code> 可做 16×16+32 饱和累加。float 不慢，但定点更确定。</span></div>
+          <div class="ch3-platform"><b>RV32IM</b><span>有 M 扩展才有硬件乘除；无 M 时乘法走软库，Q15 的 16×16 乘法可能比模拟 32×32 更划算。先看芯片手册，再谈优化。</span></div>
+        </div>
+        <div class="ch3-warn ch3-mt-s">优化顺序永远是：先证明热点（profiler）→ 再换算法/数据类型 → 最后才手写内联汇编或 CMSIS-DSP。不要凭感觉“定点一定快”。</div>
+      </div>
+    </div>
+
+    <div class="ch3-grid2 ch3-mt">
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">Lab L3-1：X-Macro 三处同步</span><span class="ch3-tag">约 20 分钟</span></div>
+        <pre class="ch3-code"><span class="cm">/* errors.def：唯一的维护点 */</span>
+<span class="pp">#define</span> ERR_LIST(X) \
+    X(ERR_OK,      <span class="nu">0</span>, <span class="st">"ok"</span>)            \
+    X(ERR_TIMEOUT, <span class="nu">1</span>, <span class="st">"operation timeout"</span>) \
+    X(ERR_BUS,     <span class="nu">2</span>, <span class="st">"bus error"</span>)     \
+    X(ERR_RANGE,   <span class="nu">3</span>, <span class="st">"parameter out of range"</span>)
+
+<span class="pp">#define</span> AS_ENUM(id,num,str) id = num,
+<span class="kw">enum</span> err_code {
+    ERR_LIST(AS_ENUM)
+    ERR_COUNT              <span class="cm">/* 由列表尾部自动算出 */</span>
+};
+
+<span class="pp">#define</span> AS_STR(id,num,str) [id] = str,
+<span class="kw">static const char</span> *err_str[] = { ERR_LIST(AS_STR) };
+
+<span class="kn">_Static_assert</span>(
+  <span class="kw">sizeof</span>(err_str)/<span class="kw">sizeof</span>(err_str[<span class="nu">0</span>]) == ERR_COUNT,
+  <span class="st">"error table desync"</span>);</pre>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">胜利条件：5 项都留下证据</span><span class="ch3-tag">可复现</span></div>
+        <div class="ch3-check-list" id="ch3-lab-list">
+          <label class="ch3-check"><input type="checkbox" value="1"><span>把 <code>errors.def</code> 抄进工程，枚举与字符串表都由它生成。</span></label>
+          <label class="ch3-check"><input type="checkbox" value="2"><span>加上 <code>_Static_assert</code> 数量守卫，确认正常编译通过。</span></label>
+          <label class="ch3-check"><input type="checkbox" value="3"><span>故意漏掉一个续行 <code>\</code>，保存编译错误信息并修复。</span></label>
+          <label class="ch3-check"><input type="checkbox" value="4"><span>手动给 <code>err_str[]</code> 多写一项，观察断言在编译期触发。</span></label>
+          <label class="ch3-check"><input type="checkbox" value="5"><span>跑通 <code>q15_mul</code> 边界测试与一阶 IIR 阶跃测试。</span></label>
+        </div>
+        <div class="ch3-lab-progress"><span id="ch3-lab-count">完成 0 / 5</span><div class="ch3-bar"><span id="ch3-lab-fill"></span></div></div>
+        <div class="ch3-filter-status" id="ch3-lab-status" aria-live="polite">还差 5 步。做完后，本章的“工程底座”才算真正落地。</div>
+      </div>
+    </div>
+
+    <div class="ch3-grid2 ch3-mt">
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">Q15 边界测试</span><span class="ch3-tag">先测极端值</span></div>
+        <pre class="ch3-code">assert(q15_mul(<span class="nu">-32768</span>, <span class="nu">-32768</span>) == <span class="nu">32767</span>); <span class="cm">/* 正饱和 */</span>
+assert(q15_mul(<span class="nu">-32768</span>, <span class="nu">32767</span>) == <span class="nu">-32767</span>);
+assert(q15_mul(<span class="nu">0</span>, <span class="nu">32767</span>)  == <span class="nu">0</span>);
+assert(q15_mul(<span class="nu">1</span>, <span class="nu">1</span>)      == <span class="nu">0</span>); <span class="cm">/* 量化误差，不是 bug */</span>
+
+<span class="cm">/* IIR：α=0 冻结；阶跃输入不发散、不超调 */</span>
+assert(lp_filter1(<span class="nu">32767</span>, &amp;s, <span class="nu">0</span>) == s);</pre>
+        <div class="ch3-note ch3-mt-s">断言之外，再用 Unity（第 9 章）把这些用例纳入 CI；主机上跑 ASan/UBSan，板级保留 MPU/栈哨兵。</div>
+      </div>
+      <div class="ch3-card">
+        <div class="ch3-card-head"><span class="ch3-card-title">本章带走</span><span class="ch3-tag">下一步</span></div>
+        <div class="ch3-takeaways">
+          <div><span><b>宏是文本</b>，先展开再相信；多语句必须 do-while(0)，参数全部括号。</span></div>
+          <div><span><b>位操作先想宽度</b>：掩码、移位、符号扩展；越界前先饱和。</span></div>
+          <div><span><b>定点数 = 整数 + 比例</b>：乘法扩宽、结果饱和、打印手动解小数。</span></div>
+          <div><span><b>目录与命名是架构</b>：App 不碰寄存器，Bsp 是唯一硬件边界，魔数必须具名。</span></div>
+        </div>
+        <div class="ch3-note ch3-mt-s">下一章：<b>第 4 章 C++ 嵌入式子集与 RAII 实战</b>。把“资源谁申请、谁释放”从口头约定变成编译器能检查的规则。</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ch3-footer">
+  <button type="button" class="ch3-btn" id="ch3-prev">← 上一节</button>
+  <div class="ch3-footer-mid"><b id="ch3-foot-name">3.1 宏：编译器最前端的文本手术</b><span id="ch3-foot-hint">点击上方数字可跳转</span></div>
+  <button type="button" class="ch3-btn ch3-btn-primary" id="ch3-next">下一节 →</button>
+</footer>
+
+<script>
+(function(){
+  var root = document.getElementById('ch3-lesson');
+  if (!root) { return; }
+  function all(sel, ctx){
+    return Array.prototype.slice.call((ctx || root).querySelectorAll(sel));
+  }
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+  function pad(n, len){ var s = String(n); while (s.length < len) { s = '0' + s; } return s; }
+  function hex(n, width){ var s = (n >>> 0).toString(16).toUpperCase(); while (s.length < width) { s = '0' + s; } return '0x' + s; }
+  function pop(el){ if (!el) { return; } el.classList.remove('is-pop'); void el.offsetWidth; el.classList.add('is-pop'); }
+  function signed16(v){ return ((v & 0xffff) ^ 0x8000) - 0x8000; }
+
+  /* ---------- navigation ---------- */
+  var scenes = all('.ch3-scene');
+  var steps = all('[data-goto]');
+  var progressLabel = document.getElementById('ch3-progress-label');
+  var progressBar = document.getElementById('ch3-progress');
+  var progressFill = document.getElementById('ch3-progress-fill');
+  var footName = document.getElementById('ch3-foot-name');
+  var footHint = document.getElementById('ch3-foot-hint');
+  var prevBtn = document.getElementById('ch3-prev');
+  var nextBtn = document.getElementById('ch3-next');
+  var current = 0;
+  var shortNames = ['宏三件套', '位操作库', 'X-Macro', 'Q15 定点', '滤波实验', '工程目录', '宏陷阱', '平台与 Lab'];
+  var longNames = ['3.1 宏：编译器最前端的文本手术', '3.2 位操作：把寄存器当成 32 个开关', '3.3 X-Macro 与 container_of', '3.4 Q15 定点数：没有 FPU 也能做小数', '3.5 定点滤波实验室：从阶跃到稳定', '3.6 工程化：目录即架构，命名即文档', '3.7 宏陷阱与故障排查', '3.8 平台差异、实测与实战 Lab'];
+
+  function go(index){
+    current = clamp(index, 0, scenes.length - 1);
+    scenes.forEach(function(scene, i){
+      var on = i === current;
+      scene.classList.toggle('is-active', on);
+      scene.hidden = !on;
+    });
+    steps.forEach(function(step){
+      var on = parseInt(step.getAttribute('data-goto'), 10) === current;
+      step.classList.toggle('is-active', on);
+      step.setAttribute('aria-current', on ? 'step' : 'false');
+    });
+    progressLabel.textContent = pad(current + 1, 2) + ' / ' + pad(scenes.length, 2) + ' · ' + shortNames[current];
+    progressFill.style.width = ((current + 1) / scenes.length * 100) + '%';
+    progressBar.setAttribute('aria-valuenow', String(current + 1));
+    footName.textContent = longNames[current];
+    footHint.textContent = current === scenes.length - 1 ? '本章结束 · 下一章：第4章 C++ 嵌入式子集与 RAII' : '点击上方数字可跳转';
+    prevBtn.disabled = current === 0;
+    nextBtn.textContent = current === scenes.length - 1 ? '回到 3.1 ↺' : '下一节 →';
+    if (current !== 4) { stopFilter(); }
+  }
+  steps.forEach(function(step){
+    step.addEventListener('click', function(){ go(parseInt(step.getAttribute('data-goto'), 10)); });
+  });
+  prevBtn.addEventListener('click', function(){ go(current - 1); });
+  nextBtn.addEventListener('click', function(){
+    if (current === scenes.length - 1) { go(0); return; }
+    go(current + 1);
+  });
+
+  /* ---------- scene 0: macro workbench ---------- */
+  var macroData = {
+    str: {
+      label: '字符串化',
+      steps: [
+        { name: '源码', code: 'STR(hello)' },
+        { name: '加 #', code: '# hello' },
+        { name: '结果', code: '"hello"' },
+        { name: '等价代码', code: 'const char *s = "hello";' }
+      ],
+      notes: [
+        '预处理先看到参数 hello，还没有展开成别的东西。',
+        '# 的作用是把后面的记号变成字符串，而不是求值。',
+        '字符串字面量生成完毕；后续编译把它当普通只读数据。',
+        '常见用途：日志里打印表达式、断言失败时打印变量名。'
+      ]
+    },
+    concat: {
+      label: '记号拼接',
+      steps: [
+        { name: '源码', code: 'CONCAT(uart, _init)' },
+        { name: '加 ##', code: 'uart ## _init' },
+        { name: '结果', code: 'uart_init' },
+        { name: '等价代码', code: 'void uart_init(void);' }
+      ],
+      notes: [
+        '两个参数分别是记号 uart 和 _init。',
+        '## 在预处理阶段把左右记号粘成一个新标识符。',
+        '得到的是一个合法的函数名，不是字符串。',
+        '适合批量生成 driver_init、port_init 之类的符号；不要拼接非标识符。'
+      ]
+    },
+    xstr: {
+      label: '两级展开',
+      steps: [
+        { name: '源码', code: 'XSTR(__LINE__)' },
+        { name: '先展开参数', code: 'STR(42)' },
+        { name: '再字符串化', code: '"42"' },
+        { name: '为什么', code: '#define XSTR(x) STR(x)\n#define STR(x) #x' }
+      ],
+      notes: [
+        '__LINE__ 先被预处理器替换成当前行号 42。',
+        '因为外层宏先把参数展开，内层 STR 收到的是 42。',
+        '最终得到字符串 "42"，而不是 "__LINE__"。',
+        '只用 # 会只做一次替换，看不到参数内部；两级包装是标准写法。'
+      ]
+    }
+  };
+  var currentMacro = 'str';
+  var macroStage = 0;
+  var macroLine = document.getElementById('ch3-macro-line');
+  var macroExplain = document.getElementById('ch3-macro-explain');
+  var macroDots = document.getElementById('ch3-macro-dots');
+  var macroTabs = all('[data-macro]');
+
+  function renderMacro(){
+    var item = macroData[currentMacro];
+    macroStage = clamp(macroStage, 0, item.steps.length - 1);
+    macroDots.innerHTML = item.steps.map(function(step, i){
+      return '<span class="ch3-dot' + (i === macroStage ? ' is-on' : '') + '"><b>' + (i + 1) + '</b>' + step.name + '</span>';
+    }).join('');
+    macroLine.textContent = item.steps[macroStage].code;
+    macroExplain.textContent = item.notes[macroStage];
+    pop(macroLine);
+    macroTabs.forEach(function(tab){
+      var on = tab.getAttribute('data-macro') === currentMacro;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+  macroTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      currentMacro = tab.getAttribute('data-macro');
+      macroStage = 0;
+      renderMacro();
+    });
+  });
+  document.getElementById('ch3-macro-next').addEventListener('click', function(){
+    var item = macroData[currentMacro];
+    macroStage = (macroStage + 1) % item.steps.length;
+    renderMacro();
+  });
+  document.getElementById('ch3-macro-reset').addEventListener('click', function(){
+    macroStage = 0;
+    renderMacro();
+  });
+
+  var wrapData = {
+    bad: {
+      code: '#define LOG_ERR(...) \\\n    log_write(...); log_flush()\n\nif (x)\n    LOG_ERR("bad");\nelse\n    recover();',
+      expand: 'if (x)\n    log_write(...); log_flush();  ← 只有 log_write 受 if 控制\nelse\n    recover();                  ← else 找不到 if，语法错',
+      note: '裸宏把两条语句直接塞进 if 的分支；else 悬空，编译失败。加花括号能挡住这一种，但挡不住 for / while 的同类问题。',
+      cls: 'is-error'
+    },
+    good: {
+      code: '#define LOG_ERR(...) \\\n    do { \\\n        log_write(...); log_flush(); \\\n    } while (0)',
+      expand: 'if (x) {\n    log_write(...); log_flush();\n} else {\n    recover();\n}\n\n/* 宏整体成为一条语句，分号只写在调用处 */',
+      note: 'do { ... } while (0) 让多语句宏在语法上等价于单条语句；编译器会把它当成一个块，else 能正确匹配。',
+      cls: 'is-ok'
+    }
+  };
+  var wrapCode = document.getElementById('ch3-wrap-code');
+  var wrapExpand = document.getElementById('ch3-wrap-expand');
+  var wrapNote = document.getElementById('ch3-wrap-note');
+  function renderWrap(kind){
+    var data = wrapData[kind];
+    wrapCode.textContent = data.code;
+    wrapExpand.textContent = data.expand;
+    wrapExpand.className = 'ch3-expandbox ' + data.cls;
+    wrapNote.textContent = data.note;
+    all('[data-wrap]').forEach(function(btn){
+      var on = btn.getAttribute('data-wrap') === kind;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    pop(wrapExpand);
+  }
+  all('[data-wrap]').forEach(function(btn){
+    btn.addEventListener('click', function(){ renderWrap(btn.getAttribute('data-wrap')); });
+  });
+
+  /* ---------- scene 1: register lab ---------- */
+  var register = 0;
+  var bitsEl = document.getElementById('ch3-bits');
+  var regHex = document.getElementById('ch3-reg-hex');
+  var regHi = document.getElementById('ch3-reg-hi');
+  var regLo = document.getElementById('ch3-reg-lo');
+  var opResult = document.getElementById('ch3-op-result');
+  var bitIndexEl = document.getElementById('ch3-bit-index');
+  var fieldLoEl = document.getElementById('ch3-field-lo');
+  var fieldHiEl = document.getElementById('ch3-field-hi');
+  var fieldValEl = document.getElementById('ch3-field-val');
+  var fieldLegend = document.getElementById('ch3-field-legend');
+
+  function fieldRange(){
+    var lo = clamp(parseInt(fieldLoEl.value, 10) || 0, 0, 15);
+    var hi = clamp(parseInt(fieldHiEl.value, 10) || 0, 0, 15);
+    if (lo > hi) { var t = lo; lo = hi; hi = t; }
+    fieldLoEl.value = String(lo);
+    fieldHiEl.value = String(hi);
+    return { lo: lo, hi: hi };
+  }
+  function fieldMask(){
+    var r = fieldRange();
+    var width = r.hi - r.lo + 1;
+    var mask = (width >= 16 ? 0xffff : ((1 << width) - 1) << r.lo);
+    return mask & 0xffff;
+  }
+  function renderRegister(note){
+    register &= 0xffff;
+    var range = fieldRange();
+    var mask = fieldMask();
+    var focusBit = clamp(parseInt(bitIndexEl.value, 10) || 0, 0, 15);
+    fieldLegend.textContent = '[' + range.lo + '..' + range.hi + ']';
+    var html = '';
+    for (var b = 15; b >= 0; b--) {
+      var on = (register >> b) & 1;
+      var inField = !!((mask >> b) & 1);
+      html += '<button type="button" class="ch3-bit' + (on ? ' is-on' : '') + (inField ? ' is-field' : '') +
+        (b === focusBit ? ' is-focus' : '') +
+        '" data-bit="' + b + '" aria-pressed="' + (on ? 'true' : 'false') + '" aria-label="bit ' + b + '，值 ' + on + '">' +
+        '<span class="idx">' + b + '</span><b>' + on + '</b></button>';
+    }
+    bitsEl.innerHTML = html;
+    regHex.textContent = hex(register, 4);
+    regHi.textContent = hex(register >> 8, 2);
+    regLo.textContent = hex(register & 0xff, 2);
+    if (note) { opResult.innerHTML = note; }
+  }
+  function bitFromInput(){
+    var n = clamp(parseInt(bitIndexEl.value, 10) || 0, 0, 15);
+    bitIndexEl.value = String(n);
+    return n;
+  }
+  bitsEl.addEventListener('click', function(ev){
+    var btn = ev.target.closest ? ev.target.closest('[data-bit]') : null;
+    if (!btn) { return; }
+    var n = parseInt(btn.getAttribute('data-bit'), 10);
+    bitIndexEl.value = String(n);
+    register ^= (1 << n);
+    renderRegister('手动翻转 <b>TGL</b> bit ' + n + ' → REG = <b>' + hex(register, 4) + '</b>');
+  });
+  all('[data-bitop]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var op = btn.getAttribute('data-bitop');
+      var n = bitFromInput();
+      var old = register;
+      if (op === 'set') { register |= (1 << n); renderRegister('SET_BIT(REG, ' + n + ') : ' + hex(old, 4) + ' | ' + hex(1 << n, 4) + ' = <b>' + hex(register, 4) + '</b>'); }
+      if (op === 'clr') { register &= ~(1 << n); renderRegister('CLR_BIT(REG, ' + n + ') : ' + hex(old, 4) + ' &amp; ~' + hex(1 << n, 4) + ' = <b>' + hex(register, 4) + '</b>'); }
+      if (op === 'tgl') { register ^= (1 << n); renderRegister('TGL_BIT(REG, ' + n + ') : ' + hex(old, 4) + ' ^ ' + hex(1 << n, 4) + ' = <b>' + hex(register, 4) + '</b>'); }
+      if (op === 'get') {
+        var v = (register >> n) & 1;
+        opResult.innerHTML = 'GET_BIT(REG, ' + n + ') → <b>' + v + '</b>（寄存器内容未改变）';
+      }
+    });
+  });
+  document.getElementById('ch3-field-set').addEventListener('click', function(){
+    var r = fieldRange();
+    var mask = fieldMask();
+    var max = (mask >>> r.lo);
+    var v = clamp(parseInt(fieldValEl.value, 10) || 0, 0, max);
+    fieldValEl.value = String(v);
+    var old = register;
+    register = (register & ~mask & 0xffff) | ((v << r.lo) & mask);
+    renderRegister('SET_FIELD(REG, ' + r.lo + ', ' + r.hi + ', ' + v + ') : 掩码 <b>' + hex(mask, 4) + '</b>，' + hex(old, 4) + ' → <b>' + hex(register, 4) + '</b>');
+  });
+  document.getElementById('ch3-field-get').addEventListener('click', function(){
+    var r = fieldRange();
+    var mask = fieldMask();
+    var v = (register & mask) >> r.lo;
+    opResult.innerHTML = 'GET_FIELD(REG, ' + r.lo + ', ' + r.hi + ') → <b>' + v + '</b>（(' + hex(register, 4) + ' &amp; ' + hex(mask, 4) + ') &gt;&gt; ' + r.lo + '）';
+  });
+  fieldLoEl.addEventListener('change', function(){ renderRegister(); });
+  fieldHiEl.addEventListener('change', function(){ renderRegister(); });
+  bitIndexEl.addEventListener('change', function(){ bitFromInput(); renderRegister(); });
+
+  var trickKind = 'pow2';
+  var trickInput = document.getElementById('ch3-trick-input');
+  var trickBits = document.getElementById('ch3-trick-bits');
+  var trickResult = document.getElementById('ch3-trick-result');
+  var trickTabs = all('[data-trick]');
+  function binaryStrip(v, width){
+    var out = '';
+    for (var i = width - 1; i >= 0; i--) {
+      out += '<span class="ch3-bin-bit' + (((v >> i) & 1) ? ' is-on' : '') + '">' + ((v >> i) & 1) + '</span>';
+    }
+    return out;
+  }
+  function renderTrick(){
+    var v = clamp(parseInt(trickInput.value, 10) || 0, 0, 65535);
+    trickInput.value = String(v);
+    trickBits.innerHTML = binaryStrip(v, 16);
+    trickTabs.forEach(function(tab){
+      var on = tab.getAttribute('data-trick') === trickKind;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    var out = '';
+    if (trickKind === 'pow2') {
+      var yes = v !== 0 && (v & (v - 1)) === 0;
+      out = 'v = ' + v + '  (' + hex(v, 4) + ')\n' +
+        'v & (v-1) = ' + ((v & (v - 1)) >>> 0) + '\n' +
+        'is_pow2(v) → ' + (yes ? 'true' : 'false') +
+        (v === 0 ? '  （v=0 必须单独排除）' : '');
+    } else if (trickKind === 'ones') {
+      var t = v;
+      var count = 0;
+      var lines = ['v = ' + v + '  (' + hex(v, 4) + ')'];
+      while (t) {
+        t = (t & (t - 1)) >>> 0;
+        count++;
+        lines.push('  v &= v-1 → ' + t + '  (' + hex(t, 4) + ')');
+        if (count > 20) { break; }
+      }
+      lines.push('cnt_ones(v) → ' + count);
+      out = lines.join('\n');
+    } else {
+      var x = v;
+      var steps = ['v = ' + x];
+      if (x === 0) {
+        out = 'v = 0 → round_up_pow2(0) = 0（边界情况单独处理）';
+      } else {
+        x--;
+        steps.push('v-- → ' + x);
+        [1, 2, 4, 8, 16].forEach(function(sh){
+          x = (x | (x >> sh)) >>> 0;
+          steps.push('v |= v >> ' + sh + ' → ' + x);
+        });
+        x = (x + 1) >>> 0;
+        steps.push('v + 1 → ' + x);
+        out = steps.join('\n') + '\nround_up_pow2(v) → ' + x;
+      }
+    }
+    trickResult.textContent = out;
+    pop(trickResult);
+  }
+  trickTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){ trickKind = tab.getAttribute('data-trick'); renderTrick(); });
+  });
+  document.getElementById('ch3-trick-run').addEventListener('click', renderTrick);
+  trickInput.addEventListener('change', renderTrick);
+
+  /* ---------- scene 2: X-Macro ---------- */
+  var errEntries = [
+    { id: 'ERR_OK', num: 0, str: 'ok' },
+    { id: 'ERR_TIMEOUT', num: 1, str: 'operation timeout' },
+    { id: 'ERR_BUS', num: 2, str: 'bus error' },
+    { id: 'ERR_RANGE', num: 3, str: 'parameter out of range' }
+  ];
+  var xBroken = false;
+  var xDefEl = document.getElementById('ch3-x-def');
+  var xEnumEl = document.getElementById('ch3-x-enum');
+  var xStrEl = document.getElementById('ch3-x-str');
+  var xNameEl = document.getElementById('ch3-x-name');
+  var xStatusEl = document.getElementById('ch3-x-status');
+  var xViewsEl = document.getElementById('ch3-x-views');
+  var xNoteEl = document.getElementById('ch3-x-note');
+
+  function renderX(){
+    var lines = ['#define ERR_LIST(X) \\'];
+    errEntries.forEach(function(e, i){
+      var cont = (i < errEntries.length - 1) ? ' \\' : '';
+      var line = '    X(' + e.id + ', ' + e.num + ', "' + e.str + '")' + cont;
+      if (xBroken && i === 1) {
+        line = line.replace(/ \\$/, '');
+        lines.push('    X(' + e.id + ', ' + e.num + ', "' + e.str + '")   /* ← 少了 \\ */');
+      } else {
+        lines.push(line);
+      }
+    });
+    xDefEl.innerHTML = lines.map(function(line){
+      if (xBroken && line.indexOf('少了') >= 0) { return '<span class="line-bad">' + line + '</span>'; }
+      return line;
+    }).join('\n');
+
+    var enumLines = ['enum err_code {'];
+    errEntries.forEach(function(e){ enumLines.push('    ' + e.id + ' = ' + e.num + ','); });
+    enumLines.push('    ERR_COUNT  /* = ' + errEntries.length + ' */');
+    enumLines.push('};');
+    xEnumEl.textContent = enumLines.join('\n');
+
+    var strLines = ['static const char *err_str[] = {'];
+    errEntries.forEach(function(e){ strLines.push('    [' + e.id + '] = "' + e.str + '",'); });
+    strLines.push('};');
+    xStrEl.textContent = strLines.join('\n');
+
+    xNameEl.textContent = 'static const char *err_name(int e)\n{\n    return (e >= 0 && e < ERR_COUNT)\n           ? err_str[e] : "unknown";\n}';
+
+    xStatusEl.classList.remove('is-error', 'is-good');
+    xViewsEl.classList.toggle('is-broken', xBroken);
+    xNameEl.classList.toggle('is-broken', xBroken);
+    xNoteEl.className = 'ch3-mt-s ' + (xBroken ? 'ch3-warn' : 'ch3-ok');
+    if (xBroken) {
+      xStatusEl.classList.add('is-error');
+      xStatusEl.innerHTML = '<b>编译失败。</b> 第 2 行缺少续行符 <code>\\</code>，ERR_BUS 变成文件级乱码；三处生成全部中断。修好反斜杠，再编译。';
+      xNoteEl.textContent = 'def 断裂后，右侧三个视图都失去来源：预处理器走不到它们，编译器只能报错。';
+    } else {
+      xStatusEl.classList.add('is-good');
+      xStatusEl.innerHTML = '<b>' + errEntries.length + ' 个错误码，三处同步。</b> 尾部哨兵 ERR_COUNT = ' + errEntries.length + ' 由列表自动算出；新增或删除只改 def 文件，不动其他任何地方。';
+      xNoteEl.textContent = '新增一行 → 枚举、字符串表、名字查询同时更新；不需要在三个文件里找“另一个地方”。';
+    }
+    pop(xDefEl);
+  }
+  document.getElementById('ch3-x-add').addEventListener('click', function(){
+    if (xBroken) { xBroken = false; }
+    if (!errEntries.some(function(e){ return e.id === 'ERR_CHECKSUM'; })) {
+      errEntries.push({ id: 'ERR_CHECKSUM', num: 4, str: 'checksum error' });
+    }
+    renderX();
+  });
+  document.getElementById('ch3-x-break').addEventListener('click', function(){
+    xBroken = !xBroken;
+    renderX();
+  });
+  document.getElementById('ch3-x-reset').addEventListener('click', function(){
+    xBroken = false;
+    errEntries = [
+      { id: 'ERR_OK', num: 0, str: 'ok' },
+      { id: 'ERR_TIMEOUT', num: 1, str: 'operation timeout' },
+      { id: 'ERR_BUS', num: 2, str: 'bus error' },
+      { id: 'ERR_RANGE', num: 3, str: 'parameter out of range' }
+    ];
+    renderX();
+  });
+
+  var coBtn = document.getElementById('ch3-co-btn');
+  var coResult = document.getElementById('ch3-co-result');
+  coBtn.addEventListener('click', function(){
+    var node = root.querySelector('[data-co-field="node"]');
+    var base = root.querySelector('[data-co-field="regs"]');
+    node.classList.add('is-target');
+    base.classList.add('is-base');
+    coResult.innerHTML = 'node 地址 <b>0x20001008</b> − offsetof(node) <b>8</b> = 宿主地址 <b>0x20001000</b>';
+    pop(coResult);
+  });
+
+  /* ---------- scene 3: Q15 ---------- */
+  var q15Slider = document.getElementById('ch3-q15-slider');
+  var q15Float = document.getElementById('ch3-q15-float');
+  var q15Raw = document.getElementById('ch3-q15-raw');
+  var q15Hex = document.getElementById('ch3-q15-hex');
+  var q15Bin = document.getElementById('ch3-q15-bin');
+  var q15Marker = document.getElementById('ch3-q15-marker');
+  function q15Text(v){ return (v / 32768).toFixed(5); }
+  function renderQ15(){
+    var v = clamp(parseInt(q15Slider.value, 10) || 0, -32768, 32767);
+    q15Slider.value = String(v);
+    q15Float.textContent = q15Text(v);
+    q15Raw.textContent = String(v);
+    q15Hex.textContent = hex(v & 0xffff, 4);
+    var bits = '';
+    for (var i = 15; i >= 0; i--) { bits += ((v >> i) & 1) ? '1' : '0'; }
+    q15Bin.textContent = 'binary ' + bits.slice(0, 8) + ' ' + bits.slice(8) + '  ·  raw = ' + v + '  ·  q/32768 = ' + q15Text(v);
+    q15Marker.style.left = ((v + 32768) / 65535 * 100) + '%';
+  }
+  q15Slider.addEventListener('input', renderQ15);
+  all('[data-q15-preset]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      q15Slider.value = btn.getAttribute('data-q15-preset');
+      renderQ15();
+      pop(q15Bin);
+    });
+  });
+
+  var q15A = document.getElementById('ch3-q15-a');
+  var q15B = document.getElementById('ch3-q15-b');
+  var q15AVal = document.getElementById('ch3-q15-a-val');
+  var q15BVal = document.getElementById('ch3-q15-b-val');
+  var mulA = document.getElementById('ch3-mul-a');
+  var mulB = document.getElementById('ch3-mul-b');
+  var mulProd = document.getElementById('ch3-mul-prod');
+  var mulOut = document.getElementById('ch3-mul-out');
+  var mulProdBox = document.getElementById('ch3-mul-prod-box');
+  var mulOutBox = document.getElementById('ch3-mul-out-box');
+  var q15Warn = document.getElementById('ch3-q15-warn');
+  function renderMul(){
+    var a = clamp(parseInt(q15A.value, 10) || 0, -32768, 32767);
+    var b = clamp(parseInt(q15B.value, 10) || 0, -32768, 32767);
+    q15A.value = String(a);
+    q15B.value = String(b);
+    q15AVal.textContent = q15Text(a);
+    q15BVal.textContent = q15Text(b);
+    var p = a * b;
+    var shifted = p >> 15;
+    var out = clamp(shifted, -32768, 32767);
+    mulA.textContent = String(a);
+    mulB.textContent = String(b);
+    mulProd.textContent = String(p);
+    mulProd.title = 'Q30 原始乘积';
+    mulOut.textContent = String(out);
+    mulProdBox.classList.toggle('is-sat', shifted !== out);
+    mulOutBox.classList.toggle('is-sat', shifted !== out);
+    q15Warn.classList.remove('is-sat', 'is-ok');
+    if (shifted > 32767) {
+      q15Warn.classList.add('is-sat');
+      q15Warn.innerHTML = '<b>正饱和。</b> ' + a + ' × ' + b + ' = ' + p + '（Q30），右移 15 位得到 ' + shifted + '，超过 Q15 最大值 32767 → 钳位到 <b>32767</b>。';
+    } else if (shifted < -32768) {
+      q15Warn.classList.add('is-sat');
+      q15Warn.innerHTML = '<b>负饱和。</b> 乘积 ' + p + ' 右移后为 ' + shifted + '，低于 Q15 最小值 -32768 → 钳位到 <b>-32768</b>。';
+    } else {
+      q15Warn.classList.add('is-ok');
+      q15Warn.innerHTML = '<b>无饱和。</b> 乘积 ' + p + '（Q30）→ 右移 15 位得到 <b>' + shifted + '</b>，落在 Q15 范围内。实际值 ≈ ' + q15Text(out) + '。';
+    }
+  }
+  q15A.addEventListener('input', renderMul);
+  q15B.addEventListener('input', renderMul);
+  all('[data-q15-mul]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pair = btn.getAttribute('data-q15-mul').split(',');
+      q15A.value = pair[0];
+      q15B.value = pair[1];
+      renderMul();
+      pop(q15Warn);
+    });
+  });
+
+  /* ---------- scene 4: IIR filter ---------- */
+  var FILTER_N = 64;
+  var filterInput = document.getElementById('ch3-filter-input');
+  var filterCurve = document.getElementById('ch3-filter-curve');
+  var filterDot = document.getElementById('ch3-filter-dot');
+  var filterAlpha = document.getElementById('ch3-filter-alpha');
+  var filterAlphaVal = document.getElementById('ch3-filter-alpha-val');
+  var filterAlphaRaw = document.getElementById('ch3-filter-alpha-raw');
+  var filterTau = document.getElementById('ch3-filter-tau');
+  var filterN = document.getElementById('ch3-filter-n');
+  var filterX = document.getElementById('ch3-filter-x');
+  var filterY = document.getElementById('ch3-filter-y');
+  var filterRaw = document.getElementById('ch3-filter-raw');
+  var filterStatus = document.getElementById('ch3-filter-status');
+  var filterPlayBtn = document.getElementById('ch3-filter-play');
+  var filterIndex = 0;
+  var filterState = 0;
+  var filterData = [];
+  var filterTimer = null;
+
+  function alphaValue(){ return clamp(parseInt(filterAlpha.value, 10) || 1, 1, 90); }
+  function filterParams(){
+    var pct = alphaValue();
+    var alpha = clamp(Math.round(pct / 100 * 32768), 1, 32767);
+    return { pct: pct, alpha: alpha };
+  }
+  function computeFilter(){
+    var p = filterParams();
+    var state = 0;
+    var data = [];
+    for (var n = 0; n < FILTER_N; n++) {
+      var x = (n < 8) ? 0 : 32767;
+      var d = (x - state) * p.alpha;
+      state += (d >> 15);
+      state = clamp(state, -32768, 32767);
+      data.push({ n: n, x: x, y: state });
+    }
+    filterData = data;
+  }
+  function chartX(n){ return 52 + n * (488 / (FILTER_N - 1)); }
+  function chartY(v){ return 208 - (v / 32768) * 172; }
+  function drawFilter(revealIndex){
+    if (!filterData.length) { computeFilter(); }
+    var pts = [];
+    for (var i = 0; i <= Math.min(revealIndex, FILTER_N - 1); i++) {
+      pts.push(chartX(filterData[i].n).toFixed(1) + ',' + chartY(filterData[i].y).toFixed(1));
+    }
+    filterCurve.setAttribute('points', pts.join(' '));
+    var point = filterData[Math.min(revealIndex, FILTER_N - 1)];
+    filterDot.setAttribute('cx', chartX(point.n).toFixed(1));
+    filterDot.setAttribute('cy', chartY(point.y).toFixed(1));
+    filterN.textContent = String(point.n);
+    filterX.textContent = q15Text(point.x);
+    filterY.textContent = q15Text(point.y);
+    filterRaw.textContent = String(point.y);
+  }
+  function drawInputStep(){
+    var pts = [];
+    for (var n = 0; n < FILTER_N; n++) {
+      pts.push(chartX(n).toFixed(1) + ',' + chartY(n < 8 ? 0 : 32767).toFixed(1));
+    }
+    filterInput.setAttribute('points', pts.join(' '));
+  }
+  function syncAlphaUi(){
+    var p = filterParams();
+    filterAlphaVal.textContent = (p.pct / 100).toFixed(3);
+    filterAlphaRaw.textContent = String(p.alpha);
+    var tau = Math.max(1, Math.round(1 / (p.pct / 100)));
+    filterTau.textContent = '≈ ' + tau + ' 样本';
+  }
+  function resetFilter(){
+    stopFilter();
+    filterIndex = 0;
+    filterState = 0;
+    computeFilter();
+    drawFilter(0);
+    syncAlphaUi();
+    filterPlayBtn.textContent = '播放';
+    filterStatus.classList.remove('is-ok');
+    filterStatus.textContent = '已复位：阶跃在第 8 个样本出现。点“播放”或“单步”。';
+  }
+  function stopFilter(){
+    if (filterTimer) { clearInterval(filterTimer); filterTimer = null; }
+    filterPlayBtn.textContent = '播放';
+  }
+  function stepFilter(){
+    if (filterIndex >= FILTER_N - 1) {
+      filterStatus.classList.add('is-ok');
+      filterStatus.textContent = '已到第 63 个样本：输出稳定在阶跃值附近。';
+      return;
+    }
+    filterIndex++;
+    drawFilter(filterIndex);
+    filterStatus.classList.remove('is-ok');
+    filterStatus.textContent = 'n = ' + filterIndex + '：输入 ' + q15Text(filterData[filterIndex].x) + '，输出 ' + q15Text(filterData[filterIndex].y) + '（Q15 raw ' + filterData[filterIndex].y + '）。';
+    if (filterIndex >= FILTER_N - 1) {
+      filterStatus.classList.add('is-ok');
+      filterStatus.textContent = '完成：' + (alphaValue() / 100).toFixed(2) + ' 的 α 下，阶跃响应在第 63 个样本附近稳定。';
+    }
+  }
+  function playFilter(){
+    if (filterTimer) { stopFilter(); return; }
+    if (filterIndex >= FILTER_N - 1) { resetFilter(); }
+    filterPlayBtn.textContent = '暂停';
+    filterStatus.classList.remove('is-ok');
+    filterStatus.textContent = '播放中：观察 Q15 输出如何一步步逼近阶跃输入。';
+    filterTimer = setInterval(function(){
+      stepFilter();
+      if (filterIndex >= FILTER_N - 1) { stopFilter(); }
+    }, 95);
+  }
+  filterPlayBtn.addEventListener('click', playFilter);
+  document.getElementById('ch3-filter-step').addEventListener('click', function(){
+    stopFilter();
+    stepFilter();
+  });
+  document.getElementById('ch3-filter-reset').addEventListener('click', resetFilter);
+  filterAlpha.addEventListener('input', function(){
+    resetFilter();
+  });
+
+  /* ---------- scene 5: project tree ---------- */
+  var dirInfo = {
+    App: {
+      title: 'App/ · 业务模块', tag: '应用层',
+      body: '放产品逻辑：采集、状态机、协议业务、控制策略。它描述“做什么”，不描述“寄存器怎么写”。',
+      can: 'Bsp、Middleware、Drivers 的公开接口',
+      cannot: '直接操作寄存器；直接碰 CubeMX 生成区；把硬件细节写进业务分支',
+      note: '测试友好：App 的依赖通过接口注入，主机上就能跑大部分业务单测。'
+    },
+    Bsp: {
+      title: 'Bsp/ · 板级支持包', tag: '硬件边界',
+      body: '把“这块板子”的引脚、外设、时序封装成稳定接口，例如 bsp_led、bsp_uart、bsp_i2c。业务侧唯一允许接触寄存器的地方就是这里。',
+      can: 'Drivers / CMSIS 的寄存器与 HAL；芯片手册',
+      cannot: '调用 App 的业务函数；把产品状态机塞进来',
+      note: '换板子时优先只改 Bsp；如果 App 到处是寄存器地址，换板成本会爆炸。'
+    },
+    Drivers: {
+      title: 'Drivers/ · HAL 与 CMSIS', tag: '生成区',
+      body: 'CubeMX 生成的 HAL、CMSIS 头文件和启动相关代码。原则上不手改，否则下次重新生成会被覆盖。',
+      can: 'CMSIS、芯片外设寄存器定义',
+      cannot: '依赖 App / Bsp 的业务逻辑；手改生成文件后不记录',
+      note: '需要修 HAL 行为时，用 weak 回调、wrapper 或独立 patch 文件，不要直接改生成代码。'
+    },
+    Core: {
+      title: 'Core/ · 启动与骨架', tag: '入口',
+      body: 'main.c、时钟配置、中断向量、启动文件。负责把系统带到“可以跑 App”的状态。',
+      can: 'Drivers、CMSIS；调用 App 的初始化入口',
+      cannot: '堆业务细节；把控制算法写进中断向量',
+      note: 'main.c 应保持薄：初始化外设 → 调用 App 初始化 → 进入调度/主循环。'
+    },
+    Middleware: {
+      title: 'Middleware/ · 协议栈与组件', tag: '第三方',
+      body: 'lwIP、FatFs、LVGL 等第三方库及其 port 目录。升级时尽量只改 port 层。',
+      can: 'Drivers / CMSIS、Bsp 的移植接口',
+      cannot: '依赖 App 的具体业务；把产品逻辑塞进第三方源码',
+      note: '升级第三方库时，port 层是隔离带；把修改集中在 port 里，升级成本最低。'
+    },
+    Tests: {
+      title: 'Tests/ · 单元测试', tag: 'CI',
+      body: 'Unity / CMake / 主机测试。把纯逻辑从硬件中拆出来，在 PC 上快速跑边界用例。',
+      can: 'App 的纯函数、Bsp 的 mock、协议解析器',
+      cannot: '依赖真实硬件才能跑的测试（单独归到板级测试）',
+      note: '本章的 Q15 边界值和 X-Macro 计数断言，都应该在这里变成 CI 的一部分。'
+    },
+    Tools: {
+      title: 'Tools/ · 脚本与工具', tag: '自动化',
+      body: '烧录脚本、版本生成、打包、静态检查配置。它们不参与固件运行，但决定团队效率。',
+      can: '构建系统、调试器、版本库',
+      cannot: '把密钥/证书硬编码进仓库；依赖个人电脑路径',
+      note: '工具也要版本化：gen_version.sh、flash.py 和 Makefile 一起 review。'
+    }
+  };
+  var dirTree = document.getElementById('ch3-tree');
+  var dirTitle = document.getElementById('ch3-dir-title');
+  var dirTag = document.getElementById('ch3-dir-tag');
+  var dirBody = document.getElementById('ch3-dir-body');
+  var dirNote = document.getElementById('ch3-dir-note');
+  function renderDir(key){
+    var info = dirInfo[key];
+    dirTitle.textContent = info.title;
+    dirTag.textContent = info.tag;
+    dirBody.innerHTML = '<h4>' + info.body + '</h4>' +
+      '<div class="ch3-dir-list">' +
+      '<div><b>可以依赖</b><span>' + info.can + '</span></div>' +
+      '<div><b>不要依赖</b><span>' + info.cannot + '</span></div>' +
+      '</div>';
+    dirNote.textContent = info.note;
+    all('[data-dir]', dirTree).forEach(function(btn){
+      btn.classList.toggle('is-active', btn.getAttribute('data-dir') === key);
+    });
+    pop(dirBody);
+  }
+  dirTree.addEventListener('click', function(ev){
+    var btn = ev.target.closest ? ev.target.closest('[data-dir]') : null;
+    if (!btn) { return; }
+    renderDir(btn.getAttribute('data-dir'));
+  });
+
+  var magicData = {
+    before: {
+      code: 'if ((TIM2->SR & 0x0001) && (buf[0] == 0x2A)) {\n    TIM2->SR = ~0x0001;\n    parse_header(buf, 12);\n}',
+      note: '0x0001 是哪个标志？0x2A 是哪个字段？12 又是什么？三个月后只能靠猜。'
+    },
+    after: {
+      code: '#define FRAME_SOF   0x2AU\n#define FRAME_HDR_LEN 12U\n#define TIM_SR_UIF  (1UL << 0)\n\nif ((TIM2->SR & TIM_SR_UIF) &&\n    (buf[0] == FRAME_SOF)) {\n    TIM2->SR = ~TIM_SR_UIF;\n    parse_header(buf, FRAME_HDR_LEN);\n}',
+      note: '名字把协议文档和代码连接起来；改协议时只改一处定义，review 也能看懂。'
+    }
+  };
+  var magicCode = document.getElementById('ch3-magic-code');
+  var magicNote = document.getElementById('ch3-magic-note');
+  function renderMagic(kind){
+    var data = magicData[kind];
+    magicCode.textContent = data.code;
+    magicNote.textContent = data.note;
+    all('[data-magic]').forEach(function(btn){
+      var on = btn.getAttribute('data-magic') === kind;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    pop(magicCode);
+  }
+  all('[data-magic]').forEach(function(btn){
+    btn.addEventListener('click', function(){ renderMagic(btn.getAttribute('data-magic')); });
+  });
+
+  /* ---------- scene 6: square / gcc -E ---------- */
+  var squareData = {
+    macro: {
+      code: '#define SQUARE(x) ((x)*(x))\n\nint i = 5;\nint r = SQUARE(i++);',
+      expand: '展开为：\nint r = ((i++)*(i++));\n\n两个 i++ 之间没有序列点\n→ 未定义行为（UB）',
+      note: '为什么不能依赖结果？\n• 两个 i++ 之间没有序列点，属于未定义行为\n• 乘法可能读到 5×5、5×6、6×6 …，标准不规定顺序\n• 换编译器/优化等级，结果可能完全变样',
+      cls: 'bad'
+    },
+    inline: {
+      code: 'static inline int square(int x)\n{\n    return x * x;\n}\n\nint i = 5;\nint r = square(i++);',
+      expand: '调用为：\nsquare(5)\n\ni++ 只执行一次 → i = 6\n返回值 = 25',
+      note: '为什么更安全？\n• 参数先求值一次，再传入函数\n• 有类型检查，可在调试器里单步\n• 没有重复求值的副作用',
+      cls: 'good'
+    }
+  };
+  var squareCode = document.getElementById('ch3-square-code');
+  var squareExpand = document.getElementById('ch3-square-expand');
+  var squareNote = document.getElementById('ch3-square-note');
+  function renderSquare(kind){
+    var data = squareData[kind];
+    squareCode.textContent = data.code;
+    squareExpand.textContent = data.expand;
+    squareExpand.className = 'ch3-sq-box ' + data.cls;
+    squareNote.textContent = data.note;
+    all('[data-square]').forEach(function(btn){
+      var on = btn.getAttribute('data-square') === kind;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    pop(squareExpand);
+  }
+  all('[data-square]').forEach(function(btn){
+    btn.addEventListener('click', function(){ renderSquare(btn.getAttribute('data-square')); });
+  });
+
+  var prepOut = document.getElementById('ch3-prep-out');
+  var prepRun = document.getElementById('ch3-prep-run');
+  var prepReset = document.getElementById('ch3-prep-reset');
+  var prepHtml = '$ gcc -E macro.c\n<span class="cm"># 1 "macro.c"</span>\n<span class="cm"># 1 "&lt;built-in&gt;"</span>\n<span class="cm"># 1 "&lt;command-line&gt;"</span>\n\nint i = 5;\nint r = ((i++)*(i++));\n\n<span class="cm">/* 预处理结束：宏已展开，类型检查还没开始 */</span>';
+  prepRun.addEventListener('click', function(){
+    prepOut.innerHTML = prepHtml;
+    prepOut.classList.add('is-visible');
+    pop(prepOut);
+  });
+  prepReset.addEventListener('click', function(){
+    prepOut.textContent = '$ gcc -E macro.c\n# 等待运行：输出只经过预处理，不生成机器码';
+  });
+
+  /* ---------- scene 7: lab checklist ---------- */
+  var labChecks = all('#ch3-lab-list input[type="checkbox"]');
+  var labCount = document.getElementById('ch3-lab-count');
+  var labFill = document.getElementById('ch3-lab-fill');
+  var labStatus = document.getElementById('ch3-lab-status');
+  function renderLab(){
+    var done = labChecks.filter(function(cb){ return cb.checked; }).length;
+    labCount.textContent = '完成 ' + done + ' / ' + labChecks.length;
+    labFill.style.width = (done / labChecks.length * 100) + '%';
+    labChecks.forEach(function(cb){
+      cb.closest('.ch3-check').classList.toggle('is-done', cb.checked);
+    });
+    labStatus.classList.remove('is-ok');
+    if (done === labChecks.length) {
+      labStatus.classList.add('is-ok');
+      labStatus.textContent = '底座完成：你有一份能被编译器检查、能被单测复现的 X-Macro 与 Q15 工程。';
+    } else {
+      labStatus.textContent = '还差 ' + (labChecks.length - done) + ' 步。每一项都要留下可复现的证据。';
+    }
+  }
+  labChecks.forEach(function(cb){ cb.addEventListener('change', renderLab); });
+
+  /* ---------- init ---------- */
+  go(0);
+  renderMacro();
+  renderWrap('bad');
+  renderRegister();
+  renderTrick();
+  renderX();
+  renderQ15();
+  renderMul();
+  drawInputStep();
+  resetFilter();
+  renderDir('App');
+  renderMagic('before');
+  renderSquare('macro');
+  renderLab();
+})();
+</script>
+</div>

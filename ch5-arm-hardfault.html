@@ -1,0 +1,977 @@
+<div id="ch5-lesson">
+<style>
+  #ch5-lesson{
+    --ink: var(--seed-fg, #0f172a);
+    --muted: var(--seed-muted, #64748b);
+    --surface: var(--card-bg, #ffffff);
+    --surface-2: var(--inset-bg, #f8fafc);
+    --line: var(--border-standard, rgba(15,23,42,.12));
+    --line-soft: var(--border-subtle, rgba(15,23,42,.07));
+    --primary: var(--seed-primary, #4f46e5);
+    --primary-2: #0ea5e9;
+    --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+    --ok: #059669;
+    --ok-soft: color-mix(in srgb, #059669 10%, transparent);
+    --warn: #d97706;
+    --warn-soft: color-mix(in srgb, #d97706 11%, transparent);
+    --danger: #dc2626;
+    --danger-soft: color-mix(in srgb, #dc2626 10%, transparent);
+    --code-bg: #0f172a;
+    --code-ink: #dbeafe;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--ink);
+    font: 14px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #ch5-lesson *{ box-sizing: border-box; }
+  #ch5-lesson p{ margin: 0; }
+  #ch5-lesson button{ font: inherit; color: inherit; }
+  #ch5-lesson .ch5-hero{
+    position: relative; overflow: hidden;
+    padding: 28px 30px 22px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background:
+      radial-gradient(700px 240px at 95% -30%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 65%),
+      linear-gradient(145deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface) 58%);
+  }
+  #ch5-lesson .ch5-hero::after{
+    content:""; position:absolute; right:-70px; top:-90px; width:260px; height:260px; border-radius:50%;
+    border:1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+  #ch5-lesson .ch5-kicker{
+    font-size: 11px; letter-spacing:.14em; text-transform:uppercase; color:var(--primary);
+    font-weight:700; margin-bottom:8px;
+  }
+  #ch5-lesson h1{ margin:0; font-size:clamp(25px,3.4vw,40px); line-height:1.2; letter-spacing:-.02em; }
+  #ch5-lesson .ch5-sub{ margin-top:10px; max-width:860px; color:var(--muted); font-size:14px; }
+  #ch5-lesson .ch5-badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  #ch5-lesson .ch5-badge{
+    display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:7px;
+    border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 75%, transparent);
+    font-size:11px; color:var(--muted);
+  }
+  #ch5-lesson .ch5-badge b{ color:var(--ink); font-weight:650; }
+  #ch5-lesson .ch5-meta{
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center;
+    margin-top:18px; padding-top:14px; border-top:1px dashed var(--line);
+    font-size:11px; color:var(--muted);
+  }
+  #ch5-lesson .ch5-steps{
+    position: sticky; top: 0; z-index: 30;
+    display:flex; gap:4px; overflow-x:auto; scrollbar-width:thin;
+    padding:8px; margin:14px 0 16px;
+    border:1px solid var(--line); border-radius:14px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  #ch5-lesson .ch5-step{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px;
+    border:0; background:transparent; border-radius:9px; padding:7px 11px; cursor:pointer;
+    color:var(--muted); text-align:left; min-width:96px;
+    transition: background .2s, color .2s;
+  }
+  #ch5-lesson .ch5-step .n{ font:10px/1 var(--mono); color:color-mix(in srgb, var(--muted) 75%, transparent); }
+  #ch5-lesson .ch5-step .t{ font-size:11.5px; font-weight:650; white-space:nowrap; }
+  #ch5-lesson .ch5-step:hover{ background:var(--primary-soft); color:var(--ink); }
+  #ch5-lesson .ch5-step.is-active{ background:var(--primary); color:#fff; }
+  #ch5-lesson .ch5-step.is-active .n{ color:rgba(255,255,255,.7); }
+  #ch5-lesson .ch5-progress{ height:3px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:-8px 0 18px; }
+  #ch5-lesson .ch5-progress i{ display:block; height:100%; width:20%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .35s; }
+  #ch5-lesson .ch5-scene{ display:none; }
+  #ch5-lesson .ch5-scene.is-active{ display:block; animation:ch5In .38s ease both; }
+  @keyframes ch5In{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  #ch5-lesson .ch5-scene-head{ margin:2px 0 14px; }
+  #ch5-lesson .ch5-scene-head .tag{
+    display:inline-flex; align-items:center; gap:6px; font:10px/1 var(--mono); color:var(--primary);
+    border:1px solid color-mix(in srgb, var(--primary) 30%, transparent); background:var(--primary-soft);
+    border-radius:99px; padding:4px 9px; margin-bottom:7px;
+  }
+  #ch5-lesson .ch5-scene-head h2{ margin:0; font-size:clamp(20px,2.5vw,27px); line-height:1.3; letter-spacing:-.01em; }
+  #ch5-lesson .ch5-scene-head p{ margin-top:5px; color:var(--muted); font-size:12.5px; max-width:900px; }
+  #ch5-lesson .ch5-card{
+    border:1px solid var(--line); border-radius:15px; background:var(--surface);
+    padding:16px; box-shadow:0 1px 2px rgba(15,23,42,.03);
+  }
+  #ch5-lesson .ch5-card + .ch5-card{ margin-top:12px; }
+  #ch5-lesson .ch5-card-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:11px; }
+  #ch5-lesson .ch5-card-h h3{ margin:0; font-size:13px; display:flex; align-items:center; gap:7px; }
+  #ch5-lesson .ch5-card-h h3::before{ content:""; width:3px; height:13px; border-radius:2px; background:var(--primary); }
+  #ch5-lesson .ch5-card-h small{ color:var(--muted); font-size:10.5px; }
+  #ch5-lesson .ch5-grid-2{ display:grid; grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr); gap:12px; align-items:stretch; }
+  #ch5-lesson .ch5-grid-3{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+  #ch5-lesson .ch5-mt{ margin-top:12px; }
+  #ch5-lesson .ch5-btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    min-height:30px; padding:5px 11px; border-radius:8px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); font-size:11.5px; font-weight:600; cursor:pointer;
+    transition: border-color .18s, background .18s, transform .18s;
+  }
+  #ch5-lesson .ch5-btn:hover{ border-color:color-mix(in srgb, var(--primary) 45%, var(--line)); background:var(--primary-soft); }
+  #ch5-lesson .ch5-btn:active{ transform:translateY(1px); }
+  #ch5-lesson .ch5-btn:disabled{ opacity:.42; cursor:not-allowed; }
+  #ch5-lesson .ch5-btn-primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch5-lesson .ch5-btn-primary:hover{ background:color-mix(in srgb, var(--primary) 86%, #000); }
+  #ch5-lesson .ch5-btn-quiet{ background:transparent; color:var(--muted); }
+  #ch5-lesson .ch5-chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  #ch5-lesson .ch5-chip{
+    display:inline-flex; align-items:center; gap:5px; padding:4px 8px; border-radius:6px;
+    border:1px solid var(--line); background:var(--surface-2); font-size:10.5px; color:var(--muted);
+  }
+  #ch5-lesson .ch5-chip b{ color:var(--ink); }
+  #ch5-lesson .ch5-code{
+    margin:0; padding:13px 14px; border-radius:10px; background:var(--code-bg); color:var(--code-ink);
+    font:11px/1.75 var(--mono); overflow:auto; border:1px solid rgba(255,255,255,.08);
+    tab-size:2;
+  }
+  #ch5-lesson .ch5-code .cm{ color:#94a3b8; }
+  #ch5-lesson .ch5-code .kw{ color:#93c5fd; }
+  #ch5-lesson .ch5-code .fn{ color:#fbbf24; }
+  #ch5-lesson .ch5-code .num{ color:#f9a8d4; }
+  #ch5-lesson .ch5-code .ok{ color:#6ee7b7; }
+  #ch5-lesson .ch5-code .bad{ color:#fca5a5; }
+  #ch5-lesson .ch5-note{
+    padding:9px 11px; border-radius:8px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--muted); font-size:11.5px;
+  }
+  #ch5-lesson .ch5-note.tip{ border-left:3px solid var(--primary); }
+  #ch5-lesson .ch5-note.warn{ border-left:3px solid var(--warn); background:var(--warn-soft); color:color-mix(in srgb, var(--warn) 72%, var(--ink)); }
+  #ch5-lesson .ch5-note.danger{ border-left:3px solid var(--danger); background:var(--danger-soft); color:color-mix(in srgb, var(--danger) 70%, var(--ink)); }
+  #ch5-lesson .ch5-note.ok{ border-left:3px solid var(--ok); background:var(--ok-soft); color:color-mix(in srgb, var(--ok) 75%, var(--ink)); }
+  #ch5-lesson .ch5-note b{ color:inherit; }
+
+  /* scene 0 */
+  #ch5-lesson .ch5-flow{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+  #ch5-lesson .ch5-flow-item{
+    position:relative; padding:11px 10px; border-radius:10px; border:1px solid var(--line);
+    background:var(--surface-2); cursor:pointer; transition:.2s;
+  }
+  #ch5-lesson .ch5-flow-item:hover{ border-color:var(--primary); transform:translateY(-1px); }
+  #ch5-lesson .ch5-flow-item.is-active{ border-color:var(--primary); background:var(--primary-soft); }
+  #ch5-lesson .ch5-flow-item .num{ font:9px/1 var(--mono); color:var(--primary); margin-bottom:4px; }
+  #ch5-lesson .ch5-flow-item b{ display:block; font-size:11.5px; }
+  #ch5-lesson .ch5-flow-item small{ display:block; color:var(--muted); font-size:10px; margin-top:3px; line-height:1.45; }
+  #ch5-lesson .ch5-reg-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+  #ch5-lesson .ch5-reg{
+    border:1px solid var(--line); border-radius:7px; background:var(--surface-2); padding:6px 4px;
+    font:10px/1.2 var(--mono); cursor:pointer; text-align:center; color:var(--muted);
+  }
+  #ch5-lesson .ch5-reg:hover{ border-color:var(--primary); color:var(--ink); }
+  #ch5-lesson .ch5-reg.is-active{ border-color:var(--primary); background:var(--primary); color:#fff; }
+  #ch5-lesson .ch5-reg-detail{ margin-top:8px; border:1px dashed var(--line); border-radius:9px; padding:10px; background:var(--surface); min-height:112px; }
+  #ch5-lesson .ch5-reg-detail b{ font-size:12px; }
+  #ch5-lesson .ch5-reg-detail p{ font-size:11px; color:var(--muted); margin-top:4px; }
+  #ch5-lesson .ch5-rule{ margin-top:8px; display:flex; flex-direction:column; gap:4px; }
+  #ch5-lesson .ch5-rule div{ display:flex; gap:7px; font-size:10.5px; color:var(--muted); }
+  #ch5-lesson .ch5-rule b{ flex:0 0 76px; color:var(--ink); font-weight:650; }
+
+  /* scene 1 */
+  #ch5-lesson .ch5-asm-layout{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:12px; }
+  #ch5-lesson .ch5-asm{
+    background:var(--code-bg); border-radius:11px; padding:8px; overflow:auto;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  #ch5-lesson .ch5-asm-line{
+    display:grid; grid-template-columns:18px minmax(0,1fr); gap:5px; align-items:baseline;
+    padding:4px 7px; border-radius:5px; color:#cbd5e1; font:10.5px/1.65 var(--mono);
+    transition:background .2s,color .2s;
+  }
+  #ch5-lesson .ch5-asm-line .ln{ color:#475569; font-size:9px; }
+  #ch5-lesson .ch5-asm-line.is-current{ background:color-mix(in srgb, var(--primary) 40%, transparent); color:#fff; }
+  #ch5-lesson .ch5-asm-line.is-current .ln{ color:#c7d2fe; }
+  #ch5-lesson .ch5-asm-line .cm{ color:#94a3b8; }
+  #ch5-lesson .ch5-asm-line .reg{ color:#f9a8d4; }
+  #ch5-lesson .ch5-asm-line .imm{ color:#fbbf24; }
+  #ch5-lesson .ch5-reg-live{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+  #ch5-lesson .ch5-reg-live div{
+    display:flex; justify-content:space-between; gap:8px; padding:4px 7px; border-radius:5px;
+    background:var(--surface-2); border:1px solid var(--line-soft); font:9.5px/1.4 var(--mono);
+  }
+  #ch5-lesson .ch5-reg-live b{ color:var(--muted); font-weight:500; }
+  #ch5-lesson .ch5-reg-live span{ color:var(--ink); }
+  #ch5-lesson .ch5-stack{ margin-top:8px; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  #ch5-lesson .ch5-stack-row{
+    display:grid; grid-template-columns:78px minmax(0,1fr) 54px; gap:6px; align-items:center;
+    padding:4px 7px; font:9.5px/1.4 var(--mono); border-bottom:1px solid var(--line-soft);
+  }
+  #ch5-lesson .ch5-stack-row:last-child{ border-bottom:0; }
+  #ch5-lesson .ch5-stack-row.head{ background:var(--surface-2); color:var(--muted); font-size:9px; }
+  #ch5-lesson .ch5-stack-row .sp{ color:var(--primary); font-weight:700; }
+  #ch5-lesson .ch5-stack-empty{ padding:10px 7px; text-align:center; color:var(--muted); font-size:10.5px; }
+  #ch5-lesson .ch5-step-note{ min-height:58px; }
+  #ch5-lesson .ch5-step-note b{ color:var(--primary); }
+  #ch5-lesson .ch5-dots{ display:flex; gap:4px; flex-wrap:wrap; margin-top:8px; }
+  #ch5-lesson .ch5-dots i{ width:6px; height:6px; border-radius:50%; background:var(--line); }
+  #ch5-lesson .ch5-dots i.on{ background:var(--primary); }
+
+  /* scene 2 */
+  #ch5-lesson .ch5-fault-layout{ display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr); gap:12px; }
+  #ch5-lesson .ch5-fault-frame{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; }
+  #ch5-lesson .ch5-fault-cell{
+    border:1px solid var(--line); background:var(--surface-2); border-radius:7px; padding:7px 6px; cursor:pointer;
+    transition:.18s;
+  }
+  #ch5-lesson .ch5-fault-cell:hover{ border-color:var(--primary); }
+  #ch5-lesson .ch5-fault-cell.is-active{ border-color:var(--primary); background:var(--primary-soft); }
+  #ch5-lesson .ch5-fault-cell small{ display:block; font:9px/1 var(--mono); color:var(--muted); margin-bottom:4px; }
+  #ch5-lesson .ch5-fault-cell b{ display:block; font:10px/1.3 var(--mono); color:var(--ink); word-break:break-all; }
+  #ch5-lesson .ch5-fault-cell.is-hot b{ color:var(--danger); }
+  #ch5-lesson .ch5-bits{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; }
+  #ch5-lesson .ch5-bit{
+    display:flex; align-items:center; justify-content:space-between; gap:7px;
+    border:1px solid var(--line-soft); border-radius:6px; padding:4px 7px; font:9.5px/1.4 var(--mono);
+    background:var(--surface-2); color:var(--muted); cursor:pointer;
+  }
+  #ch5-lesson .ch5-bit .dot{ width:5px; height:5px; border-radius:50%; background:var(--line); flex:0 0 auto; }
+  #ch5-lesson .ch5-bit.is-on{ border-color:color-mix(in srgb, var(--danger) 35%, var(--line)); background:var(--danger-soft); color:var(--danger); }
+  #ch5-lesson .ch5-bit.is-on .dot{ background:var(--danger); box-shadow:0 0 0 3px color-mix(in srgb, var(--danger) 15%, transparent); }
+  #ch5-lesson .ch5-bit:hover{ border-color:var(--primary); }
+  #ch5-lesson .ch5-attr-steps{ display:flex; flex-direction:column; gap:5px; }
+  #ch5-lesson .ch5-attr{
+    display:flex; gap:8px; padding:7px 9px; border-radius:7px; border:1px solid var(--line-soft);
+    background:var(--surface-2); color:var(--muted); font-size:11px; line-height:1.55;
+  }
+  #ch5-lesson .ch5-attr .n{ flex:0 0 17px; height:17px; border-radius:50%; display:grid; place-items:center; background:var(--line-soft); font:9px/1 var(--mono); color:var(--muted); }
+  #ch5-lesson .ch5-attr.is-open{ background:var(--surface); border-color:var(--line); color:var(--ink); }
+  #ch5-lesson .ch5-attr.is-open .n{ background:var(--primary); color:#fff; }
+  #ch5-lesson .ch5-verdict{
+    border-radius:9px; padding:10px 12px; border:1px solid color-mix(in srgb, var(--danger) 28%, var(--line));
+    background:var(--danger-soft); font-size:11.5px; color:color-mix(in srgb, var(--danger) 74%, var(--ink));
+  }
+  #ch5-lesson .ch5-verdict b{ color:var(--danger); }
+
+  /* scene 3 */
+  #ch5-lesson .ch5-mem{
+    width:100%; border-collapse:collapse; font:9.5px/1.35 var(--mono);
+  }
+  #ch5-lesson .ch5-mem th{
+    text-align:left; padding:5px 7px; background:var(--surface-2); color:var(--muted);
+    font-size:9px; font-weight:500; border-bottom:1px solid var(--line);
+  }
+  #ch5-lesson .ch5-mem td{ padding:4px 7px; border-bottom:1px solid var(--line-soft); }
+  #ch5-lesson .ch5-mem tr{ cursor:pointer; transition:background .15s; }
+  #ch5-lesson .ch5-mem tr:hover{ background:var(--primary-soft); }
+  #ch5-lesson .ch5-mem tr.is-code td:last-child{ color:var(--primary); font-weight:700; }
+  #ch5-lesson .ch5-mem tr.is-exc td{ color:var(--muted); }
+  #ch5-lesson .ch5-mem tr.is-selected{ background:var(--ok-soft); }
+  #ch5-lesson .ch5-mem tr.is-bad{ background:var(--danger-soft); }
+  #ch5-lesson .ch5-sym{ display:flex; flex-wrap:wrap; gap:5px; margin-top:7px; }
+  #ch5-lesson .ch5-sym span{ font:9px/1 var(--mono); color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:3px 5px; }
+  #ch5-lesson .ch5-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:5px; min-height:35px; padding:8px; border:1px dashed var(--line); border-radius:7px; background:var(--surface); }
+  #ch5-lesson .ch5-chain .node{ font:9.5px/1 var(--mono); padding:4px 6px; border-radius:4px; background:var(--primary-soft); color:var(--primary); border:1px solid color-mix(in srgb, var(--primary) 25%, var(--line)); }
+  #ch5-lesson .ch5-chain .arr{ color:var(--muted); font-size:10px; }
+  #ch5-lesson .ch5-chain .hint{ color:var(--muted); font-size:10px; }
+
+  /* scene 4 */
+  #ch5-lesson .ch5-platform-tabs{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:9px; }
+  #ch5-lesson .ch5-platform-tabs .ch5-btn{ font-size:10.5px; min-height:26px; padding:3px 8px; }
+  #ch5-lesson .ch5-platform{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+  #ch5-lesson .ch5-platform div{ border:1px solid var(--line); border-radius:8px; background:var(--surface-2); padding:9px; }
+  #ch5-lesson .ch5-platform small{ display:block; color:var(--muted); font-size:9.5px; margin-bottom:3px; }
+  #ch5-lesson .ch5-platform b{ display:block; font-size:11.5px; }
+  #ch5-lesson .ch5-platform p{ color:var(--muted); font-size:10.5px; margin-top:4px; line-height:1.5; }
+  #ch5-lesson .ch5-lab{ display:flex; flex-direction:column; gap:5px; }
+  #ch5-lesson .ch5-lab label{
+    display:flex; align-items:flex-start; gap:8px; padding:7px 8px; border-radius:7px;
+    border:1px solid var(--line-soft); background:var(--surface-2); font-size:11px; cursor:pointer;
+  }
+  #ch5-lesson .ch5-lab input{ margin:2px 0 0; accent-color:var(--primary); }
+  #ch5-lesson .ch5-lab label:has(input:checked){ background:var(--ok-soft); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); }
+  #ch5-lesson .ch5-lab-bar{ height:4px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:7px 0 4px; }
+  #ch5-lesson .ch5-lab-bar i{ display:block; height:100%; width:0; background:var(--ok); transition:width .3s; }
+  #ch5-lesson details.ch5-faq{
+    border:1px solid var(--line); border-radius:9px; padding:10px 12px; background:var(--surface);
+  }
+  #ch5-lesson details.ch5-faq + details.ch5-faq{ margin-top:6px; }
+  #ch5-lesson details.ch5-faq summary{ cursor:pointer; font-weight:650; font-size:11.5px; }
+  #ch5-lesson details.ch5-faq p{ margin-top:7px; color:var(--muted); font-size:11px; }
+  #ch5-lesson .ch5-footer{
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px;
+    margin-top:16px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:11px;
+  }
+  #ch5-lesson .ch5-footer .ch5-btn{ font-size:11px; }
+  @media(max-width:860px){
+    #ch5-lesson .ch5-grid-2, #ch5-lesson .ch5-asm-layout, #ch5-lesson .ch5-fault-layout{ grid-template-columns:1fr; }
+    #ch5-lesson .ch5-grid-3, #ch5-lesson .ch5-platform{ grid-template-columns:1fr 1fr; }
+    #ch5-lesson .ch5-flow{ grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:520px){
+    #ch5-lesson .ch5-hero{ padding:20px 18px 16px; }
+    #ch5-lesson .ch5-grid-3, #ch5-lesson .ch5-platform{ grid-template-columns:1fr; }
+    #ch5-lesson .ch5-fault-frame{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    #ch5-lesson .ch5-reg-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+    #ch5-lesson .ch5-step{ min-width:82px; }
+    #ch5-lesson .ch5-stack-row{ grid-template-columns:62px minmax(0,1fr) 44px; }
+  }
+</style>
+
+<header class="ch5-hero">
+  <div class="ch5-kicker">第 1 篇 · 编程基础 / 第 5 章</div>
+  <h1>ARM 汇编与反汇编排障</h1>
+  <p class="ch5-sub">读不懂汇编，HardFault 就只能靠猜。这一章把“崩溃现场的一串寄存器”拆成一条可复现的证据链：<b>现场 → 栈帧 → 反汇编 → 源码行</b>。</p>
+  <div class="ch5-badges">
+    <span class="ch5-badge"><b>寄存器</b> AAPCS</span>
+    <span class="ch5-badge"><b>栈帧</b> PUSH / POP</span>
+    <span class="ch5-badge"><b>取证</b> CFSR / BFAR</span>
+    <span class="ch5-badge"><b>归因</b> addr2line</span>
+    <span class="ch5-badge"><b>平台</b> M3 / M4F / M0+</span>
+  </div>
+  <div class="ch5-meta">
+    <span>学习时长约 45 分钟 · 5 个互动实验</span>
+    <span>建议前置：第 2 章内存模型、第 21 章中断框架（可后补）</span>
+  </div>
+</header>
+
+<nav class="ch5-steps" id="ch5-steps" aria-label="章节导航">
+  <button type="button" class="ch5-step is-active" data-goto="0"><span class="n">01</span><span class="t">现场与寄存器</span></button>
+  <button type="button" class="ch5-step" data-goto="1"><span class="n">02</span><span class="t">反汇编与栈帧</span></button>
+  <button type="button" class="ch5-step" data-goto="2"><span class="n">03</span><span class="t">HardFault 取证</span></button>
+  <button type="button" class="ch5-step" data-goto="3"><span class="n">04</span><span class="t">栈回溯</span></button>
+  <button type="button" class="ch5-step" data-goto="4"><span class="n">05</span><span class="t">平台与实验</span></button>
+</nav>
+<div class="ch5-progress"><i id="ch5-progress"></i></div>
+
+<main>
+  <!-- ================= scene 0 ================= -->
+  <section class="ch5-scene is-active" data-scene="0">
+    <div class="ch5-scene-head">
+      <span class="tag">5.1 / 5.2 · Cortex-M 程序员模型</span>
+      <h2>先看懂现场：CPU 把哪些线索留给了你</h2>
+      <p>HardFault 不是“随机死机”，它通常留下了 PC、LR、SP、xPSR 和一组 fault 状态位。先建立寄存器地图，后面的反汇编才有落点。</p>
+    </div>
+
+    <div class="ch5-grid-2">
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>从现场到源码的四步</h3>
+          <small>点击任一步看关键动作</small>
+        </div>
+        <div class="ch5-flow" id="ch5-flow">
+          <button type="button" class="ch5-flow-item is-active" data-flow="0"><span class="num">STEP 01</span><b>固化现场</b><small>naked handler 抓 8 槽栈帧 + CFSR</small></button>
+          <button type="button" class="ch5-flow-item" data-flow="1"><span class="num">STEP 02</span><b>分型诊断</b><small>拆 CFSR 位域，判断总线/状态/栈错</small></button>
+          <button type="button" class="ch5-flow-item" data-flow="2"><span class="num">STEP 03</span><b>反解归因</b><small>PC/LR → addr2line → 源码行</small></button>
+          <button type="button" class="ch5-flow-item" data-flow="3"><span class="num">STEP 04</span><b>修复回归</b><small>注入重演，归档进踩坑库</small></button>
+        </div>
+        <div class="ch5-note tip ch5-mt" id="ch5-flow-note"><b>固化现场：</b>真正的第一步不是“猜哪行代码”，而是让设备在崩溃时把 8 个硬件入栈字和 SCB 状态寄存器保存下来；否则复位一次，证据就没了。</div>
+        <div class="ch5-note warn ch5-mt"><b>关键习惯：</b>编译必须保留 <code>-g</code>，并保存未 strip 的 ELF。没有符号的固件，只能看到一串地址。</div>
+      </div>
+
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>寄存器解剖台</h3>
+          <small>点击寄存器查看职责</small>
+        </div>
+        <div class="ch5-reg-grid" id="ch5-reg-grid"></div>
+        <div class="ch5-reg-detail" id="ch5-reg-detail"></div>
+        <div class="ch5-rule">
+          <div><b>caller-saved</b><span>r0–r3、r12：被调函数可以随意改，调用者要自己保存。</span></div>
+          <div><b>callee-saved</b><span>r4–r11：被调函数要用就必须先压栈，返回前恢复。</span></div>
+          <div><b>特殊寄存器</b><span>SP / LR / PC / xPSR：崩溃现场最关键的四个坐标。</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch5-card ch5-mt">
+      <div class="ch5-card-h">
+        <h3>三条最容易记混的规则</h3>
+        <small>先记结论，再看后面的实验</small>
+      </div>
+      <div class="ch5-grid-3">
+        <div class="ch5-note"><b>LR 的 bit0 = 1</b><br>表示 Thumb 状态。函数指针被截断成偶数地址，跳到目标时就会触发 INVSTATE。</div>
+        <div class="ch5-note"><b>读 PC 得到当前指令 + 4</b><br>这是流水线可见效应；反汇编归因时不要被这个偏移骗到。</div>
+        <div class="ch5-note"><b>xPSR.IPSR == 0</b><br>表示线程模式；非 0 表示当前在某个异常/中断里。它决定了你该看 MSP 还是 PSP。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 1 ================= -->
+  <section class="ch5-scene" data-scene="1">
+    <div class="ch5-scene-head">
+      <span class="tag">5.2 / 5.3 · 反汇编与栈帧</span>
+      <h2>一条一条走：PUSH 到底把什么放进了栈</h2>
+      <p>下面是一段“示意版”的 <code>-Og</code> 风格反汇编，用来观察 AAPCS 的寄存器保存、文字池加载和函数返回。真实固件请以自己的 <code>objdump -dS</code> 为准。</p>
+    </div>
+
+    <div class="ch5-grid-2">
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>反汇编步进器</h3>
+          <small id="ch5-step-count">0 / 9</small>
+        </div>
+        <div class="ch5-asm" id="ch5-asm"></div>
+        <div class="ch5-chip-row ch5-mt">
+          <button type="button" class="ch5-btn" id="ch5-prev">上一条</button>
+          <button type="button" class="ch5-btn ch5-btn-primary" id="ch5-next">下一条</button>
+          <button type="button" class="ch5-btn ch5-btn-quiet" id="ch5-reset">重置</button>
+        </div>
+        <div class="ch5-dots" id="ch5-dots"></div>
+      </div>
+
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>寄存器与栈的实时状态</h3>
+          <small>SP 向下生长</small>
+        </div>
+        <div class="ch5-reg-live" id="ch5-reg-live"></div>
+        <div class="ch5-stack" id="ch5-stack"></div>
+        <div class="ch5-note ch5-mt ch5-step-note" id="ch5-step-note"></div>
+      </div>
+    </div>
+
+    <div class="ch5-card ch5-mt">
+      <div class="ch5-card-h">
+        <h3>为什么 PUSH {r4, lr} / POP {r4, pc} 能返回</h3>
+        <small>栈帧的最小闭环</small>
+      </div>
+      <div class="ch5-code"><span class="cm">; 进入函数时</span>
+PUSH {r4, lr}      <span class="cm">; SP -= 8；[SP]=r4，[SP+4]=lr</span>
+...
+POP  {r4, pc}      <span class="cm">; r4=[SP]，pc=[SP+4]，SP += 8</span>
+<span class="cm">; pc 被赋成返回地址，等价于 BX LR</span></div>
+      <div class="ch5-note warn ch5-mt"><b>注意：</b>如果被调函数内部还要调用别人，LR 会被新的 <code>BL</code> 覆盖，所以必须在序言里先把 LR 压栈；这就是 <code>PUSH {..., lr}</code> 的原因。</div>
+    </div>
+  </section>
+
+  <!-- ================= scene 2 ================= -->
+  <section class="ch5-scene" data-scene="2">
+    <div class="ch5-scene-head">
+      <span class="tag">5.3 / 5.7 · HardFault 取证</span>
+      <h2>四种崩溃指纹：先分型，再定位</h2>
+      <p>场景板上的数值是教学示例，真实设备请以你的 <code>g_fault</code> 和内核手册为准。点击现场字段、CFSR 位和归因步骤，观察证据如何收敛到根因。</p>
+    </div>
+
+    <div class="ch5-chip-row" id="ch5-fault-tabs">
+      <button type="button" class="ch5-btn is-active" data-fault="null">空函数指针</button>
+      <button type="button" class="ch5-btn" data-fault="thumb">Thumb 位丢失</button>
+      <button type="button" class="ch5-btn" data-fault="oob">数组越界</button>
+      <button type="button" class="ch5-btn" data-fault="stack">栈溢出</button>
+    </div>
+
+    <div class="ch5-fault-layout ch5-mt">
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>硬件入栈帧 <small style="font-weight:400">8 个字，按 SP 从低到高</small></h3>
+          <small id="ch5-fault-label">示例现场</small>
+        </div>
+        <div class="ch5-fault-frame" id="ch5-fault-frame"></div>
+        <div class="ch5-fault-cell ch5-mt" id="ch5-fault-detail" style="cursor:default"></div>
+        <div class="ch5-note ch5-mt" id="ch5-fault-clue"></div>
+      </div>
+
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>Fault 状态位</h3>
+          <small>红色 = 本例置位</small>
+        </div>
+        <div class="ch5-bits" id="ch5-bits"></div>
+        <div class="ch5-note ch5-mt" id="ch5-bit-detail"><b>点击任一状态位：</b>看它意味着什么，以及第一动作是什么。</div>
+      </div>
+    </div>
+
+    <div class="ch5-card ch5-mt">
+      <div class="ch5-card-h">
+        <h3>三步归因：把“像”变成“是”</h3>
+        <small id="ch5-attr-count">0 / 3</small>
+      </div>
+      <div class="ch5-attr-steps" id="ch5-attr-steps"></div>
+      <div class="ch5-chip-row ch5-mt">
+        <button type="button" class="ch5-btn ch5-btn-primary" id="ch5-attr-next">展开下一步</button>
+        <button type="button" class="ch5-btn ch5-btn-quiet" id="ch5-attr-reset">重来</button>
+      </div>
+      <div class="ch5-verdict ch5-mt" id="ch5-verdict" hidden></div>
+    </div>
+  </section>
+
+  <!-- ================= scene 3 ================= -->
+  <section class="ch5-scene" data-scene="3">
+    <div class="ch5-scene-head">
+      <span class="tag">5.3 / 5.10 · 栈回溯</span>
+      <h2>沿栈扫描：哪些字是返回地址，哪些只是数据</h2>
+      <p>没有帧指针时，仍可以从 SP 向上扫描：落在 <code>.text</code> 范围、且 bit0=1 的字是 LR 候选。点击“扫描代码地址”，再挑出正确的 LR，重建调用链。</p>
+    </div>
+
+    <div class="ch5-grid-2">
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>故障后的栈内存</h3>
+          <small>地址从低到高</small>
+        </div>
+        <table class="ch5-mem" id="ch5-mem"></table>
+        <div class="ch5-chip-row ch5-mt">
+          <button type="button" class="ch5-btn ch5-btn-primary" id="ch5-scan">扫描代码地址</button>
+          <button type="button" class="ch5-btn ch5-btn-quiet" id="ch5-scan-reset">重置</button>
+        </div>
+        <div class="ch5-sym">
+          <span>main = 0x080004C9</span><span>app_task = 0x08000B11</span><span>sensor_read = 0x08000A5D</span><span>fault_demo = 0x08000C01</span>
+        </div>
+      </div>
+
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>重建出的调用链</h3>
+          <small id="ch5-chain-count">0 / 3 个 LR</small>
+        </div>
+        <div class="ch5-chain" id="ch5-chain"><span class="hint">先扫描，再点击你认为是 LR 的栈槽。</span></div>
+        <div class="ch5-note ch5-mt" id="ch5-scan-note"><b>判据：</b>代码地址范围 + bit0=1；<code>0xFFFFFFF9</code> / <code>0xFFFFFFFD</code> 是 EXC_RETURN，标记异常边界，不是普通函数返回地址。</div>
+        <div class="ch5-note warn ch5-mt"><b>现实限制：</b>栈回溯是“启发式”。局部数组里恰好出现代码地址会产生误报；要结合 map、反汇编和调用上下文交叉验证。</div>
+      </div>
+    </div>
+
+    <div class="ch5-card ch5-mt">
+      <div class="ch5-card-h">
+        <h3>EXC_RETURN 速记</h3>
+        <small>异常返回不是普通 LR</small>
+      </div>
+      <div class="ch5-grid-3">
+        <div class="ch5-note"><b>0xFFFFFFF1</b><br>Handler 模式，使用 MSP；常见于异常嵌套。</div>
+        <div class="ch5-note"><b>0xFFFFFFF9</b><br>Thread 模式，使用 MSP；裸机主栈常见。</div>
+        <div class="ch5-note"><b>0xFFFFFFFD</b><br>Thread 模式，使用 PSP；RTOS 任务切换常见。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 4 ================= -->
+  <section class="ch5-scene" data-scene="4">
+    <div class="ch5-scene-head">
+      <span class="tag">5.9 / Lab · 平台差异与实战</span>
+      <h2>同一套方法，在不同内核上要怎么变</h2>
+      <p>M3/M4、M4F、M0+ 和 RISC-V 的取证入口不同，但目标一致：保存“谁在什么状态访问了什么地址”。最后用 5 步实验把方法变成肌肉记忆。</p>
+    </div>
+
+    <div class="ch5-grid-2">
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>平台取证差异</h3>
+          <small>点击切换</small>
+        </div>
+        <div class="ch5-platform-tabs" id="ch5-platform-tabs">
+          <button type="button" class="ch5-btn is-active" data-platform="m3">M3 / M4</button>
+          <button type="button" class="ch5-btn" data-platform="m4f">M4F（FPU）</button>
+          <button type="button" class="ch5-btn" data-platform="m0">M0+</button>
+          <button type="button" class="ch5-btn" data-platform="rv">RISC-V</button>
+        </div>
+        <div class="ch5-platform" id="ch5-platform"></div>
+      </div>
+
+      <div class="ch5-card">
+        <div class="ch5-card-h">
+          <h3>L5-1：制造并破获空函数指针案</h3>
+          <small id="ch5-lab-count">0 / 5</small>
+        </div>
+        <div class="ch5-lab" id="ch5-lab"></div>
+        <div class="ch5-lab-bar"><i id="ch5-lab-bar"></i></div>
+        <div class="ch5-note ch5-mt">验收标准：<b>不看源码</b>，仅凭 <code>g_fault</code> 的 PC、LR、CFSR 就能说出根因、肇事函数和修复方向。</div>
+      </div>
+    </div>
+
+    <div class="ch5-card ch5-mt">
+      <div class="ch5-card-h">
+        <h3>三条带走</h3>
+        <small>本章最小记忆包</small>
+      </div>
+      <div class="ch5-grid-3">
+        <div class="ch5-note ok"><b>现场优先于猜测</b><br>先保存 8 槽 + CFSR/BFAR，再复位；证据丢了就只能重演。</div>
+        <div class="ch5-note ok"><b>PC 定位，CFSR 分型</b><br>PC 回答“死在哪”，CFSR 回答“为什么死”，两者不能互相替代。</div>
+        <div class="ch5-note ok"><b>符号是桥</b><br>ELF 保留 <code>-g</code> 和符号表，才能从地址走到源码行；否则只能停在反汇编。</div>
+      </div>
+    </div>
+
+    <div class="ch5-mt">
+      <details class="ch5-faq"><summary>Q1：printf 能不能放进 HardFault handler？</summary><p>不建议。printf 可能重入、阻塞、使用堆，甚至在 fault 状态下再次触发 fault。最小取证路径应是纯寄存器操作 + 内存拷贝；UART 输出放在确认现场已保存之后，或者只写固定长度的十六进制。</p></details>
+      <details class="ch5-faq"><summary>Q2：为什么 objdump 看不到源码混合？</summary><p>三个条件缺一不可：编译带 <code>-g</code>、ELF 未 strip、<code>objdump</code> 加 <code>-S</code>。预编译 SDK 的 .a 往往没有调试信息，只能看纯汇编。</p></details>
+      <details class="ch5-faq"><summary>Q3：-O2 下 PC 指向的行和实际肇事行不一致怎么办？</summary><p>-O2 会重排、内联和合并指令。把 PC 在 <code>fw.asm</code> 里前后各看几条，结合 LR、反汇编和 map 文件判断；开发期可用 <code>-Og</code> 复现，但不要为了排障长期关优化。</p></details>
+      <details class="ch5-faq"><summary>Q4：M0+ 没有细分 CFSR，怎么定位？</summary><p>M0+ 只有 HardFault，缺少 MemManage/BusFault/UsageFault 的细分状态。只能更多依赖 PC/LR、栈扫描、代码审查和二分注入；这也是为什么在 M0+ 上更要保留符号和复现实验。</p></details>
+    </div>
+
+    <div class="ch5-footer">
+      <span>第 5 章 · ARM 汇编与反汇编排障</span>
+      <span>
+        <button type="button" class="ch5-btn" data-goto="3">上一节</button>
+        <button type="button" class="ch5-btn ch5-btn-primary" data-goto="0">回到开头</button>
+      </span>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var root = document.getElementById('ch5-lesson');
+  if(!root) return;
+  function $(s, el){ return (el||root).querySelector(s); }
+  function $$(s, el){ return Array.prototype.slice.call((el||root).querySelectorAll(s)); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var stepButtons = $$('.ch5-step');
+  function go(n){
+    n = Math.max(0, Math.min(4, Number(n)||0));
+    $$('.ch5-scene').forEach(function(s){ s.classList.toggle('is-active', Number(s.getAttribute('data-scene'))===n); });
+    stepButtons.forEach(function(b){ b.classList.toggle('is-active', Number(b.getAttribute('data-goto'))===n); });
+    $('#ch5-progress').style.width = ((n+1)/5*100)+'%';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  stepButtons.forEach(function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+  $$('[data-goto]').forEach(function(b){ if(!b.classList.contains('ch5-step')) b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+
+  /* scene 0: flow + registers */
+  var flowNotes = [
+    '<b>固化现场：</b>真正的第一步不是“猜哪行代码”，而是让设备在崩溃时把 8 个硬件入栈字和 SCB 状态寄存器保存下来；否则复位一次，证据就没了。',
+    '<b>分型诊断：</b>CFSR 把故障拆成 MemManage / BusFault / UsageFault 三段。先看哪一段置位，再决定是查地址、查指针还是查栈。',
+    '<b>反解归因：</b>用 PC 在反汇编里定位指令，用 LR 找调用者，用 <code>addr2line -e fw.elf</code> 把地址变成文件:行号。',
+    '<b>修复回归：</b>修复后把同一故障重新注入一次，确认症状消失且 CFSR 不再置位；然后把现场和处理方法归档。'
+  ];
+  $$('#ch5-flow .ch5-flow-item').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#ch5-flow .ch5-flow-item').forEach(function(x){ x.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      $('#ch5-flow-note').innerHTML = flowNotes[Number(b.getAttribute('data-flow'))] || flowNotes[0];
+    });
+  });
+  var regs = {
+    r0:{name:'R0', role:'参数 / 返回值', detail:'AAPCS 用 r0–r3 传前四个参数，r0 同时承担返回值。caller-saved：被调函数可以改写它，调用者若还需要就必须自己保存。', tag:'caller-saved'},
+    r1:{name:'R1', role:'参数 / 临时值', detail:'第二个参数。不要假设调用返回后 r1 还保留原值；跨调用需要保留时应放进 r4–r11 或显式压栈。', tag:'caller-saved'},
+    r2:{name:'R2', role:'参数 / 临时值', detail:'第三个参数。函数指针、地址计算等临时量也常放在这里。', tag:'caller-saved'},
+    r3:{name:'R3', role:'参数 / 临时值', detail:'第四个参数。超过四个参数时，其余参数通过栈传递。', tag:'caller-saved'},
+    r4:{name:'R4', role:'长期局部变量', detail:'callee-saved 的第一位。被调函数如果想用 r4，必须在序言压栈、尾语恢复；这也是 PUSH {r4, lr} 常见的原因。', tag:'callee-saved'},
+    r5:{name:'R5', role:'长期局部变量', detail:'callee-saved。适合放循环变量、长期存活的指针，减少反复从栈读写。', tag:'callee-saved'},
+    r6:{name:'R6', role:'长期局部变量', detail:'callee-saved。寄存器分配由编译器决定，读反汇编时不要假设某个 C 变量固定对应某个寄存器。', tag:'callee-saved'},
+    r7:{name:'R7', role:'长期局部变量 / 帧指针', detail:'callee-saved。-O0 下常被用作帧指针；-O2 下可能完全消失。', tag:'callee-saved'},
+    r8:{name:'R8', role:'长期局部变量', detail:'callee-saved。Thumb-2 下高寄存器需要特定编码，编译器会更谨慎地使用。', tag:'callee-saved'},
+    r9:{name:'R9', role:'长期局部变量', detail:'callee-saved；在某些 ABI 变体中还有平台保留含义。', tag:'callee-saved'},
+    r10:{name:'R10', role:'长期局部变量', detail:'callee-saved。RTOS 上下文切换时需要保存的寄存器之一。', tag:'callee-saved'},
+    r11:{name:'R11', role:'长期局部变量 / 帧指针', detail:'callee-saved；ARM 某些 ABI 把它当帧指针。上下文切换必须保留。', tag:'callee-saved'},
+    r12:{name:'R12 (IP)', role:'过程间临时', detail:'caller-saved 的 scratch 寄存器，链接器/ veneer 也可能使用。不要跨调用依赖它。', tag:'caller-saved'},
+    sp:{name:'R13 (SP)', role:'栈指针', detail:'Cortex-M 有 MSP 和 PSP 两套栈指针。Handler 模式用 MSP，线程模式通常用 PSP；异常入栈时硬件会自动选择。', tag:'特殊寄存器'},
+    lr:{name:'R14 (LR)', role:'返回地址', detail:'BL 自动把返回地址写入 LR；bit0=1 表示 Thumb 状态。函数指针地址丢失 bit0，是 HardFault 的经典原因。', tag:'特殊寄存器'},
+    pc:{name:'R15 (PC)', role:'程序计数器', detail:'读 PC 通常得到“当前指令 + 4”。反汇编归因时，PC 可能已经指向流水线后面的指令，需要在附近找真正的肇事指令。', tag:'特殊寄存器'},
+    xpsr:{name:'xPSR', role:'状态 / 异常号', detail:'包含 N/Z/C/V 标志、IPSR 异常号和 T（Thumb）位。IPSR=0 表示线程模式，非 0 表示正在处理异常。', tag:'特殊寄存器'}
+  };
+  var regGrid = $('#ch5-reg-grid');
+  Object.keys(regs).forEach(function(k){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'ch5-reg'; b.setAttribute('data-reg', k);
+    b.textContent = regs[k].name;
+    b.addEventListener('click', function(){
+      $$('.ch5-reg', regGrid).forEach(function(x){ x.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      var r = regs[k];
+      $('#ch5-reg-detail').innerHTML = '<div class="ch5-chip-row" style="margin-bottom:5px"><span class="ch5-chip"><b>'+esc(r.tag)+'</b></span></div><b>'+esc(r.name)+' · '+esc(r.role)+'</b><p>'+r.detail+'</p>';
+    });
+    regGrid.appendChild(b);
+  });
+  regGrid.firstElementChild.click();
+
+  /* scene 1: instruction stepper */
+  var asm = [
+    ['sum:', '', ''],
+    ['  push {r4, lr}', '保存 r4 和返回地址；SP -= 8', '序言：保护 callee-saved + LR'],
+    ['  mov  r4, r0', 'r4 = p（长期保存参数）', '把参数搬进 callee-saved 寄存器'],
+    ['  movs r0, #0', 's = 0', '返回值累加器清零'],
+    ['  ldr  r1, [r4, #0]', 'r1 = p[0]', '从指针读第一个元素'],
+    ['  add  r0, r0, r1', 's += p[0]', '累加'],
+    ['  ldr  r2, =0x40020014', 'r2 = 外设寄存器地址', '伪指令：从文字池加载 32 位常量'],
+    ['  ldr  r3, [r2]', 'r3 = *reg', '读取外设寄存器'],
+    ['  add  r0, r0, r3', 's += *reg', '累加外设值'],
+    ['  pop  {r4, pc}', '恢复 r4，PC = LR', '尾语：返回调用者']
+  ];
+  var stepStates = [
+    {regs:{r0:'0x20001000',r1:'0x00000007',r2:'0x00000000',r3:'0x00000000',r4:'0xDEADBEEF',r12:'0x00000000',sp:'0x20005000',lr:'0x080004C9',pc:'0x08000200'}, stack:[], note:'<b>进入函数：</b>r0 指向数组 p，LR 保存返回地址。SP 此时指向栈顶，栈从高地址向低地址生长。'},
+    {regs:{r0:'0x20001000',r1:'0x00000007',r2:'0x00000000',r3:'0x00000000',r4:'0xDEADBEEF',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x08000202'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>PUSH 之后：</b>SP 从 0x20005000 减到 0x20004FF8。低地址放 r4，高地址放 lr；这是 AAPCS 的栈帧布局。'},
+    {regs:{r0:'0x20001000',r1:'0x00000007',r2:'0x00000000',r3:'0x00000000',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x08000204'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>mov r4, r0：</b>把数组指针放进 r4。r4 是 callee-saved，后面的调用不会破坏它。'},
+    {regs:{r0:'0x00000000',r1:'0x00000007',r2:'0x00000000',r3:'0x00000000',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x08000206'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>movs r0, #0：</b>返回值累加器清零。r0 原先的参数已经被 r4 接管。'},
+    {regs:{r0:'0x00000000',r1:'0x0000002A',r2:'0x00000000',r3:'0x00000000',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x08000208'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>ldr r1, [r4, #0]：</b>从 p[0] 读到 42（0x2A）。反汇编里的方括号是“访存”，不是算术。'},
+    {regs:{r0:'0x0000002A',r1:'0x0000002A',r2:'0x00000000',r3:'0x00000000',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x0800020A'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>add r0, r0, r1：</b>累加得到 42。C 里的 s += p[0] 在这里变成一条 ADD。'},
+    {regs:{r0:'0x0000002A',r1:'0x0000002A',r2:'0x40020014',r3:'0x00000000',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x0800020C'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>ldr r2, =0x40020014：</b>这是伪指令；真正执行的是从文字池（literal pool）取常量。你在反汇编里会看到 <code>ldr r2, [pc, #...]</code>。'},
+    {regs:{r0:'0x0000002A',r1:'0x0000002A',r2:'0x40020014',r3:'0x00000001',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x0800020E'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>ldr r3, [r2]：</b>读取外设寄存器，示例值为 1。真实设备上这一步最容易因为时钟未开、地址写错或 MPU 拦截而触发 BusFault。'},
+    {regs:{r0:'0x0000002B',r1:'0x0000002A',r2:'0x40020014',r3:'0x00000001',r4:'0x20001000',r12:'0x00000000',sp:'0x20004FF8',lr:'0x080004C9',pc:'0x08000210'}, stack:[{addr:'0x20004FF8',val:'0xDEADBEEF',note:'r4'},{addr:'0x20004FFC',val:'0x080004C9',note:'lr'}], note:'<b>add r0, r0, r3：</b>最终返回值 43（0x2B）。此时还没有返回，栈里仍然保存着调用者的现场。'},
+    {regs:{r0:'0x0000002B',r1:'0x0000002A',r2:'0x40020014',r3:'0x00000001',r4:'0xDEADBEEF',r12:'0x00000000',sp:'0x20005000',lr:'0x080004C9',pc:'0x080004C9'}, stack:[], note:'<b>POP 之后：</b>r4 恢复为 0xDEADBEEF，PC 变成 LR 的值，SP 回到 0x20005000。函数返回，调用者继续执行。'}
+  ];
+  var step = 0;
+  function renderStep(){
+    var st = stepStates[step];
+    $('#ch5-asm').innerHTML = asm.map(function(a, i){
+      var cls = 'ch5-asm-line' + (i===step ? ' is-current' : '');
+      var text = esc(a[0]);
+      text = text.replace(/r\d+|lr|pc|sp/g, '<span class="reg">$&</span>');
+      text = text.replace(/(#\d+|0x[0-9A-Fa-f]+)/g, '<span class="imm">$1</span>');
+      if(!a[1] && i===0){ text = '<span class="cm">'+text+'</span>'; }
+      return '<div class="'+cls+'"><span class="ln">'+String(i).padStart(2,'0')+'</span><span>'+text+(a[1]?' <span class="cm">; '+esc(a[1])+'</span>':'')+'</span></div>';
+    }).join('');
+    var order = ['r0','r1','r2','r3','r4','sp','lr','pc'];
+    $('#ch5-reg-live').innerHTML = order.map(function(k){
+      return '<div><b>'+k.toUpperCase()+'</b><span>'+st.regs[k]+'</span></div>';
+    }).join('');
+    var stackHtml = '<div class="ch5-stack-row head"><span>地址</span><span>值</span><span>说明</span></div>';
+    if(st.stack.length){
+      st.stack.forEach(function(x){
+        stackHtml += '<div class="ch5-stack-row"><span class="'+(x.addr===st.regs.sp?'sp':'')+'">'+x.addr+'</span><span>'+x.val+'</span><span>'+x.note+'</span></div>';
+      });
+    } else {
+      stackHtml += '<div class="ch5-stack-empty">栈为空（SP 指向初始栈顶 0x20005000）</div>';
+    }
+    $('#ch5-stack').innerHTML = stackHtml;
+    $('#ch5-step-note').innerHTML = st.note;
+    $('#ch5-step-count').textContent = step + ' / ' + (asm.length-1);
+    $('#ch5-dots').innerHTML = asm.map(function(_, i){ return '<i class="'+(i<=step?'on':'')+'"></i>'; }).join('');
+    $('#ch5-prev').disabled = step===0;
+    $('#ch5-next').disabled = step===asm.length-1;
+  }
+  $('#ch5-prev').addEventListener('click', function(){ if(step>0){ step--; renderStep(); } });
+  $('#ch5-next').addEventListener('click', function(){ if(step<asm.length-1){ step++; renderStep(); } });
+  $('#ch5-reset').addEventListener('click', function(){ step=0; renderStep(); });
+  renderStep();
+
+  /* scene 2: fault scenarios */
+  var bitInfo = {
+    IACCVIOL:{label:'IACCVIOL[0]', desc:'指令访问违例：跳进了不可执行区域（XN/MPU 禁执行页）。第一动作：查函数指针是否指向了数据区。'},
+    MSTKERR:{label:'MSTKERR[4]', desc:'入栈总线错误：异常入栈时访问栈失败，通常意味着 SP 已经越界或栈被破坏。第一动作：核对 MSP/PSP 是否仍落在合法 RAM 内。'},
+    IBUSERR:{label:'IBUSERR[8]', desc:'取指总线错误：CPU 从非法地址取指令。空函数指针、跳转到未映射地址是常见原因。'},
+    PRECISERR:{label:'PRECISERR[9]', desc:'精确总线错误：BFAR 有效，能直接读出非法访问地址。第一动作：读 BFAR，再去 map/反汇编定位。'},
+    IMPRECISERR:{label:'IMPRECISERR[10]', desc:'非精确总线错误：写缓冲吞掉了地址，BFAR 仅供参考。第一动作：回溯最近一次写操作，或临时关闭写缓冲复现。'},
+    UNDEFINSTR:{label:'UNDEFINSTR[16]', desc:'未定义指令：PC 指向数据或固件镜像错位。第一动作：检查 PC 是否落在 .text，以及向量表/跳转表是否损坏。'},
+    INVSTATE:{label:'INVSTATE[17]', desc:'无效状态：目标地址的 Thumb 位为 0。函数指针被截断、手工构造地址丢 bit0 是典型原因。'},
+    INVPC:{label:'INVPC[18]', desc:'无效 PC：异常返回时装载了非法 PC（常见于 EXC_RETURN 被破坏）。第一动作：检查异常返回路径与栈帧。'},
+    FORCED:{label:'HFSR.FORCED[30]', desc:'可配置 fault 被关闭时升级为 HardFault。先开 MemManage/BusFault/UsageFault，再复现拿细节。'},
+    VECTTBL:{label:'HFSR.VECTTBL[1]', desc:'取向量表错误：VTOR 指向非法区域或向量表被破坏。IAP/OTA 场景高发。'}
+  };
+  var faultData = {
+    null:{
+      label:'空函数指针',
+      frame:{r0:'0x00000000',r1:'0x20001000',r2:'0x20000040',r3:'0x00000000',r12:'0x00000000',lr:'0x08000A5D',pc:'0x00000000',psr:'0x01000000'},
+      cfsr:'0x00000100', hfsr:'0x40000000', bfar:'0x00000000', mmfar:'—',
+      bits:['IBUSERR','FORCED'],
+      clue:'PC = 0，LR 指向 sensor_read。调用了一个未初始化或已被清空的回调指针。',
+      detail:{r0:'回调上下文参数，值为空。',r1:'缓冲区指针，看起来正常。',r2:'另一个参数，不能凭它排除问题。',r3:'0，常见于未初始化寄存器。',r12:'临时寄存器，不参与根因判断。',lr:'调用发生的位置：sensor_read 内部。',pc:'0：CPU 尝试从地址 0 取指令。',psr:'xPSR；IPSR 可告诉你当前是否在异常里。'},
+      steps:[
+        'PC = 0x00000000。在反汇编里搜索 0 地址没有意义，先确认 LR = 0x08000A5D，对应 sensor_read。',
+        'CFSR.IBUSERR = 1：取指总线错误；HFSR.FORCED = 1 说明故障升级为 HardFault。BFAR 在这里不是主证据。',
+        '结论：sensor_read 通过一个空函数指针发起调用。沿 LR 回到源码，检查回调注册和初始化路径。'
+      ]
+    },
+    thumb:{
+      label:'Thumb 位丢失',
+      frame:{r0:'0x20001000',r1:'0x00000000',r2:'0x08001234',r3:'0x00000000',r12:'0x00000000',lr:'0x08000A5D',pc:'0x08001234',psr:'0x01000000'},
+      cfsr:'0x00020000', hfsr:'0x40000000', bfar:'—', mmfar:'—',
+      bits:['INVSTATE','FORCED'],
+      clue:'PC 落在 .text，但地址是偶数；CFSR.INVSTATE 置位。典型原因是函数指针被截断，丢了 bit0 的 Thumb 标志。',
+      detail:{r0:'调用参数，正常。',r1:'0，可能是未使用的第二个参数。',r2:'目标函数地址 0x08001234，最低位为 0。',r3:'临时寄存器。',r12:'临时寄存器。',lr:'调用发生的函数：sensor_read。',pc:'目标地址 0x08001234；低 bit 为 0，CPU 不认为它是 Thumb 代码。',psr:'xPSR；T 位与 INVSTATE 一起看。'},
+      steps:[
+        'PC = 0x08001234，落在 .text 范围，但最低位是 0；在 Thumb 状态下这不是合法入口。',
+        'CFSR.INVSTATE = 1：尝试切换到无效指令状态。常见于函数指针强转、地址截断或手工构造跳转地址。',
+        '结论：检查 0x08001234 是如何被写入函数指针的；恢复 bit0，或直接从符号取地址，不要手工拼地址。'
+      ]
+    },
+    oob:{
+      label:'数组越界',
+      frame:{r0:'0x20000040',r1:'0x00000010',r2:'0x20000020',r3:'0x00000021',r12:'0x00000000',lr:'0x08000A5D',pc:'0x08000C01',psr:'0x01000000'},
+      cfsr:'0x00000200', hfsr:'0x40000000', bfar:'0x20000040', mmfar:'—',
+      bits:['PRECISERR','FORCED'],
+      clue:'BFAR = 0x20000040，正好是一个全局缓冲区边界外的地址。PC 在写操作附近，LR 指向 sensor_read。',
+      detail:{r0:'目标地址，恰好等于 BFAR。',r1:'写入长度 16，可能是越界的元凶。',r2:'源缓冲区地址。',r3:'长度/索引，0x21 看起来已经超过容量。',r12:'临时寄存器。',lr:'调用者：sensor_read。',pc:'写操作附近的指令地址。',psr:'xPSR。'},
+      steps:[
+        'PC = 0x08000C01，在反汇编里看它前后的 STR/STM 指令，确认这是写操作。',
+        'CFSR.PRECISERR = 1，BFAR = 0x20000040：地址有效，可以直接在 map 文件里查它属于哪个数组的边界外。',
+        '结论：一次写越界踩到了相邻内存。检查 r0/r1/r3 对应的长度和索引，修复边界判断，再用 watchpoint 复现。'
+      ]
+    },
+    stack:{
+      label:'栈溢出',
+      frame:{r0:'0x20004FF0',r1:'0x20004FF0',r2:'0x00000000',r3:'0x00000000',r12:'0x00000000',lr:'0xFFFFFFF9',pc:'0x08000C01',psr:'0x01000000'},
+      cfsr:'0x00000010', hfsr:'0x40000000', bfar:'—', mmfar:'—',
+      bits:['MSTKERR','FORCED'],
+      clue:'SP 已经贴近 RAM 末端，MSTKERR 置位，入栈帧本身可能已损坏。栈里出现重复 LR，提示深递归或大局部数组。',
+      detail:{r0:'栈指针附近的值，已不可信。',r1:'与 r0 相同，可能是被破坏的参数。',r2:'0。',r3:'0。',r12:'临时寄存器。',lr:'0xFFFFFFF9：EXC_RETURN，说明这是异常边界。',pc:'故障指令地址。',psr:'xPSR；异常入栈可能失败，字段仅供参考。'},
+      steps:[
+        'SP 接近 RAM 末端（示例 0x20004FF0）。先确认 MSP/PSP 初值和当前栈剩余空间，不要只盯 PC。',
+        'CFSR.MSTKERR = 1：异常入栈时总线错误，栈指针已经越界。此时 8 槽帧可能不完整，不能盲信。',
+        '结论：栈溢出。查深递归、大局部数组、ISR 嵌套；加高水位线/MPU 哨兵，重新核算最坏栈深。'
+      ]
+    }
+  };
+  var faultKey = 'null', faultStep = 0, activeFaultField = '';
+  function renderFault(){
+    var d = faultData[faultKey];
+    $('#ch5-fault-label').textContent = d.label + ' · 示例现场';
+    var fields = ['r0','r1','r2','r3','r12','lr','pc','psr'];
+    $('#ch5-fault-frame').innerHTML = fields.map(function(k){
+      var hot = (k==='pc' || (k==='lr' && faultKey==='stack')) ? ' is-hot' : '';
+      var act = (activeFaultField===k) ? ' is-active' : '';
+      return '<button type="button" class="ch5-fault-cell'+hot+act+'" data-field="'+k+'"><small>'+k.toUpperCase()+'</small><b>'+d.frame[k]+'</b></button>';
+    }).join('');
+    $$('#ch5-fault-frame .ch5-fault-cell').forEach(function(c){
+      c.addEventListener('click', function(){
+        activeFaultField = c.getAttribute('data-field');
+        var k = activeFaultField;
+        var extra = k==='lr' ? '<br><span style="color:var(--muted)">返回地址；bit0=1 表示 Thumb。</span>' : '';
+        $('#ch5-fault-detail').innerHTML = '<small>'+k.toUpperCase()+' · 现场解读</small><b style="display:block;margin-top:4px">'+esc(d.detail[k]||'—')+'</b>'+extra;
+        $$('#ch5-fault-frame .ch5-fault-cell').forEach(function(x){ x.classList.toggle('is-active', x===c); });
+      });
+    });
+    var extra = '<div class="ch5-chip-row ch5-mt"><span class="ch5-chip"><b>CFSR</b> '+d.cfsr+'</span><span class="ch5-chip"><b>HFSR</b> '+d.hfsr+'</span><span class="ch5-chip"><b>BFAR</b> '+d.bfar+'</span><span class="ch5-chip"><b>MMFAR</b> '+d.mmfar+'</span></div>';
+    $('#ch5-fault-detail').innerHTML = '<small>现场寄存器</small><b style="display:block;margin-top:4px">'+d.clue+'</b>'+extra;
+    $('#ch5-fault-clue').innerHTML = '<b>第一印象：</b>'+d.clue;
+    var allBits = Object.keys(bitInfo);
+    $('#ch5-bits').innerHTML = allBits.map(function(k){
+      var on = d.bits.indexOf(k)>=0;
+      return '<button type="button" class="ch5-bit'+(on?' is-on':'')+'" data-bit="'+k+'"><span>'+bitInfo[k].label+'</span><span class="dot"></span></button>';
+    }).join('');
+    $$('#ch5-bits .ch5-bit').forEach(function(b){
+      b.addEventListener('click', function(){
+        var k = b.getAttribute('data-bit');
+        $('#ch5-bit-detail').innerHTML = '<b>'+bitInfo[k].label+'：</b>'+bitInfo[k].desc;
+      });
+    });
+    $('#ch5-attr-steps').innerHTML = d.steps.map(function(s,i){
+      var open = i < faultStep;
+      return '<div class="ch5-attr'+(open?' is-open':'')+'"><span class="n">'+(i+1)+'</span><span>'+s+'</span></div>';
+    }).join('');
+    $('#ch5-attr-count').textContent = faultStep + ' / 3';
+    $('#ch5-attr-next').disabled = faultStep>=3;
+    $('#ch5-verdict').hidden = faultStep<3;
+    if(faultStep>=3){ $('#ch5-verdict').innerHTML = '<b>归因结论：</b>'+d.steps[2].replace(/^结论：/,''); }
+    activeFaultField = '';
+  }
+  $$('#ch5-fault-tabs .ch5-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      faultKey = b.getAttribute('data-fault');
+      faultStep = 0;
+      $$('#ch5-fault-tabs .ch5-btn').forEach(function(x){ x.classList.toggle('is-active', x===b); });
+      renderFault();
+    });
+  });
+  $('#ch5-attr-next').addEventListener('click', function(){ if(faultStep<3){ faultStep++; renderFault(); } });
+  $('#ch5-attr-reset').addEventListener('click', function(){ faultStep=0; renderFault(); });
+  renderFault();
+
+  /* scene 3: stack scan */
+  var stackWords = [
+    {addr:'0x20004F80',val:'0x20001000',kind:'data',note:'参数/缓冲区指针'},
+    {addr:'0x20004F84',val:'0x00000001',kind:'data',note:'长度'},
+    {addr:'0x20004F88',val:'0x00000000',kind:'data',note:'局部变量'},
+    {addr:'0x20004F8C',val:'0x00000000',kind:'data',note:'局部变量'},
+    {addr:'0x20004F90',val:'0x00000000',kind:'data',note:'r12'},
+    {addr:'0x20004F94',val:'0x08000A5D',kind:'lr',fn:'sensor_read',note:'LR · 返回 sensor_read'},
+    {addr:'0x20004F98',val:'0x08000C01',kind:'pc',fn:'fault_demo',note:'现场 PC · fault_demo'},
+    {addr:'0x20004F9C',val:'0x01000000',kind:'data',note:'xPSR'},
+    {addr:'0x20004FA0',val:'0x08000B11',kind:'lr',fn:'app_task',note:'LR · 返回 app_task'},
+    {addr:'0x20004FA4',val:'0x20004FB0',kind:'data',note:'旧 SP / 临时值'},
+    {addr:'0x20004FA8',val:'0x080004C9',kind:'lr',fn:'main',note:'LR · 返回 main'},
+    {addr:'0x20004FAC',val:'0xFFFFFFF9',kind:'exc',note:'EXC_RETURN · 异常边界'},
+    {addr:'0x20004FB0',val:'0x00000000',kind:'data',note:'填充/局部变量'},
+    {addr:'0x20004FB4',val:'0x08000A5C',kind:'even',fn:'0x08000A5C',note:'偶数地址 · 非法 Thumb 入口'},
+    {addr:'0x20004FB8',val:'0x20004FC0',kind:'data',note:'旧 SP'},
+    {addr:'0x20004FBC',val:'0xDEADBEEF',kind:'data',note:'哨兵/未初始化'}
+  ];
+  var selectedLrs = [], scanDone = false;
+  function renderMem(){
+    var html = '<thead><tr><th>地址</th><th>值</th><th>判读</th></tr></thead><tbody>';
+    stackWords.forEach(function(w,i){
+      var isCode = scanDone && (w.kind==='lr' || w.kind==='pc' || w.kind==='even');
+      var cls = (isCode?'is-code':'') + (w.kind==='exc'?' is-exc':'') + (selectedLrs.indexOf(i)>=0?' is-selected':'');
+      html += '<tr class="'+cls+'" data-word="'+i+'"><td>'+w.addr+'</td><td>'+w.val+'</td><td>'+(scanDone?esc(w.note):'—')+'</td></tr>';
+    });
+    html += '</tbody>';
+    $('#ch5-mem').innerHTML = html;
+    $$('#ch5-mem tbody tr').forEach(function(tr){
+      tr.addEventListener('click', function(){
+        if(!scanDone){ $('#ch5-scan-note').innerHTML = '<b>先点“扫描代码地址”。</b>扫描只负责把候选范围缩小，最终仍要人工判断。'; return; }
+        var w = stackWords[Number(tr.getAttribute('data-word'))];
+        var idx = Number(tr.getAttribute('data-word'));
+        if(w.kind==='lr'){
+          if(selectedLrs.indexOf(idx)<0){ selectedLrs.push(idx); selectedLrs.sort(function(a,b){ return a-b; }); }
+          $('#ch5-scan-note').innerHTML = selectedLrs.length>=3
+            ? '<b>调用链重建完成：</b>fault_demo ← sensor_read ← app_task ← main。每个 LR 都是上一层调用点的返回地址。'
+            : '<b>已记录 LR：</b>'+w.fn+'。继续从栈里找下一个返回地址。';
+          renderMem(); renderChain();
+        } else if(w.kind==='pc'){
+          tr.classList.add('is-bad');
+          $('#ch5-scan-note').innerHTML = '<b>这是 PC，不是 LR。</b>它告诉你“死在哪”，不能直接当作调用者的返回地址。';
+        } else if(w.kind==='even'){
+          tr.classList.add('is-bad');
+          $('#ch5-scan-note').innerHTML = '<b>偶数地址不是合法 Thumb 入口。</b>如果函数指针指向这里，执行时会触发 INVSTATE。';
+        } else if(w.kind==='exc'){
+          $('#ch5-scan-note').innerHTML = '<b>EXC_RETURN：</b>0xFFFFFFF9 标记异常边界，不是普通函数返回地址；回溯到它就该停。';
+        } else {
+          tr.classList.add('is-bad');
+          $('#ch5-scan-note').innerHTML = '<b>这是数据，不是代码地址。</b>堆栈里混有指针、长度和局部变量，不能见地址就当 LR。';
+        }
+      });
+    });
+  }
+  function renderChain(){
+    var html = '';
+    if(selectedLrs.length){
+      html = '<span class="node">fault_demo</span>';
+      selectedLrs.forEach(function(idx){ html += '<span class="arr">←</span><span class="node">'+stackWords[idx].fn+'</span>'; });
+    } else {
+      html = '<span class="hint">先扫描，再点击你认为是 LR 的栈槽。</span>';
+    }
+    $('#ch5-chain').innerHTML = html;
+    $('#ch5-chain-count').textContent = selectedLrs.length + ' / 3 个 LR';
+  }
+  $('#ch5-scan').addEventListener('click', function(){
+    scanDone = true; selectedLrs = []; renderMem(); renderChain();
+    $('#ch5-scan-note').innerHTML = '<b>扫描完成：</b>高亮的是“代码地址候选”。注意 PC 和偶数地址也在其中，真正的 LR 需要结合调用上下文判断。';
+  });
+  $('#ch5-scan-reset').addEventListener('click', function(){
+    scanDone = false; selectedLrs = []; renderMem(); renderChain();
+    $('#ch5-scan-note').innerHTML = '<b>判据：</b>代码地址范围 + bit0=1；<code>0xFFFFFFF9</code> / <code>0xFFFFFFFD</code> 是 EXC_RETURN，标记异常边界，不是普通函数返回地址。';
+  });
+  renderMem(); renderChain();
+
+  /* scene 4: platforms + lab */
+  var platforms = {
+    m3:{title:'M3 / M4', cells:[
+      {k:'硬件入栈',v:'8 字',p:'r0–r3、r12、lr、pc、xPSR'},
+      {k:'细分状态',v:'有',p:'CFSR 三段：MMFSR / BFSR / UFSR'},
+      {k:'取证策略',v:'全量',p:'naked handler + CFSR/HFSR/BFAR/MMFAR'}
+    ]},
+    m4f:{title:'M4F（FPU）', cells:[
+      {k:'硬件入栈',v:'8 字 / 26 字',p:'FP 懒压栈时扩展，需看 LR bit4'},
+      {k:'细分状态',v:'有',p:'与 M3/M4 类似，注意 FPCCR'},
+      {k:'取证策略',v:'额外保存 FP 帧',p:'判断是否扩展帧，避免把 FP 上下文当普通栈'}
+    ]},
+    m0:{title:'M0+', cells:[
+      {k:'硬件入栈',v:'8 字',p:'无 FPU，帧较固定'},
+      {k:'细分状态',v:'无',p:'只有 HardFault，没有 CFSR 细分'},
+      {k:'取证策略',v:'PC + 栈扫描',p:'更多依赖反汇编、二分注入和代码审查'}
+    ]},
+    rv:{title:'RISC-V（RV32）', cells:[
+      {k:'异常现场',v:'mepc / mcause / mtval',p:'分别对应“哪里、为什么、什么地址”'},
+      {k:'返回地址',v:'ra（x1）',p:'jal/jalr 写入，无 Thumb 位概念'},
+      {k:'取证策略',v:'保存 CSR + 栈',p:'mtvec 入口先固化为软件现场'}
+    ]}
+  };
+  function renderPlatform(key){
+    var p = platforms[key];
+    $('#ch5-platform').innerHTML = p.cells.map(function(c){
+      return '<div><small>'+c.k+'</small><b>'+c.v+'</b><p>'+c.p+'</p></div>';
+    }).join('');
+  }
+  $$('#ch5-platform-tabs .ch5-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#ch5-platform-tabs .ch5-btn').forEach(function(x){ x.classList.toggle('is-active', x===b); });
+      renderPlatform(b.getAttribute('data-platform'));
+    });
+  });
+  renderPlatform('m3');
+  var labItems = [
+    '编译带 <code>-g</code>，用 <code>objdump -dS</code> 生成混合源码/汇编，并保留未 strip 的 ELF。',
+    '集成最小取证模块：naked handler 保存 8 槽栈帧 + CFSR/HFSR/BFAR。',
+    '在测试按键里埋一个空函数指针并触发，读取 g_fault 的 PC/LR/CFSR。',
+    '按三步归因写出根因、肇事函数和修复方向，再用 addr2line 验证源码行。',
+    '把现场通过串口 hexdump 输出，脱离调试器重演一次“黑盒定位”。'
+  ];
+  $('#ch5-lab').innerHTML = labItems.map(function(t,i){
+    return '<label><input type="checkbox" data-lab="'+i+'"><span>'+t+'</span></label>';
+  }).join('');
+  function updateLab(){
+    var all = $$('#ch5-lab input');
+    var done = all.filter(function(x){ return x.checked; }).length;
+    $('#ch5-lab-count').textContent = done + ' / ' + all.length;
+    $('#ch5-lab-bar').style.width = (done/all.length*100)+'%';
+  }
+  $$('#ch5-lab input').forEach(function(x){ x.addEventListener('change', updateLab); });
+  updateLab();
+})();
+</script>
+</div>

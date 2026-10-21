@@ -1,0 +1,1193 @@
+<div id="ch7-lesson">
+<style>
+  #ch7-lesson{
+    --ink: var(--seed-fg, #0f172a);
+    --muted: var(--seed-muted, #64748b);
+    --surface: var(--card-bg, #ffffff);
+    --surface-2: var(--inset-bg, #f8fafc);
+    --line: var(--border-standard, rgba(15,23,42,.12));
+    --line-soft: var(--border-subtle, rgba(15,23,42,.07));
+    --primary: var(--seed-primary, #1d4ed8);
+    --primary-2: #0891b2;
+    --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+    --ok: #059669;
+    --ok-soft: color-mix(in srgb, #059669 10%, transparent);
+    --warn: #d97706;
+    --warn-soft: color-mix(in srgb, #d97706 11%, transparent);
+    --danger: #dc2626;
+    --danger-soft: color-mix(in srgb, #dc2626 10%, transparent);
+    --code-bg: #0f172a;
+    --code-ink: #dbeafe;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--ink);
+    font: 14px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #ch7-lesson *{ box-sizing:border-box; }
+  #ch7-lesson p{ margin:0; }
+  #ch7-lesson button{ font:inherit; color:inherit; }
+  #ch7-lesson code{ font-family:var(--mono); }
+  #ch7-lesson .ch7-hero{
+    position:relative; overflow:hidden; padding:28px 30px 22px;
+    border:1px solid var(--line); border-radius:20px;
+    background:
+      radial-gradient(680px 250px at 98% -25%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 66%),
+      linear-gradient(145deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface) 58%);
+  }
+  #ch7-lesson .ch7-hero::after{
+    content:""; position:absolute; right:-60px; top:-80px; width:250px; height:250px; border-radius:50%;
+    border:1px dashed color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+  #ch7-lesson .ch7-kicker{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+  #ch7-lesson h1{ margin:0; font-size:clamp(25px,3.4vw,40px); line-height:1.2; letter-spacing:-.02em; }
+  #ch7-lesson .ch7-sub{ margin-top:10px; max-width:860px; color:var(--muted); font-size:14px; }
+  #ch7-lesson .ch7-badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  #ch7-lesson .ch7-badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:7px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 75%, transparent); font-size:11px; color:var(--muted); }
+  #ch7-lesson .ch7-badge b{ color:var(--ink); font-weight:650; }
+  #ch7-lesson .ch7-meta{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); font-size:11px; color:var(--muted); }
+  #ch7-lesson .ch7-steps{
+    position:sticky; top:0; z-index:30; display:flex; gap:4px; overflow-x:auto; scrollbar-width:thin;
+    padding:8px; margin:14px 0 16px; border:1px solid var(--line); border-radius:14px;
+    background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(12px);
+  }
+  #ch7-lesson .ch7-step{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px; border:0; background:transparent; border-radius:9px; padding:7px 11px; cursor:pointer; color:var(--muted); text-align:left; min-width:96px; transition:.2s; }
+  #ch7-lesson .ch7-step .n{ font:10px/1 var(--mono); color:color-mix(in srgb, var(--muted) 75%, transparent); }
+  #ch7-lesson .ch7-step .t{ font-size:11.5px; font-weight:650; white-space:nowrap; }
+  #ch7-lesson .ch7-step:hover{ background:var(--primary-soft); color:var(--ink); }
+  #ch7-lesson .ch7-step.is-active{ background:var(--primary); color:#fff; }
+  #ch7-lesson .ch7-step.is-active .n{ color:rgba(255,255,255,.7); }
+  #ch7-lesson .ch7-progress{ height:3px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:-8px 0 18px; }
+  #ch7-lesson .ch7-progress i{ display:block; height:100%; width:16.66%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .35s; }
+  #ch7-lesson .ch7-scene{ display:none; }
+  #ch7-lesson .ch7-scene.is-active{ display:block; animation:ch7In .38s ease both; }
+  @keyframes ch7In{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  #ch7-lesson .ch7-scene-head{ margin:2px 0 14px; }
+  #ch7-lesson .ch7-scene-head .tag{ display:inline-flex; align-items:center; gap:6px; font:10px/1 var(--mono); color:var(--primary); border:1px solid color-mix(in srgb, var(--primary) 30%, transparent); background:var(--primary-soft); border-radius:99px; padding:4px 9px; margin-bottom:7px; }
+  #ch7-lesson .ch7-scene-head h2{ margin:0; font-size:clamp(20px,2.5vw,27px); line-height:1.3; letter-spacing:-.01em; }
+  #ch7-lesson .ch7-scene-head p{ margin-top:5px; color:var(--muted); font-size:12.5px; max-width:940px; }
+  #ch7-lesson .ch7-card{ border:1px solid var(--line); border-radius:15px; background:var(--surface); padding:16px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
+  #ch7-lesson .ch7-card + .ch7-card{ margin-top:12px; }
+  #ch7-lesson .ch7-card-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:11px; }
+  #ch7-lesson .ch7-card-h h3{ margin:0; font-size:14px; line-height:1.4; }
+  #ch7-lesson .ch7-hint{ font-size:10.5px; color:var(--muted); white-space:nowrap; }
+  #ch7-lesson .ch7-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+  #ch7-lesson .ch7-grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  #ch7-lesson .ch7-grid2 > .ch7-card, #ch7-lesson .ch7-grid3 > .ch7-card{ margin-top:0; }
+  #ch7-lesson .ch7-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:31px; padding:5px 11px; border:1px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink); cursor:pointer; font-size:11.5px; font-weight:600; transition:.15s; }
+  #ch7-lesson .ch7-btn:hover{ border-color:var(--primary); color:var(--primary); background:var(--primary-soft); }
+  #ch7-lesson .ch7-btn.primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch7-lesson .ch7-btn.primary:hover{ filter:brightness(1.06); color:#fff; }
+  #ch7-lesson .ch7-btn.ghost{ background:transparent; }
+  #ch7-lesson .ch7-controls{ display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+  #ch7-lesson .ch7-code{ margin:0; padding:12px 13px; border-radius:10px; background:var(--code-bg); color:var(--code-ink); font:10.5px/1.65 var(--mono); overflow:auto; }
+  #ch7-lesson .ch7-code .cm{ color:#7dd3fc; }
+  #ch7-lesson .ch7-code .kw{ color:#f0abfc; }
+  #ch7-lesson .ch7-code .st{ color:#86efac; }
+  #ch7-lesson .ch7-code .hl{ background:rgba(250,204,21,.16); border-radius:3px; padding:0 2px; color:#fde68a; }
+  #ch7-lesson .ch7-note{ border:1px solid var(--line); border-left:3px solid var(--primary); border-radius:8px; background:var(--surface-2); padding:9px 11px; font-size:11.5px; color:var(--muted); }
+  #ch7-lesson .ch7-note b{ color:var(--ink); }
+  #ch7-lesson .ch7-note.warn{ border-left-color:var(--warn); background:var(--warn-soft); }
+  #ch7-lesson .ch7-note.danger{ border-left-color:var(--danger); background:var(--danger-soft); }
+  #ch7-lesson .ch7-status{ margin-top:10px; border:1px dashed var(--line); border-radius:8px; padding:8px 10px; font-size:11px; min-height:38px; color:var(--muted); background:var(--surface-2); }
+  #ch7-lesson .ch7-status b{ color:var(--ink); }
+  #ch7-lesson .ch7-status.is-bad{ border-color:color-mix(in srgb, var(--danger) 40%, var(--line)); background:var(--danger-soft); color:var(--danger); }
+  #ch7-lesson .ch7-status.is-ok{ border-color:color-mix(in srgb, var(--ok) 40%, var(--line)); background:var(--ok-soft); color:var(--ok); }
+  #ch7-lesson .ch7-chip{ display:inline-flex; align-items:center; gap:4px; border:1px solid var(--line); border-radius:6px; padding:2px 6px; font:9.5px/1.5 var(--mono); color:var(--muted); background:var(--surface-2); }
+  #ch7-lesson .ch7-chip.ok{ color:var(--ok); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); background:var(--ok-soft); }
+  #ch7-lesson .ch7-chip.bad{ color:var(--danger); border-color:color-mix(in srgb, var(--danger) 30%, var(--line)); background:var(--danger-soft); }
+  #ch7-lesson .ch7-chip.warn{ color:var(--warn); border-color:color-mix(in srgb, var(--warn) 30%, var(--line)); background:var(--warn-soft); }
+  #ch7-lesson .ch7-mini-title{ font:10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+
+  /* scene 0 */
+  #ch7-lesson .ch7-scenarios{ display:grid; gap:5px; }
+  #ch7-lesson .ch7-scenario{ text-align:left; border:1px solid var(--line); background:var(--surface-2); border-radius:8px; padding:8px 10px; cursor:pointer; font-size:11.5px; display:flex; gap:8px; align-items:flex-start; transition:.15s; }
+  #ch7-lesson .ch7-scenario:hover{ border-color:var(--primary); }
+  #ch7-lesson .ch7-scenario.is-active{ border-color:var(--primary); background:var(--primary-soft); }
+  #ch7-lesson .ch7-scenario .sn{ font:9px/1.6 var(--mono); color:var(--primary); }
+  #ch7-lesson .ch7-choice{ margin-top:10px; border:1px dashed var(--line); border-radius:9px; padding:10px; min-height:122px; background:var(--surface-2); font-size:11.5px; }
+  #ch7-lesson .ch7-choice b{ font-size:12.5px; }
+  #ch7-lesson .ch7-choice .why{ color:var(--muted); margin-top:4px; }
+  #ch7-lesson .ch7-choice .num{ margin-top:7px; display:flex; flex-wrap:wrap; gap:5px; }
+  #ch7-lesson .ch7-structs{ display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  #ch7-lesson .ch7-struct{ border:1px solid var(--line); border-radius:9px; padding:9px; background:var(--surface-2); cursor:pointer; transition:.15s; }
+  #ch7-lesson .ch7-struct:hover{ border-color:var(--primary); }
+  #ch7-lesson .ch7-struct.is-active{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-soft); background:var(--surface); }
+  #ch7-lesson .ch7-struct .ico{ font:9px/1.4 var(--mono); color:var(--primary); }
+  #ch7-lesson .ch7-struct b{ display:block; font-size:11.5px; margin:2px 0; }
+  #ch7-lesson .ch7-struct span{ display:block; font-size:10px; color:var(--muted); line-height:1.45; }
+  #ch7-lesson .ch7-project{ border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--surface); }
+  #ch7-lesson .ch7-project b{ font-size:11.5px; display:block; }
+  #ch7-lesson .ch7-project span{ font-size:10.5px; color:var(--muted); display:block; margin-top:2px; }
+  #ch7-lesson .ch7-project .where{ font:9px/1.5 var(--mono); color:var(--primary); margin-top:5px; }
+
+  /* scene 1 ring */
+  #ch7-lesson .ch7-ring{ display:grid; grid-template-columns:repeat(8,1fr); gap:5px; margin:4px 0 7px; }
+  #ch7-lesson .ch7-cell{ position:relative; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); min-height:64px; padding:13px 4px 12px; text-align:center; transition:.2s; }
+  #ch7-lesson .ch7-cell .i{ position:absolute; top:3px; left:5px; font:8.5px/1 var(--mono); color:var(--muted); }
+  #ch7-lesson .ch7-cell b{ display:block; font:600 16px/1.4 var(--mono); color:transparent; }
+  #ch7-lesson .ch7-cell.is-full{ background:color-mix(in srgb, var(--primary) 8%, var(--surface)); border-color:color-mix(in srgb, var(--primary) 30%, var(--line)); }
+  #ch7-lesson .ch7-cell.is-full b{ color:var(--ink); }
+  #ch7-lesson .ch7-cell.is-head{ box-shadow:inset 0 0 0 2px var(--primary); }
+  #ch7-lesson .ch7-cell.is-tail{ box-shadow:inset 0 0 0 2px var(--primary-2); }
+  #ch7-lesson .ch7-cell.is-head.is-tail{ box-shadow:inset 0 0 0 2px var(--primary), inset 0 0 0 4px var(--primary-2); }
+  #ch7-lesson .ch7-cell.is-conflict{ background:var(--danger-soft); border-color:var(--danger); animation:ch7Pulse .55s ease 2; }
+  #ch7-lesson .ch7-cell .ptr{ position:absolute; bottom:3px; left:0; right:0; font:8px/1 var(--mono); }
+  @keyframes ch7Pulse{ 50%{ transform:translateY(-3px); } }
+  #ch7-lesson .ch7-ring-legend{ display:flex; flex-wrap:wrap; gap:9px; font-size:9.5px; color:var(--muted); margin-bottom:9px; }
+  #ch7-lesson .ch7-ring-legend i{ display:inline-block; width:9px; height:9px; border-radius:2px; vertical-align:-1px; margin-right:3px; }
+  #ch7-lesson .ch7-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin:8px 0; }
+  #ch7-lesson .ch7-stat{ border:1px solid var(--line-soft); background:var(--surface-2); border-radius:7px; padding:5px 7px; }
+  #ch7-lesson .ch7-stat span{ display:block; font-size:9px; color:var(--muted); }
+  #ch7-lesson .ch7-stat b{ font:600 13px/1.4 var(--mono); }
+  #ch7-lesson .ch7-stat.bad b{ color:var(--danger); }
+
+  /* scene 2 list */
+  #ch7-lesson .ch7-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; min-height:74px; padding:10px; border:1px dashed var(--line); border-radius:9px; background:var(--surface-2); }
+  #ch7-lesson .ch7-node{ border:1px solid var(--line); border-radius:8px; background:var(--surface); padding:7px 9px; min-width:76px; cursor:pointer; transition:.15s; }
+  #ch7-lesson .ch7-node:hover{ border-color:var(--primary); }
+  #ch7-lesson .ch7-node.is-sel{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch7-lesson .ch7-node b{ display:block; font-size:11px; }
+  #ch7-lesson .ch7-node span{ display:block; font:9px/1.5 var(--mono); color:var(--muted); }
+  #ch7-lesson .ch7-arrow{ font:11px/1 var(--mono); color:var(--primary); }
+  #ch7-lesson .ch7-headptr{ font:9px/1.3 var(--mono); color:var(--primary); }
+  #ch7-lesson .ch7-mem{ display:grid; gap:6px; }
+  #ch7-lesson .ch7-task{ border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--surface); }
+  #ch7-lesson .ch7-task.is-off{ opacity:.56; }
+  #ch7-lesson .ch7-task.is-sel{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch7-lesson .ch7-task-h{ display:flex; justify-content:space-between; gap:8px; padding:4px 8px; background:var(--surface-2); font:9px/1.5 var(--mono); color:var(--muted); }
+  #ch7-lesson .ch7-fields{ display:grid; grid-template-columns:1fr 1fr 1.2fr; }
+  #ch7-lesson .ch7-field{ padding:5px 7px; border-top:1px solid var(--line-soft); border-right:1px solid var(--line-soft); font:9px/1.4 var(--mono); }
+  #ch7-lesson .ch7-field:last-child{ border-right:0; }
+  #ch7-lesson .ch7-field b{ display:block; color:var(--muted); font-weight:500; font-size:8.5px; }
+  #ch7-lesson .ch7-field.node{ cursor:pointer; background:var(--primary-soft); color:var(--primary); }
+  #ch7-lesson .ch7-co{ margin-top:9px; border:1px solid var(--line); border-radius:9px; padding:10px; background:var(--surface-2); font-size:11px; }
+  #ch7-lesson .ch7-co .formula{ font:10px/1.7 var(--mono); color:var(--primary); margin-top:5px; }
+  #ch7-lesson .ch7-co .calc{ font:10px/1.7 var(--mono); color:var(--muted); margin-top:3px; }
+
+  /* scene 3 pool */
+  #ch7-lesson .ch7-pool{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  #ch7-lesson .ch7-block{ border:1px dashed color-mix(in srgb, var(--ok) 35%, var(--line)); border-radius:8px; padding:8px; background:var(--ok-soft); min-height:64px; cursor:pointer; transition:.15s; }
+  #ch7-lesson .ch7-block.is-used{ border-style:solid; border-color:var(--primary); background:var(--primary-soft); }
+  #ch7-lesson .ch7-block b{ display:block; font:10px/1.4 var(--mono); }
+  #ch7-lesson .ch7-block span{ display:block; font:8.5px/1.5 var(--mono); color:var(--muted); }
+  #ch7-lesson .ch7-block .tag{ font-size:8px; color:var(--primary); }
+  #ch7-lesson .ch7-poollist{ margin-top:9px; font:9.5px/1.7 var(--mono); color:var(--muted); }
+  #ch7-lesson .ch7-poollist b{ color:var(--ink); }
+  #ch7-lesson .ch7-bars{ display:grid; gap:8px; margin-top:8px; }
+  #ch7-lesson .ch7-bar-row{ font-size:10px; color:var(--muted); }
+  #ch7-lesson .ch7-bar-row .lab{ display:flex; justify-content:space-between; gap:8px; margin-bottom:3px; }
+  #ch7-lesson .ch7-bar{ height:7px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch7-lesson .ch7-bar i{ display:block; height:100%; border-radius:99px; background:var(--primary); }
+  #ch7-lesson .ch7-bar i.ok{ background:var(--ok); }
+  #ch7-lesson .ch7-bar i.warn{ background:var(--warn); }
+
+  /* scene 4 fsm */
+  #ch7-lesson .ch7-fsm{ display:grid; grid-template-columns:1.35fr 1fr; gap:12px; align-items:start; }
+  #ch7-lesson .ch7-svg{ width:100%; height:auto; display:block; border:1px solid var(--line-soft); border-radius:10px; background:var(--surface-2); }
+  #ch7-lesson .ch7-svg .node{ fill:var(--surface); stroke:var(--line); stroke-width:1.5; transition:.2s; }
+  #ch7-lesson .ch7-svg .node.is-on{ fill:var(--primary); stroke:var(--primary); }
+  #ch7-lesson .ch7-svg .nlabel{ fill:var(--ink); font:600 11px var(--mono); }
+  #ch7-lesson .ch7-svg .node.is-on + .nlabel{ fill:#fff; }
+  #ch7-lesson .ch7-svg .edge{ fill:none; stroke:var(--line); stroke-width:1.4; marker-end:url(#ch7-arrow); }
+  #ch7-lesson .ch7-svg .edge.is-hot{ stroke:var(--warn); stroke-width:2.2; marker-end:url(#ch7-arrow-hot); }
+  #ch7-lesson .ch7-svg .elabel{ fill:var(--muted); font:8px var(--mono); }
+  #ch7-lesson .ch7-state-now{ display:flex; align-items:center; gap:7px; margin-bottom:8px; font-size:11px; }
+  #ch7-lesson .ch7-state-now b{ font:700 15px/1 var(--mono); color:var(--primary); }
+  #ch7-lesson .ch7-log{ width:100%; border-collapse:collapse; font:9.5px/1.5 var(--mono); margin-top:8px; }
+  #ch7-lesson .ch7-log th{ text-align:left; color:var(--muted); font-weight:500; border-bottom:1px solid var(--line); padding:3px 4px; }
+  #ch7-lesson .ch7-log td{ border-bottom:1px solid var(--line-soft); padding:3px 4px; }
+  #ch7-lesson .ch7-log tr.is-last td{ background:var(--warn-soft); }
+  #ch7-lesson .ch7-valid{ display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--muted); margin:7px 0; }
+  #ch7-lesson .ch7-valid input{ accent-color:var(--primary); }
+
+  /* scene 5 wheel */
+  #ch7-lesson .ch7-wheel{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:7px 0; }
+  #ch7-lesson .ch7-slot{ border:1px solid var(--line); border-radius:9px; min-height:74px; padding:5px 6px; background:var(--surface-2); transition:.2s; }
+  #ch7-lesson .ch7-slot.is-now{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-soft); background:color-mix(in srgb, var(--primary) 6%, var(--surface)); }
+  #ch7-lesson .ch7-slot .sn{ display:flex; justify-content:space-between; font:8.5px/1.4 var(--mono); color:var(--muted); }
+  #ch7-lesson .ch7-slot.is-now .sn{ color:var(--primary); }
+  #ch7-lesson .ch7-timer{ margin-top:4px; border-radius:5px; padding:3px 4px; background:var(--primary-soft); color:var(--primary); font:8.5px/1.4 var(--mono); }
+  #ch7-lesson .ch7-timer.periodic{ background:var(--warn-soft); color:var(--warn); }
+  #ch7-lesson .ch7-fire{ margin-top:8px; border:1px dashed var(--line); border-radius:8px; padding:7px 9px; font:10px/1.6 var(--mono); color:var(--muted); background:var(--surface-2); min-height:53px; }
+  #ch7-lesson .ch7-fire b{ color:var(--ink); }
+  #ch7-lesson .ch7-bench{ width:100%; border-collapse:collapse; font:10px/1.5 var(--mono); }
+  #ch7-lesson .ch7-bench th{ text-align:left; color:var(--muted); font-weight:500; border-bottom:1px solid var(--line); padding:4px 5px; }
+  #ch7-lesson .ch7-bench td{ border-bottom:1px solid var(--line-soft); padding:4px 5px; }
+  #ch7-lesson .ch7-bench .b{ height:6px; border-radius:99px; background:var(--line-soft); min-width:60px; overflow:hidden; }
+  #ch7-lesson .ch7-bench .b i{ display:block; height:100%; background:var(--ok); }
+  #ch7-lesson .ch7-lab{ display:grid; gap:5px; margin-top:4px; }
+  #ch7-lesson .ch7-lab label{ display:flex; align-items:flex-start; gap:7px; border:1px solid var(--line-soft); border-radius:7px; padding:6px 8px; font-size:10.5px; cursor:pointer; background:var(--surface-2); }
+  #ch7-lesson .ch7-lab label:has(input:checked){ border-color:color-mix(in srgb, var(--ok) 35%, var(--line)); background:var(--ok-soft); }
+  #ch7-lesson .ch7-lab input{ margin-top:3px; accent-color:var(--ok); }
+  #ch7-lesson .ch7-lab-progress{ display:flex; align-items:center; gap:8px; font-size:10px; color:var(--muted); margin-top:7px; }
+  #ch7-lesson .ch7-mini-bar{ flex:1; height:6px; border-radius:99px; background:var(--line-soft); overflow:hidden; }
+  #ch7-lesson .ch7-mini-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--ok),var(--primary)); transition:width .25s; }
+  #ch7-lesson details{ border:1px solid var(--line); border-radius:8px; padding:7px 9px; background:var(--surface-2); font-size:10.5px; }
+  #ch7-lesson details + details{ margin-top:5px; }
+  #ch7-lesson summary{ cursor:pointer; font-weight:600; font-size:11px; }
+  #ch7-lesson details p{ color:var(--muted); margin-top:5px; font-size:10.5px; }
+  #ch7-lesson .ch7-footer{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; padding:11px 2px 0; border-top:1px dashed var(--line); font-size:10.5px; color:var(--muted); }
+  #ch7-lesson .ch7-footer .fbtns{ display:flex; gap:6px; }
+
+  @media(max-width:860px){
+    #ch7-lesson .ch7-grid2, #ch7-lesson .ch7-fsm{ grid-template-columns:1fr; }
+    #ch7-lesson .ch7-grid3{ grid-template-columns:1fr 1fr; }
+  }
+  @media(max-width:620px){
+    #ch7-lesson{ font-size:13px; }
+    #ch7-lesson .ch7-hero{ padding:20px 18px 16px; border-radius:15px; }
+    #ch7-lesson .ch7-step{ min-width:84px; padding:6px 8px; }
+    #ch7-lesson .ch7-ring{ gap:3px; }
+    #ch7-lesson .ch7-cell{ min-height:52px; padding:12px 2px 10px; border-radius:6px; }
+    #ch7-lesson .ch7-cell b{ font-size:13px; }
+    #ch7-lesson .ch7-cell .i{ font-size:7.5px; left:3px; }
+    #ch7-lesson .ch7-cell .ptr{ font-size:7px; }
+    #ch7-lesson .ch7-stats{ grid-template-columns:1fr 1fr; }
+    #ch7-lesson .ch7-grid3{ grid-template-columns:1fr; }
+    #ch7-lesson .ch7-structs{ grid-template-columns:1fr; }
+    #ch7-lesson .ch7-pool{ grid-template-columns:1fr 1fr; }
+    #ch7-lesson .ch7-wheel{ grid-template-columns:1fr 1fr; }
+    #ch7-lesson .ch7-card{ padding:12px; border-radius:12px; }
+    #ch7-lesson .ch7-fields{ grid-template-columns:1fr 1fr; }
+    #ch7-lesson .ch7-field:nth-child(3){ grid-column:1/-1; border-top:1px solid var(--line-soft); }
+    #ch7-lesson .ch7-scene-head h2{ font-size:20px; }
+  }
+</style>
+
+<header class="ch7-hero">
+  <div class="ch7-kicker">第 1 篇 · 编程基础 / 第 7 章</div>
+  <h1>嵌入式数据结构与算法</h1>
+  <p class="ch7-sub">环形缓冲、对象池、侵入式链表、状态机。MCU 上的数据结构不是“算法题”，而是内存、并发和实时性的三重约束：每一次分配都要可预测，每一条链都要零拷贝，每一个状态迁移都要能回放。</p>
+  <div class="ch7-badges">
+    <span class="ch7-badge">🔄 <b>SPSC</b> 无锁环</span>
+    <span class="ch7-badge">🧩 <b>container_of</b> 侵入式链</span>
+    <span class="ch7-badge">📦 <b>对象池</b> O(1)</span>
+    <span class="ch7-badge">🚦 <b>FSM / HSM</b></span>
+    <span class="ch7-badge">⏱️ <b>时间轮</b></span>
+  </div>
+  <div class="ch7-meta">
+    <span>学习时长约 55 分钟 · 6 个互动实验</span>
+    <span>建议前置：第 2 章内存模型、第 3 章位操作</span>
+  </div>
+</header>
+
+<nav class="ch7-steps" aria-label="章节导航">
+  <button type="button" class="ch7-step is-active" data-goto="0"><span class="n">01</span><span class="t">选型地图</span></button>
+  <button type="button" class="ch7-step" data-goto="1"><span class="n">02</span><span class="t">SPSC 环形缓冲</span></button>
+  <button type="button" class="ch7-step" data-goto="2"><span class="n">03</span><span class="t">侵入式链表</span></button>
+  <button type="button" class="ch7-step" data-goto="3"><span class="n">04</span><span class="t">静态对象池</span></button>
+  <button type="button" class="ch7-step" data-goto="4"><span class="n">05</span><span class="t">表驱动状态机</span></button>
+  <button type="button" class="ch7-step" data-goto="5"><span class="n">06</span><span class="t">时间轮与 Lab</span></button>
+</nav>
+<div class="ch7-progress"><i id="ch7-progress"></i></div>
+
+<main>
+  <!-- ============ scene 0 ============ -->
+  <section class="ch7-scene is-active" data-scene="0">
+    <div class="ch7-scene-head">
+      <span class="tag">7.1 – 7.6 · 先选对结构</span>
+      <h2>不是“学四种容器”，而是把场景翻译成约束</h2>
+      <p>容量、并发模型、生命周期、最坏执行时间，这四个问题决定了你应该用哪个结构。先点场景，再看推荐结构和它付出的代价。</p>
+    </div>
+
+    <div class="ch7-grid2">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>把场景翻译成结构</h3><span class="ch7-hint">点击左侧场景</span></div>
+        <div class="ch7-scenarios" id="ch7-scenarios">
+          <button type="button" class="ch7-scenario" data-key="ring"><span class="sn">01</span><span>串口 ISR 逐字节收数据，主循环稍后取走</span></button>
+          <button type="button" class="ch7-scenario" data-key="pool"><span class="sn">02</span><span>运行期反复创建 / 释放 32 B 的传感器消息</span></button>
+          <button type="button" class="ch7-scenario" data-key="list"><span class="sn">03</span><span>任务就绪队列要支持任意位置删除，且不能搬动任务对象</span></button>
+          <button type="button" class="ch7-scenario" data-key="fsm"><span class="sn">04</span><span>按键、超时、通信事件驱动一个设备流程</span></button>
+        </div>
+        <div class="ch7-choice" id="ch7-choice">
+          <b>先选一个场景</b>
+          <p class="why">每个结构都在解决不同的问题。选错的代价通常不是“慢一点”，而是偶发丢数据、内存碎片或状态卡死。</p>
+        </div>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>四种结构，一条工程主线</h3><span class="ch7-hint">点击卡片看细节</span></div>
+        <div class="ch7-structs">
+          <div class="ch7-struct" data-key="ring" role="button" tabindex="0">
+            <div class="ico">RING / SPSC</div><b>环形缓冲</b>
+            <span>固定容量、先进先出；1 写 1 读可无锁，留一格区分满 / 空。</span>
+          </div>
+          <div class="ch7-struct" data-key="list" role="button" tabindex="0">
+            <div class="ico">LIST / INTRUSIVE</div><b>侵入式链表</b>
+            <span>节点嵌在业务对象里，插入/删除 O(1)，用 container_of 找回宿主。</span>
+          </div>
+          <div class="ch7-struct" data-key="pool" role="button" tabindex="0">
+            <div class="ico">POOL / FIXED</div><b>静态对象池</b>
+            <span>启动时切好固定块，运行期只做出栈/入栈；无碎片，泄漏可数。</span>
+          </div>
+          <div class="ch7-struct" data-key="fsm" role="button" tabindex="0">
+            <div class="ico">FSM / TABLE</div><b>表驱动状态机</b>
+            <span>状态 × 事件 = 处理函数；迁移集中可见，新增状态只加一行。</span>
+          </div>
+        </div>
+        <div class="ch7-note" style="margin-top:9px">
+          <b>实时性统一尺度：</b>在 F407 @168 MHz、-O2 下，ring_put 约 11 周期，pool_alloc 约 14 周期，fsm_step 约 16 周期；而 malloc 常见 200+ 周期且不确定。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-note warn" style="margin-top:12px">
+      <b>关于 malloc：</b>MCU 固件不是“绝对不能用动态内存”，而是不要在运行期的高频路径上依赖它。初始化阶段一次性分配、解析后立即释放可以接受；运行期优先静态数组、对象池，或至少使用 heap_4 这类碎片可控且可统计的分配器。
+    </div>
+
+    <div class="ch7-grid3" style="margin-top:12px">
+      <div class="ch7-project"><b>日志系统 · ch14</b><span>SPSC 环 + 批量落盘，ISR 只负责入队，避免在中断里等 Flash。</span><div class="where">→ 本章 7.1</div></div>
+      <div class="ch7-project"><b>串口不定长接收 · ch28</b><span>DMA 循环缓冲，用 NDTR 反推写指针，软件零维护。</span><div class="where">→ 本章 7.7</div></div>
+      <div class="ch7-project"><b>云台 / 告警状态 · ch33 / ch53</b><span>表驱动 FSM 把“事件 → 状态”从层层 switch 里解放出来。</span><div class="where">→ 本章 7.4</div></div>
+    </div>
+  </section>
+
+  <!-- ============ scene 1 ============ -->
+  <section class="ch7-scene" data-scene="1">
+    <div class="ch7-scene-head">
+      <span class="tag">7.1 / 7.7 / 7.8 · SPSC 环形缓冲</span>
+      <h2>一个写者、一个读者，为什么可以不加锁</h2>
+      <p>head 只由生产者修改，tail 只由消费者修改，双方各自读对方的指针。只要遵守这个所有权边界，单字节读写天然原子，不需要临界区。先亲手推一遍指针，再看“两个生产者”是怎么把数据写丢的。</p>
+    </div>
+
+    <div class="ch7-grid2">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>8 格环形缓冲</h3><span class="ch7-hint">容量 8 · 可用 7</span></div>
+        <div class="ch7-ring" id="ch7-ring"></div>
+        <div class="ch7-ring-legend">
+          <span><i style="background:var(--primary)"></i>H = 下一次写</span>
+          <span><i style="background:var(--primary-2)"></i>T = 下一次读</span>
+          <span><i style="background:var(--ok)"></i>已排队数据</span>
+          <span><i style="background:var(--danger)"></i>冲突格</span>
+        </div>
+        <div class="ch7-stats" id="ch7-ring-stats"></div>
+        <div class="ch7-controls">
+          <button type="button" class="ch7-btn primary" data-ring="put">生产 1 个</button>
+          <button type="button" class="ch7-btn" data-ring="get">消费 1 个</button>
+          <button type="button" class="ch7-btn" data-ring="burst">突发生产 10 个</button>
+          <button type="button" class="ch7-btn" data-ring="race">模拟双生产者</button>
+          <button type="button" class="ch7-btn ghost" data-ring="auto">自动运行</button>
+          <button type="button" class="ch7-btn ghost" data-ring="reset">重置</button>
+        </div>
+        <div class="ch7-status" id="ch7-ring-status"><b>空：</b>head == tail。消费者取走数据后，tail 追上 head。</div>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>核心代码：留一格 + 内存序</h3><span class="ch7-hint">单生产者 / 单消费者</span></div>
+        <pre class="ch7-code"><span class="cm">/* size 必须是 2 的幂，掩码代替取模 */</span>
+<span class="kw">typedef struct</span> {
+  uint8_t *buf; uint32_t size;
+  <span class="kw">volatile</span> uint32_t head, tail;
+} ring_t;
+
+<span class="kw">bool</span> ring_put(ring_t *r, uint8_t b) {
+  uint32_t next = (r-&gt;head + 1) &amp; (r-&gt;size - 1);
+  <span class="kw">if</span> (next == r-&gt;tail) <span class="kw">return false</span>; <span class="cm">/* 满 */</span>
+  r-&gt;buf[r-&gt;head] = b;
+  <span class="hl">__DMB();</span>              <span class="cm">/* 先写数据，再发布 head */</span>
+  r-&gt;head = next;
+  <span class="kw">return true</span>;
+}
+
+<span class="kw">bool</span> ring_get(ring_t *r, uint8_t *b) {
+  <span class="kw">if</span> (r-&gt;tail == r-&gt;head) <span class="kw">return false</span>; <span class="cm">/* 空 */</span>
+  *b = r-&gt;buf[r-&gt;tail];
+  <span class="hl">__DMB();</span>
+  r-&gt;tail = (r-&gt;tail + 1) &amp; (r-&gt;size - 1);
+  <span class="kw">return true</span>;
+}</pre>
+        <div class="ch7-note" style="margin-top:9px">
+          <b>为什么留一格？</b>如果允许写满，head == tail 就同时表示“空”和“满”。留一格让 head 永远追不上 tail，判定不需要额外计数器。<br>
+          <b>DMB 放在哪？</b>先写 buf，再发布 head；读者看到新 head 时，数据一定已经可见。Cortex-M 单核通常顺序一致，但编译器重排和双核/弱内存序平台仍然需要它。
+        </div>
+        <div class="ch7-note danger" style="margin-top:7px">
+          <b>边界：</b>只支持 1 写 1 读。多生产者必须关中断、用 CAS，或改成“每生产者私有 ring + 消费者聚合”，不要硬撑无锁。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-grid3" style="margin-top:12px">
+      <div class="ch7-card"><div class="ch7-mini-title">流派 A · 留一格</div><p style="font-size:11px;color:var(--muted)">实现最简单、无需原子计数；容量损失 1 格。绝大多数字节流首选。</p></div>
+      <div class="ch7-card"><div class="ch7-mini-title">流派 B · 带 count</div><p style="font-size:11px;color:var(--muted)">能存满 size 字节，但 count 的更新需要原子性；只有在“满载不能丢”时才值得。</p></div>
+      <div class="ch7-card"><div class="ch7-mini-title">流派 C · DMA 推导</div><p style="font-size:11px;color:var(--muted)">写指针由硬件 NDTR 反推：<code>wpos = size - __HAL_DMA_GET_COUNTER()</code>；软件零维护，见 ch28。</p></div>
+    </div>
+  </section>
+
+  <!-- ============ scene 2 ============ -->
+  <section class="ch7-scene" data-scene="2">
+    <div class="ch7-scene-head">
+      <span class="tag">7.2 / 7.9 · 侵入式链表与 container_of</span>
+      <h2>节点不是“装对象的盒子”，节点就长在对象里</h2>
+      <p>内核风格的双向链表把 prev/next 嵌进业务结构体。插入、删除只改指针，不分配、不拷贝；拿到节点地址后，用 container_of 反推出宿主对象的首地址。点节点看地址怎么算。</p>
+    </div>
+
+    <div class="ch7-grid2">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>就绪队列 head</h3><span class="ch7-hint">点击节点</span></div>
+        <div class="ch7-chain" id="ch7-chain"></div>
+        <div class="ch7-controls" id="ch7-list-controls">
+          <button type="button" class="ch7-btn" data-add="t1">插入 t1</button>
+          <button type="button" class="ch7-btn" data-add="t2">插入 t2</button>
+          <button type="button" class="ch7-btn" data-add="t3">插入 t3</button>
+          <button type="button" class="ch7-btn ghost" data-del="1">删除尾节点</button>
+          <button type="button" class="ch7-btn ghost" data-listreset="1">重置</button>
+        </div>
+        <div class="ch7-status" id="ch7-list-status"><b>初始：</b>t1 → t2。节点已经在对象里，插入链表只是改了两个指针。</div>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>对象内存布局</h3><span class="ch7-hint">node 偏移 12 B</span></div>
+        <div class="ch7-mem" id="ch7-memory"></div>
+        <div class="ch7-co" id="ch7-co">
+          <b>选中一个 node 字段</b>
+          <p style="color:var(--muted);font-size:10.5px;margin-top:3px">点击上方链表节点，或右侧任意一个 node 字段。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-grid2" style="margin-top:12px">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>container_of：一次指针减法</h3><span class="ch7-hint">零运行时开销</span></div>
+        <pre class="ch7-code"><span class="kw">#define</span> container_of(ptr, type, member) \
+  ((type *)((<span class="kw">char</span> *)(ptr) - offsetof(type, member)))
+
+<span class="kw">typedef struct</span> task {
+  <span class="kw">int</span> prio;          <span class="cm">/* offset 0  */</span>
+  <span class="kw">char</span> name[8];       <span class="cm">/* offset 4  */</span>
+  list_node_t node;  <span class="cm">/* offset 12 */</span>
+} task_t;
+
+<span class="cm">/* p 是 node 的地址，不是 task 的地址 */</span>
+task_t *t = container_of(p, task_t, node);</pre>
+        <div class="ch7-note" style="margin-top:9px">
+          <b>为什么省一次分配？</b>非侵入式链表通常要 <code>malloc</code> 一个节点，再把数据拷进去；侵入式链表的节点生命周期与对象完全一致，删除后对象仍然归业务所有。
+        </div>
+      </div>
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>遍历时删除的坑</h3><span class="ch7-hint">用 _safe 版本</span></div>
+        <pre class="ch7-code"><span class="cm">/* 错误：删掉 n 之后还访问 n-&gt;next */</span>
+list_for_each(p, &amp;g_ready) {
+  <span class="kw">if</span> (should_drop(p)) list_del(p);
+}
+
+<span class="cm">/* 正确：先保存下一个节点 */</span>
+list_for_each_safe(p, tmp, &amp;g_ready) {
+  <span class="kw">if</span> (should_drop(p)) list_del(p);
+}</pre>
+        <div class="ch7-note warn" style="margin-top:9px">
+          <b>Code Review 清单：</b>看到 <code>list_for_each</code> 里出现 <code>list_del</code>，立刻要求换成 <code>list_for_each_safe</code>。这类野指针在低负载测试里往往不出现，现场却会随机死机。
+        </div>
+        <div class="ch7-note" style="margin-top:7px">
+          <b>双向链表的代价：</b>每个节点多一个指针；删除后必须把 prev/next 置空或重新初始化，避免“野节点”被二次插入。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ scene 3 ============ -->
+  <section class="ch7-scene" data-scene="3">
+    <div class="ch7-scene-head">
+      <span class="tag">7.3 · 静态对象池</span>
+      <h2>把“分配”变成一次链表出栈</h2>
+      <p>启动时把一块静态内存切成固定大小的块，空闲块穿成链表。分配 = 取头节点，释放 = 放回头部；O(1)、无碎片、剩余块数就是泄漏计数器。点击已用块可以释放它。</p>
+    </div>
+
+    <div class="ch7-grid2">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>6 块 × 32 B</h3><span class="ch7-hint">点击已用块释放</span></div>
+        <div class="ch7-pool" id="ch7-pool"></div>
+        <div class="ch7-stats" id="ch7-pool-stats"></div>
+        <div class="ch7-poollist" id="ch7-free-list"></div>
+        <div class="ch7-controls">
+          <button type="button" class="ch7-btn primary" data-pool="alloc">分配 1 块</button>
+          <button type="button" class="ch7-btn" data-pool="alloc4">连续分配 4 块</button>
+          <button type="button" class="ch7-btn ghost" data-pool="freeall">全部释放</button>
+          <button type="button" class="ch7-btn ghost" data-pool="reset">重置</button>
+        </div>
+        <div class="ch7-status" id="ch7-pool-status"><b>空闲：</b>6 块可用，free_list 指向 0 号块。</div>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>O(1) 分配，代价是什么</h3><span class="ch7-hint">池 vs malloc</span></div>
+        <pre class="ch7-code"><span class="kw">void</span> pool_init(pool_t *p, <span class="kw">void</span> *mem, uint32_t n, <span class="kw">size_t</span> sz) {
+  p-&gt;blk_size = sz; p-&gt;cnt = n;
+  list_init(&amp;p-&gt;free_list);
+  <span class="kw">for</span> (uint32_t i = 0; i &lt; n; i++)
+    list_add_tail(&amp;p-&gt;free_list,
+      (list_node_t *)((<span class="kw">char</span> *)mem + i * sz));
+}
+
+<span class="kw">void</span> *pool_alloc(pool_t *p) {       <span class="cm">/* O(1) */</span>
+  <span class="kw">if</span> (list_empty(&amp;p-&gt;free_list)) <span class="kw">return NULL</span>;
+  list_node_t *n = p-&gt;free_list.next;
+  list_del(n); <span class="kw">return</span> n;
+}</pre>
+        <div class="ch7-bars">
+          <div class="ch7-bar-row"><div class="lab"><span>pool_alloc（固定块）</span><span>~14 cycles</span></div><div class="ch7-bar"><i class="ok" style="width:8%"></i></div></div>
+          <div class="ch7-bar-row"><div class="lab"><span>malloc（最坏路径）</span><span>~200+ cycles，不确定</span></div><div class="ch7-bar"><i class="warn" style="width:92%"></i></div></div>
+        </div>
+        <div class="ch7-note warn" style="margin-top:10px">
+          <b>三条硬约束：</b>① 块大小对齐到 <code>alignof(max_align_t)</code>，池基址至少 8 B 对齐；② 块尺寸固定，峰值必须预估；③ 类型被固定，适合消息、帧、会话这类同构对象。
+        </div>
+        <div class="ch7-note" style="margin-top:7px">
+          <b>RTOS 版本：</b>把 free_list 操作包在互斥区里，或用关中断保护；单任务初始化阶段则无需加锁。分配器本身不做“合并”，因此没有外部碎片，但也无法把剩余空间借给更大的对象。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-note" style="margin-top:12px">
+      <b>为什么不用 malloc 的“碎片”讲故事：</b>一个 1 KB 的堆，反复分配 16 B / 48 B / 128 B，最后可能还剩 300 B，但没有任何连续块能容纳 256 B。池把“最大连续块”固定成块大小，代价是你必须接受同构对象和容量上限。
+    </div>
+  </section>
+
+  <!-- ============ scene 4 ============ -->
+  <section class="ch7-scene" data-scene="4">
+    <div class="ch7-scene-head">
+      <span class="tag">7.4 / 7.9 · 表驱动 FSM</span>
+      <h2>把 switch 嵌套换成一张可回放的迁移表</h2>
+      <p>状态机不是“写几个 if”，而是把“当前状态 + 事件 → 下一状态”变成数据。点击事件按钮，观察状态节点、迁移边和日志如何同步。日志是排障时最便宜的时间机器。</p>
+    </div>
+
+    <div class="ch7-fsm">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>IDLE / RUN / ERR</h3><span class="ch7-hint">其他事件保持原状态</span></div>
+        <div class="ch7-state-now">当前状态 <b id="ch7-state-now">IDLE</b><span class="ch7-chip" id="ch7-state-chip">等待按键</span></div>
+        <svg class="ch7-svg" viewBox="0 0 440 250" role="img" aria-label="三状态迁移图">
+          <defs>
+            <marker id="ch7-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"></path>
+            </marker>
+            <marker id="ch7-arrow-hot" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#d97706"></path>
+            </marker>
+          </defs>
+          <path id="ch7-edge-idle-run" class="edge" d="M123,117 C160,90 200,80 232,78"></path>
+          <path id="ch7-edge-run-idle" class="edge" d="M240,85 C200,105 160,118 126,126"></path>
+          <path id="ch7-edge-run-err" class="edge" d="M284,98 C290,125 294,145 292,160"></path>
+          <path id="ch7-edge-err-idle" class="edge" d="M269,204 C210,211 150,175 124,144"></path>
+          <text class="elabel" x="158" y="80">EV_BTN</text>
+          <text class="elabel" x="166" y="113">EV_TICK</text>
+          <text class="elabel" x="315" y="142">EV_RX 无效</text>
+          <text class="elabel" x="158" y="216">EV_BTN</text>
+          <circle id="ch7-node-IDLE" class="node is-on" cx="90" cy="130" r="36"></circle>
+          <text class="nlabel" x="90" y="134" text-anchor="middle">IDLE</text>
+          <circle id="ch7-node-RUN" class="node" cx="270" cy="65" r="36"></circle>
+          <text class="nlabel" x="270" y="69" text-anchor="middle">RUN</text>
+          <circle id="ch7-node-ERR" class="node" cx="300" cy="195" r="36"></circle>
+          <text class="nlabel" x="300" y="199" text-anchor="middle">ERR</text>
+        </svg>
+        <div class="ch7-controls">
+          <button type="button" class="ch7-btn primary" data-fsm="BTN">EV_BTN 按键</button>
+          <button type="button" class="ch7-btn" data-fsm="TICK">EV_TICK 周期</button>
+          <button type="button" class="ch7-btn" data-fsm="RX">EV_RX 收到帧</button>
+          <button type="button" class="ch7-btn ghost" data-fsm="DROP">模拟事件丢失</button>
+          <button type="button" class="ch7-btn ghost" data-fsm="RESET">重置</button>
+        </div>
+        <label class="ch7-valid"><input type="checkbox" id="ch7-valid" checked>RUN 态收到 EV_RX 时，传感器数据有效</label>
+        <div class="ch7-status" id="ch7-fsm-status"><b>IDLE：</b>按 EV_BTN 进入 RUN；其他事件保持。</div>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>迁移日志</h3><span class="ch7-hint">最近 6 条</span></div>
+        <table class="ch7-log" id="ch7-log">
+          <thead><tr><th>#</th><th>from</th><th>event</th><th>to</th><th>结果</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="ch7-note warn" style="margin-top:10px">
+          <b>事件丢失为什么危险？</b>如果 EV_BTN 在“状态机正忙”时被丢掉，又没有超时兜底，设备会永远停在 IDLE。每条边都要有默认迁移：未知事件 → ERR / 自恢复态，并记录日志。
+        </div>
+        <div class="ch7-note" style="margin-top:7px">
+          <b>和 RTOS 的配合：</b>每个任务内部跑一个 FSM，任务从队列取事件喂给 <code>fsm_step()</code>。跨任务协作变成“发事件”，不再抢共享变量，竞态面大幅缩小。这就是 Actor 模型的嵌入式落地。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-grid2" style="margin-top:12px">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>表驱动：状态只是数组下标</h3><span class="ch7-hint">新增状态 = 加一行</span></div>
+        <pre class="ch7-code"><span class="kw">typedef</span> st_t (*handler_t)(evt_t e);
+
+<span class="kw">static</span> st_t on_idle(evt_t e) {
+  <span class="kw">if</span> (e == EV_BTN) <span class="kw">return</span> ST_RUN;
+  <span class="kw">return</span> ST_IDLE;
+}
+<span class="cm">/* ... on_run / on_err ... */</span>
+
+<span class="kw">static const</span> handler_t tab[] = {
+  [ST_IDLE] = on_idle,
+  [ST_RUN]  = on_run,
+  [ST_ERR]  = on_err,
+};
+
+st_t fsm_step(st_t cur, evt_t e) {
+  st_t nxt = tab[cur](e);
+  <span class="kw">if</span> (nxt != cur) log_state(cur, nxt);
+  <span class="kw">return</span> nxt;
+}</pre>
+      </div>
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>switch 版本：能跑，但改动成本高</h3><span class="ch7-hint">对照看</span></div>
+        <pre class="ch7-code"><span class="kw">switch</span> (cur) {
+<span class="kw">case</span> ST_IDLE:
+  <span class="kw">if</span> (e == EV_BTN) nxt = ST_RUN;
+  <span class="kw">break</span>;
+<span class="kw">case</span> ST_RUN:
+  <span class="kw">if</span> (e == EV_TICK) nxt = ST_IDLE;
+  <span class="kw">else if</span> (e == EV_RX &amp;&amp; !valid()) nxt = ST_ERR;
+  <span class="kw">break</span>;
+<span class="kw">case</span> ST_ERR:
+  <span class="kw">if</span> (e == EV_BTN) nxt = ST_IDLE;
+  <span class="kw">break</span>;
+}
+<span class="cm">/* 新增 ST_OTA：要改几个 switch？ */</span></pre>
+        <div class="ch7-note" style="margin-top:9px">
+          <b>结论：</b>状态少于 3 个、迁移简单时 switch 更直观；一旦有 5+ 状态、多个事件和进入/退出动作，表驱动 + 日志钩子更好维护。QP/QM 的 HSM 是进一步演进：支持嵌套状态和 entry/exit 动作。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ scene 5 ============ -->
+  <section class="ch7-scene" data-scene="5">
+    <div class="ch7-scene-head">
+      <span class="tag">7.5 / 7.8 / Lab L7-1 · 时间与测量</span>
+      <h2>把“等 3 个 tick”变成 O(1) 的槽位计算</h2>
+      <p>单级时间轮用 tick 指针扫描槽位，到期定时器从链表中取出执行；每个 tick 只处理当前槽，复杂度与定时器总数无关。点 tick 看指针、槽位和周期定时器如何重插。</p>
+    </div>
+
+    <div class="ch7-card">
+      <div class="ch7-card-h"><h3>单级时间轮 · 8 槽</h3><span class="ch7-hint" id="ch7-wheel-note">当前指针 0</span></div>
+      <div class="ch7-wheel" id="ch7-wheel"></div>
+      <div class="ch7-controls">
+        <button type="button" class="ch7-btn primary" data-wheel="tick">前进 1 tick</button>
+        <button type="button" class="ch7-btn" data-wheel="tick4">前进 4 tick</button>
+        <button type="button" class="ch7-btn" data-wheel="add3">+3 tick 一次</button>
+        <button type="button" class="ch7-btn" data-wheel="add5">+5 tick 周期</button>
+        <button type="button" class="ch7-btn ghost" data-wheel="reset">重置</button>
+      </div>
+      <div class="ch7-fire" id="ch7-fire">等待 tick：定时器按“当前指针 + 延时”插入槽位，周期定时器触发后重新插入。</div>
+    </div>
+
+    <div class="ch7-grid2" style="margin-top:12px">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>F407 @168 MHz · 实测量级</h3><span class="ch7-hint">-O2，教学参考</span></div>
+        <table class="ch7-bench">
+          <thead><tr><th>操作</th><th>周期</th><th></th><th>备注</th></tr></thead>
+          <tbody>
+            <tr><td>ring_put</td><td>~11</td><td><div class="b"><i style="width:6%"></i></div></td><td>含满判断</td></tr>
+            <tr><td>pool_alloc</td><td>~14</td><td><div class="b"><i style="width:8%"></i></div></td><td>O(1) 链表</td></tr>
+            <tr><td>fsm_step</td><td>~16</td><td><div class="b"><i style="width:9%"></i></div></td><td>含日志钩子</td></tr>
+            <tr><td>wheel_tick</td><td>8 + k</td><td><div class="b"><i style="width:5%"></i></div></td><td>k 为到期数</td></tr>
+            <tr><td>malloc</td><td>200+</td><td><div class="b"><i style="width:100%;background:var(--danger)"></i></div></td><td>不确定路径</td></tr>
+          </tbody>
+        </table>
+        <div class="ch7-note" style="margin-top:9px">
+          <b>怎么读：</b>这些数字不是让你背，而是建立量级感。一个 11 周期的入队放在 10 kHz 中断里仍可接受；一次 200+ 周期且不确定的 malloc 放在同样位置，就会把抖动带进实时环。
+        </div>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>L7-1：给环缓冲建回归安全网</h3><span class="ch7-hint" id="ch7-lab-count">0 / 5</span></div>
+        <div class="ch7-lab" id="ch7-lab">
+          <label><input type="checkbox" data-lab7>按 ch09 建立 Unity 主机测试目标</label>
+          <label><input type="checkbox" data-lab7>覆盖往返 / 满拒绝 / 回绕 10 万次</label>
+          <label><input type="checkbox" data-lab7>用 setjmp 模拟 ISR 打断点，验证单生产者边界</label>
+          <label><input type="checkbox" data-lab7>开 -fsanitize=address,undefined 跑一遍</label>
+          <label><input type="checkbox" data-lab7>注释掉 DMB 重跑，记录测试是否仍过及原因</label>
+        </div>
+        <div class="ch7-lab-progress"><span>进度</span><div class="ch7-mini-bar"><i id="ch7-lab-bar"></i></div><span id="ch7-lab-pct">0%</span></div>
+        <div class="ch7-note warn" style="margin-top:9px">
+          <b>验收标准：</b>全部用例通过，并在 README 写清“为什么单线程测试无法证明并发正确”。测试通过不等于并发安全，它只证明你覆盖了哪些交错。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-grid2" style="margin-top:12px">
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>常见故障速查</h3><span class="ch7-hint">现场先看这三条</span></div>
+        <details><summary>环形缓冲偶发丢字节</summary><p>先确认“谁写 head”是否唯一。ISR 与主循环同时写 head 就是多生产者；改用双缓冲、消息队列，或每生产者私有 ring。另一个高频原因是消费者读取速度长期低于生产速度，满拒绝被静默忽略。</p></details>
+        <details><summary>对象池返回坏指针 / 对齐异常</summary><p>块大小没有对齐到最大对齐要求，或池基址未对齐。用 <code>_Alignas(8)</code> / <code>aligned(8)</code> 修正基址，块大小向上取整到 8 的倍数；不要在池上做类型双关。</p></details>
+        <details><summary>状态机卡死 / 链表遍历崩溃</summary><p>FSM：事件丢失且无超时兜底，补默认迁移并记录日志。链表：遍历中删除未用 <code>_safe</code> 版本；删除后未重新初始化节点，导致二次插入。</p></details>
+      </div>
+
+      <div class="ch7-card">
+        <div class="ch7-card-h"><h3>时间轮的两个工程细节</h3><span class="ch7-hint">单级不够用怎么办</span></div>
+        <pre class="ch7-code"><span class="cm">/* 单级轮：只支持 &lt; WHEEL_SIZE tick 的延时 */</span>
+<span class="kw">void</span> wheel_tick(<span class="kw">void</span>) {
+  <span class="kw">static</span> uint32_t cur = 0;
+  cur = (cur + 1) &amp; (WHEEL_SIZE - 1);
+  list_for_each_safe(p, tmp, &amp;wheel[cur]) {
+    tmr_t *t = container_of(p, tmr_t, node);
+    list_del(&amp;t-&gt;node);
+    t-&gt;cb(t-&gt;arg);
+    <span class="kw">if</span> (t-&gt;period) wheel_insert(t, t-&gt;period);
+  }
+}</pre>
+        <div class="ch7-note" style="margin-top:9px">
+          <b>长定时器：</b>两级时间轮 = 毫秒轮 + 秒轮。长周期定时器先挂在秒轮，临近到期时“降级”插入毫秒轮；Linux 内核的 timer wheel 也是同一思想。<br>
+          <b>与 RTOS 的关系：</b>FreeRTOS 的软件定时器用“命令队列 + 定时器列表”实现类似效果；不要在每个任务里撒一堆 <code>vTaskDelay</code> 来做周期调度。
+        </div>
+      </div>
+    </div>
+
+    <div class="ch7-footer">
+      <span>第 7 章 · 嵌入式数据结构与算法 · 下一章：分层架构与设计模式</span>
+      <div class="fbtns">
+        <button type="button" class="ch7-btn" data-goto="0">回到开头</button>
+        <button type="button" class="ch7-btn primary" data-goto="0" id="ch7-next">回顾本章</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+  var root = $('#ch7-lesson');
+  var scenes = $$('.ch7-scene', root);
+  var steps = $$('.ch7-step', root);
+  var cur = 0;
+  function go(n){
+    n = Math.max(0, Math.min(scenes.length - 1, Number(n)));
+    cur = n;
+    scenes.forEach(function(s, i){ s.classList.toggle('is-active', i === n); });
+    steps.forEach(function(b){ b.classList.toggle('is-active', Number(b.getAttribute('data-goto')) === n); });
+    $('#ch7-progress').style.width = ((n + 1) / scenes.length * 100) + '%';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  steps.forEach(function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+  $$('[data-goto]', root).forEach(function(b){ if(!b.classList.contains('ch7-step')) b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+
+  /* ---------- scene 0 ---------- */
+  var choices = {
+    ring: {
+      name: 'SPSC 环形缓冲',
+      why: '固定容量、字节流、1 写 1 读。ISR 只写 head，主循环只动 tail，不需要临界区；满时明确拒绝或覆盖，行为可预测。',
+      nums: ['O(1) put/get', '~11 cycles', '容量固定 N-1', '无锁边界：1 写 1 读']
+    },
+    pool: {
+      name: '静态对象池',
+      why: '对象同构、生命周期短、创建/释放频繁。预切固定块后，分配只是一次链表出栈，没有碎片，剩余块数就是泄漏计数。',
+      nums: ['O(1) alloc/free', '~14 cycles', '无外部碎片', '峰值需要预估']
+    },
+    list: {
+      name: '侵入式双向链表',
+      why: '对象本身不能搬动，且需要任意位置插入/删除。节点嵌在对象里，零拷贝；container_of 把节点地址还原成宿主地址。',
+      nums: ['插入/删除 O(1)', '零额外分配', '节点生命周期=对象', '遍历删除用 _safe']
+    },
+    fsm: {
+      name: '表驱动状态机',
+      why: '行为由“状态 × 事件”决定，迁移需要集中审查和回放。表驱动把处理函数放进数组，新增状态只加一行，日志钩子统一。',
+      nums: ['迁移集中可见', '~16 cycles', '可回放日志', '每态要有默认边']
+    }
+  };
+  function showChoice(key){
+    var d = choices[key];
+    if(!d) return;
+    $$('#ch7-scenarios .ch7-scenario').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-key') === key); });
+    $$('.ch7-struct').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-key') === key); });
+    $('#ch7-choice').innerHTML = '<b>' + d.name + '</b><p class="why">' + d.why + '</p><div class="num">' + d.nums.map(function(n){ return '<span class="ch7-chip">' + n + '</span>'; }).join('') + '</div>';
+  }
+  $$('#ch7-scenarios .ch7-scenario').forEach(function(b){ b.addEventListener('click', function(){ showChoice(b.getAttribute('data-key')); }); });
+  $$('.ch7-struct').forEach(function(b){
+    b.addEventListener('click', function(){ showChoice(b.getAttribute('data-key')); });
+    b.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showChoice(b.getAttribute('data-key')); } });
+  });
+
+  /* ---------- scene 1 ring ---------- */
+  var RB = 8;
+  var rbuf = new Array(RB).fill(null);
+  var rhead = 0, rtail = 0, rseq = 0, rwritten = 0, rread = 0, rdropped = 0, rconflict = -1;
+  var autoP = null, autoC = null;
+  function ringStatus(html, cls){
+    var el = $('#ch7-ring-status');
+    el.innerHTML = html;
+    el.className = 'ch7-status' + (cls ? ' ' + cls : '');
+  }
+  function renderRing(){
+    var html = '';
+    for(var i = 0; i < RB; i++){
+      var val = rbuf[i];
+      var cls = 'ch7-cell';
+      if(val !== null) cls += ' is-full';
+      if(i === rhead) cls += ' is-head';
+      if(i === rtail) cls += ' is-tail';
+      if(i === rconflict) cls += ' is-conflict';
+      var ptr = '';
+      if(i === rhead) ptr += '<span style="color:var(--primary)">H</span>';
+      if(i === rtail) ptr += '<span style="color:var(--primary-2)">T</span>';
+      html += '<div class="' + cls + '"><span class="i">' + i + '</span><b>' + (val === null ? '·' : val) + '</b><span class="ptr">' + ptr + '</span></div>';
+    }
+    $('#ch7-ring').innerHTML = html;
+    var occ = (rhead - rtail + RB) % RB;
+    $('#ch7-ring-stats').innerHTML =
+      '<div class="ch7-stat"><span>已排队</span><b>' + occ + ' / 7</b></div>' +
+      '<div class="ch7-stat"><span>累计写入</span><b>' + rwritten + '</b></div>' +
+      '<div class="ch7-stat"><span>累计读出</span><b>' + rread + '</b></div>' +
+      '<div class="ch7-stat' + (rdropped ? ' bad' : '') + '"><span>满拒绝</span><b>' + rdropped + '</b></div>';
+  }
+  function ringPut(){
+    var next = (rhead + 1) & (RB - 1);
+    if(next === rtail){
+      rdropped++;
+      renderRing();
+      ringStatus('<b>满：</b>next == tail。留一格策略下最多存 7 个；本次写入被拒绝，调用者必须决定丢弃、覆盖还是等待。', 'is-bad');
+      return false;
+    }
+    var v = ++rseq;
+    rbuf[rhead] = v;
+    rwritten++;
+    rhead = next;
+    rconflict = -1;
+    renderRing();
+    ringStatus('<b>写入 ' + v + '：</b>先写 buf[' + ((rhead - 1 + RB) % RB) + ']，执行 DMB，再把 head 推进到 ' + rhead + '。', 'is-ok');
+    return true;
+  }
+  function ringGet(){
+    if(rtail === rhead){
+      renderRing();
+      ringStatus('<b>空：</b>tail == head，没有数据可读。消费者应当睡眠、等信号量或下次轮询。');
+      return false;
+    }
+    var v = rbuf[rtail];
+    rbuf[rtail] = null;
+    rtail = (rtail + 1) & (RB - 1);
+    rread++;
+    rconflict = -1;
+    renderRing();
+    ringStatus('<b>读出 ' + v + '：</b>先读 buf，执行 DMB，再推进 tail 到 ' + rtail + '。读者看到 head 后，数据已经可见。', 'is-ok');
+    return true;
+  }
+  function ringRace(){
+    var next = (rhead + 1) & (RB - 1);
+    if(next === rtail){ ringStatus('<b>缓冲已满，</b>无法演示冲突；先消费几个。', 'is-bad'); return; }
+    var stale = rhead;
+    var a = ++rseq;
+    rbuf[stale] = a;
+    rhead = (stale + 1) & (RB - 1);
+    var b = ++rseq;
+    rbuf[stale] = b; /* 第二个生产者仍用旧 head，覆盖同一格 */
+    rwritten += 2;
+    rconflict = stale;
+    renderRing();
+    ringStatus('<b>冲突：</b>生产者 A 写入 ' + a + '，生产者 B 基于同一个旧 head 写入 ' + b + '，A 被覆盖，head 只前进一格。教学模型：真实竞态取决于中断时序，结果可能更隐蔽。', 'is-bad');
+  }
+  function stopAuto(){
+    if(autoP){ clearInterval(autoP); autoP = null; }
+    if(autoC){ clearInterval(autoC); autoC = null; }
+    var b = $('[data-ring="auto"]');
+    if(b) b.textContent = '自动运行';
+  }
+  $$('[data-ring]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var act = b.getAttribute('data-ring');
+      if(act === 'put') ringPut();
+      else if(act === 'get') ringGet();
+      else if(act === 'burst'){ for(var i = 0; i < 10; i++) if(!ringPut()) break; }
+      else if(act === 'race') ringRace();
+      else if(act === 'auto'){
+        if(autoP || autoC){ stopAuto(); ringStatus('<b>自动运行已暂停。</b>已排队数据保留。'); }
+        else {
+          autoP = setInterval(ringPut, 720);
+          autoC = setInterval(ringGet, 1050);
+          b.textContent = '暂停自动';
+          ringStatus('<b>自动运行：</b>生产快于消费，缓冲会逐渐填满；观察“满拒绝”计数和中间状态。');
+        }
+      }
+      else if(act === 'reset'){
+        stopAuto(); rbuf = new Array(RB).fill(null); rhead = rtail = rseq = 0;
+        rwritten = rread = rdropped = 0; rconflict = -1; renderRing();
+        ringStatus('<b>空：</b>head == tail。所有计数器已清零。');
+      }
+    });
+  });
+  renderRing();
+
+  /* ---------- scene 2 list ---------- */
+  var tasks = [
+    {id:'t1', name:'led', prio:5, base:0x20001000},
+    {id:'t2', name:'uart', prio:3, base:0x20001010},
+    {id:'t3', name:'wdt', prio:8, base:0x20001020}
+  ];
+  var offset = 12;
+  var inList = ['t1','t2'];
+  var selNode = 't2';
+  function taskById(id){ return tasks.filter(function(t){ return t.id === id; })[0]; }
+  function renderList(){
+    var chain = '<span class="ch7-headptr">head</span><span class="ch7-arrow">→</span>';
+    if(!inList.length){ chain += '<span class="ch7-headptr">head（空链表）</span>'; }
+    else {
+      inList.forEach(function(id, i){
+        var t = taskById(id);
+        chain += '<div class="ch7-node' + (selNode === id ? ' is-sel' : '') + '" data-node="' + id + '"><b>' + t.name + '</b><span>prio ' + t.prio + '</span><span>node@0x' + (t.base + offset).toString(16).toUpperCase() + '</span></div>';
+        chain += '<span class="ch7-arrow">' + (i === inList.length - 1 ? '→ head' : '⇄') + '</span>';
+      });
+    }
+    $('#ch7-chain').innerHTML = chain;
+    $$('#ch7-chain .ch7-node').forEach(function(n){ n.addEventListener('click', function(){ selNode = n.getAttribute('data-node'); renderList(); }); });
+
+    var mem = '';
+    tasks.forEach(function(t){
+      var on = inList.indexOf(t.id) >= 0;
+      mem += '<div class="ch7-task' + (on ? '' : ' is-off') + (selNode === t.id ? ' is-sel' : '') + '">' +
+        '<div class="ch7-task-h"><span>task_t ' + t.id + ' · ' + (on ? '已入队' : '未入队') + '</span><span>0x' + t.base.toString(16).toUpperCase() + '</span></div>' +
+        '<div class="ch7-fields">' +
+        '<div class="ch7-field"><b>prio</b>' + t.prio + ' @ +0</div>' +
+        '<div class="ch7-field"><b>name[8]</b>' + t.name + '</div>' +
+        '<div class="ch7-field node" data-node="' + t.id + '"><b>node</b>@ +' + offset + ' · 0x' + (t.base + offset).toString(16).toUpperCase() + '</div>' +
+        '</div></div>';
+    });
+    $('#ch7-memory').innerHTML = mem;
+    $$('#ch7-memory .ch7-field.node').forEach(function(n){ n.addEventListener('click', function(){ selNode = n.getAttribute('data-node'); renderList(); }); });
+
+    var t = taskById(selNode);
+    if(t){
+      var nodeAddr = t.base + offset;
+      $('#ch7-co').innerHTML = '<b>container_of(node → task_t)</b>' +
+        '<div class="formula">task_t *t = container_of(0x' + nodeAddr.toString(16).toUpperCase() + ', task_t, node);</div>' +
+        '<div class="calc">(char *)0x' + nodeAddr.toString(16).toUpperCase() + ' − offsetof(task_t, node) = 0x' + nodeAddr.toString(16).toUpperCase() + ' − ' + offset + ' = 0x' + t.base.toString(16).toUpperCase() + '</div>' +
+        '<div style="margin-top:5px;color:var(--muted);font-size:10.5px">宿主：' + t.name + '（prio=' + t.prio + '）。节点地址不是对象地址，差一个固定偏移；这个偏移由编译器在编译期确定，运行时只是一次减法。</div>';
+    }
+  }
+  $$('[data-add]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var id = b.getAttribute('data-add');
+      if(inList.indexOf(id) >= 0) return;
+      inList.push(id);
+      selNode = id;
+      $('#ch7-list-status').innerHTML = '<b>插入 ' + taskById(id).name + '：</b>只改了原尾节点的 next、head 的 prev 和新节点的 prev/next，没有分配内存，也没有拷贝对象。';
+      renderList();
+    });
+  });
+  $('[data-del]', root).addEventListener('click', function(){
+    if(!inList.length) return;
+    var id = inList.pop();
+    selNode = inList[inList.length - 1] || null;
+    $('#ch7-list-status').innerHTML = '<b>删除 ' + taskById(id).name + '：</b>list_del 把它的前驱和后继接起来。对象本身仍然存在，节点必须重新初始化后才能再次插入。';
+    renderList();
+  });
+  $('[data-listreset]', root).addEventListener('click', function(){
+    inList = ['t1','t2']; selNode = 't2';
+    $('#ch7-list-status').innerHTML = '<b>初始：</b>t1 → t2。点击节点查看 container_of 的地址计算。';
+    renderList();
+  });
+  renderList();
+
+  /* ---------- scene 3 pool ---------- */
+  var PBN = 6, PBS = 32;
+  var poolUsed = new Array(PBN).fill(false);
+  var poolOwner = new Array(PBN).fill(null);
+  var freeList = [0,1,2,3,4,5];
+  var poolSeq = 0, poolPeak = 0, poolAllocs = 0;
+  var ownerNames = ['sensor','log','frame','cmd','cfg','evt'];
+  function renderPool(){
+    var html = '';
+    for(var i = 0; i < PBN; i++){
+      var used = poolUsed[i];
+      html += '<div class="ch7-block' + (used ? ' is-used' : '') + '" data-block="' + i + '">' +
+        '<b>#' + i + (used ? ' · USED' : ' · FREE') + '</b>' +
+        '<span>0x' + (0x20002000 + i * PBS).toString(16).toUpperCase() + '</span>' +
+        '<span>' + (used ? poolOwner[i] : 'free_list') + '</span>' +
+        (used ? '<span class="tag">点击释放</span>' : '') +
+        '</div>';
+    }
+    $('#ch7-pool').innerHTML = html;
+    $$('#ch7-pool .ch7-block').forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = Number(b.getAttribute('data-block'));
+        if(!poolUsed[i]) return;
+        poolUsed[i] = false;
+        poolOwner[i] = null;
+        freeList.unshift(i);
+        $('#ch7-pool-status').innerHTML = '<b>释放 #' + i + '：</b>块回到 free_list 头部。固定块不会与邻居合并，也不会产生外部碎片；下次分配会立刻复用它。';
+        renderPool();
+      });
+    });
+    var usedCount = poolUsed.filter(Boolean).length;
+    $('#ch7-pool-stats').innerHTML =
+      '<div class="ch7-stat"><span>已用</span><b>' + usedCount + ' / 6</b></div>' +
+      '<div class="ch7-stat"><span>空闲</span><b>' + (PBN - usedCount) + '</b></div>' +
+      '<div class="ch7-stat"><span>历史峰值</span><b>' + poolPeak + '</b></div>' +
+      '<div class="ch7-stat"><span>累计分配</span><b>' + poolAllocs + '</b></div>';
+    $('#ch7-free-list').innerHTML = 'free_list → ' + (freeList.length ? freeList.map(function(i){ return '#' + i; }).join(' → ') : 'NULL（池耗尽）');
+  }
+  function poolAlloc(){
+    if(!freeList.length){
+      $('#ch7-pool-status').innerHTML = '<b>池耗尽：</b>pool_alloc 返回 NULL。调用者必须处理失败，不能假定一定成功；生产环境通常还要统计峰值并设置告警。';
+      return false;
+    }
+    var i = freeList.shift();
+    poolUsed[i] = true;
+    poolOwner[i] = ownerNames[poolSeq % ownerNames.length] + '_' + (++poolSeq);
+    poolAllocs++;
+    var usedCount = poolUsed.filter(Boolean).length;
+    if(usedCount > poolPeak) poolPeak = usedCount;
+    $('#ch7-pool-status').innerHTML = '<b>分配 #' + i + '：</b>从 free_list 头部摘下一个块，返回地址 0x' + (0x20002000 + i * PBS).toString(16).toUpperCase() + '。O(1)，无搜索、无分裂。';
+    renderPool();
+    return true;
+  }
+  $$('[data-pool]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var act = b.getAttribute('data-pool');
+      if(act === 'alloc') poolAlloc();
+      else if(act === 'alloc4'){ for(var i = 0; i < 4; i++) if(!poolAlloc()) break; }
+      else if(act === 'freeall'){
+        for(var j = 0; j < PBN; j++){ if(poolUsed[j]){ poolUsed[j] = false; poolOwner[j] = null; freeList.push(j); } }
+        freeList.sort(function(a,b){ return a - b; });
+        $('#ch7-pool-status').innerHTML = '<b>全部释放：</b>6 块回到空闲链。注意：真实项目里“全部释放”往往意味着上一轮业务对象没有正确归还，应该查泄漏而不是一键清空。';
+        renderPool();
+      }
+      else if(act === 'reset'){
+        poolUsed = new Array(PBN).fill(false); poolOwner = new Array(PBN).fill(null);
+        freeList = [0,1,2,3,4,5]; poolSeq = 0; poolPeak = 0; poolAllocs = 0;
+        $('#ch7-pool-status').innerHTML = '<b>空闲：</b>6 块可用，free_list 指向 0 号块。';
+        renderPool();
+      }
+    });
+  });
+  renderPool();
+
+  /* ---------- scene 4 FSM ---------- */
+  var fsmState = 'IDLE';
+  var fsmGiven = {IDLE:{BTN:'RUN'}, RUN:{TICK:'IDLE', RX:'ERR'}, ERR:{BTN:'IDLE'}};
+  var fsmLog = [];
+  var fsmTick = 0;
+  function fsmLabel(s){ return s; }
+  function fsmRender(){
+    ['IDLE','RUN','ERR'].forEach(function(s){
+      var n = document.getElementById('ch7-node-' + s);
+      if(n) n.classList.toggle('is-on', s === fsmState);
+    });
+    $$('.ch7-svg .edge').forEach(function(e){ e.classList.remove('is-hot'); });
+    var chip = $('#ch7-state-chip');
+    if(fsmState === 'IDLE') chip.textContent = '等待按键';
+    else if(fsmState === 'RUN') chip.textContent = '运行中';
+    else chip.textContent = '故障态 · 等复位';
+    $('#ch7-state-now').textContent = fsmState;
+    $('#ch7-state-now').style.color = fsmState === 'ERR' ? 'var(--danger)' : 'var(--primary)';
+    var body = fsmLog.slice(0, 6).map(function(x){
+      return '<tr' + (x.last ? ' class="is-last"' : '') + '><td>' + x.n + '</td><td>' + x.from + '</td><td>' + x.ev + '</td><td>' + x.to + '</td><td>' + x.res + '</td></tr>';
+    }).join('');
+    if(!body) body = '<tr><td colspan="5" style="color:var(--muted)">还没有事件</td></tr>';
+    $('#ch7-log tbody').innerHTML = body;
+  }
+  function fsmFire(ev){
+    var from = fsmState;
+    var to = from;
+    var res = '保持';
+    if(ev === 'RX' && from === 'RUN') to = $('#ch7-valid').checked ? 'RUN' : 'ERR';
+    else if(fsmGiven[from] && fsmGiven[from][ev]) to = fsmGiven[from][ev];
+    if(ev === 'RX' && from !== 'RUN' && to === from) res = '忽略';
+    if(to !== from) res = '迁移';
+    fsmLog.unshift({n: ++fsmTick, from: from, ev: ev, to: to, res: res, last: true});
+    fsmLog.forEach(function(x){ if(x !== fsmLog[0]) x.last = false; });
+    fsmState = to;
+    fsmRender();
+    if(to !== from){
+      var edge = document.getElementById('ch7-edge-' + from.toLowerCase() + '-' + to.toLowerCase());
+      if(edge) edge.classList.add('is-hot');
+      $('#ch7-fsm-status').innerHTML = '<b>' + from + ' → ' + to + '：</b>' + (ev === 'RX' && to === 'ERR' ? '收到无效传感器帧，进入 ERR；等 EV_BTN 复位。这是显式错误路径，比“继续跑但数据全错”安全。' : '迁移已记录。日志里同时保留了 from / event / to，现场可以完整回放。');
+    } else {
+      $('#ch7-fsm-status').innerHTML = '<b>' + from + '：</b>事件 ' + ev + ' 被保持或忽略。真实系统里要确认：这是预期行为，还是事件丢了？';
+    }
+  }
+  $$('[data-fsm]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var ev = b.getAttribute('data-fsm');
+      if(ev === 'RESET'){
+        fsmState = 'IDLE'; fsmLog = []; fsmTick = 0; fsmRender();
+        $$('.ch7-svg .edge').forEach(function(e){ e.classList.remove('is-hot'); });
+        $('#ch7-fsm-status').innerHTML = '<b>IDLE：</b>按 EV_BTN 进入 RUN；其他事件保持。';
+      }
+      else if(ev === 'DROP'){
+        fsmLog.unshift({n: ++fsmTick, from: fsmState, ev: 'EV_BTN?', to: fsmState, res: '丢失', last: true});
+        fsmLog.forEach(function(x){ if(x !== fsmLog[0]) x.last = false; });
+        fsmRender();
+        $('#ch7-fsm-status').innerHTML = '<b>事件丢失：</b>EV_BTN 没有到达状态机，状态不变。若没有超时或默认迁移兜底，IDLE 会无限等待；这正是“状态机卡死”的典型成因。';
+      }
+      else fsmFire(ev);
+    });
+  });
+  fsmRender();
+
+  /* ---------- scene 5 wheel ---------- */
+  var WN = 8;
+  var wcur = 0;
+  var wseq = 0;
+  var wtimers = [];
+  var wtickCount = 0;
+  var fireLog = [];
+  function wtimer(id, period, periodic){ return {id:id, period:period, slot:(wcur + period) % WN, periodic:periodic}; }
+  function wheelReset(){
+    wcur = 0; wseq = 0; wtickCount = 0; fireLog = [];
+    wtimers = [wtimer(++wseq, 3, false), wtimer(++wseq, 5, true), wtimer(++wseq, 2, true)];
+    $('#ch7-fire').innerHTML = '等待 tick：T1 在 +3 触发一次；T2 每 5 tick；T3 每 2 tick。周期定时器触发后重新插入。';
+    renderWheel();
+  }
+  function renderWheel(){
+    var html = '';
+    for(var i = 0; i < WN; i++){
+      var list = wtimers.filter(function(t){ return t.slot === i; });
+      html += '<div class="ch7-slot' + (i === wcur ? ' is-now' : '') + '"><div class="sn"><span>slot ' + i + '</span><span>' + (i === wcur ? 'NOW' : '') + '</span></div>';
+      html += list.length ? list.map(function(t){
+        var due = (t.slot - wcur + WN) % WN;
+        return '<div class="ch7-timer' + (t.periodic ? ' periodic' : '') + '">T' + t.id + ' · ' + (t.periodic ? '∞' : 'once') + ' · D-' + due + '</div>';
+      }).join('') : '<div style="font:8px/1.5 var(--mono);color:var(--muted);margin-top:6px">·</div>';
+      html += '</div>';
+    }
+    $('#ch7-wheel').innerHTML = html;
+    $('#ch7-wheel-note').textContent = '当前指针 ' + wcur + ' · 已 tick ' + wtickCount + ' 次';
+  }
+  function wheelTick(){
+    wcur = (wcur + 1) % WN;
+    wtickCount++;
+    var due = wtimers.filter(function(t){ return t.slot === wcur; });
+    wtimers = wtimers.filter(function(t){ return t.slot !== wcur; });
+    if(!due.length){
+      $('#ch7-fire').innerHTML = '<b>tick ' + wtickCount + ' → slot ' + wcur + '：</b>空槽，没有回调。O(1) 走过。';
+    } else {
+      due.forEach(function(t){
+        fireLog.unshift('tick ' + wtickCount + ' · T' + t.id + (t.periodic ? '（周期）' : '（一次）'));
+        if(t.periodic){
+          t.slot = (wcur + t.period) % WN;
+          wtimers.push(t);
+        }
+      });
+      $('#ch7-fire').innerHTML = '<b>tick ' + wtickCount + ' → slot ' + wcur + '：</b>触发 ' + due.map(function(t){ return 'T' + t.id; }).join(', ') + '。' + due.filter(function(t){ return t.periodic; }).length + ' 个周期定时器已重新插入。';
+    }
+    renderWheel();
+  }
+  function wheelAdd(period, periodic){
+    wtimers.push(wtimer(++wseq, period, periodic));
+    $('#ch7-fire').innerHTML = '<b>新增 T' + wseq + '：</b>' + period + ' tick ' + (periodic ? '周期' : '一次') + '，插入 slot ' + ((wcur + period) % WN) + '。不需要遍历已有定时器。';
+    renderWheel();
+  }
+  $$('[data-wheel]', root).forEach(function(b){
+    b.addEventListener('click', function(){
+      var act = b.getAttribute('data-wheel');
+      if(act === 'tick') wheelTick();
+      else if(act === 'tick4'){ for(var i = 0; i < 4; i++) wheelTick(); }
+      else if(act === 'add3') wheelAdd(3, false);
+      else if(act === 'add5') wheelAdd(5, true);
+      else if(act === 'reset') wheelReset();
+    });
+  });
+  wheelReset();
+
+  /* ---------- lab ---------- */
+  var lab = $$('[data-lab7]', root);
+  function labUpdate(){
+    var n = lab.filter(function(x){ return x.checked; }).length;
+    $('#ch7-lab-count').textContent = n + ' / ' + lab.length;
+    $('#ch7-lab-bar').style.width = (n / lab.length * 100) + '%';
+    $('#ch7-lab-pct').textContent = Math.round(n / lab.length * 100) + '%';
+  }
+  lab.forEach(function(x){ x.addEventListener('change', labUpdate); });
+  labUpdate();
+
+  /* footer is intentionally local to this chapter */
+})();
+</script>
+</div>

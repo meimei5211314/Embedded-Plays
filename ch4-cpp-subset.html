@@ -1,0 +1,3354 @@
+<div id="ch4-lesson" class="ch4">
+<style>
+  #ch4-lesson{
+    --c-ink: var(--seed-fg, #1f2328);
+    --c-muted: var(--seed-muted, #667085);
+    --c-line: var(--border-standard, rgba(15, 23, 42, .14));
+    --c-subtle: var(--border-subtle, rgba(15, 23, 42, .075));
+    --c-card: var(--card-bg, #ffffff);
+    --c-inset: var(--inset-bg, #f5f7fa);
+    --c-fill: var(--fill-1, rgba(15, 23, 42, .035));
+    --c-primary: var(--seed-primary, #4f46e5);
+    --c-primary-soft: color-mix(in srgb, var(--c-primary) 11%, transparent);
+    --c-cyan: color-mix(in oklab, #0e7490 74%, var(--seed-fg, #1f2328));
+    --c-cyan-soft: color-mix(in srgb, #0e7490 12%, transparent);
+    --c-ok: color-mix(in oklab, #15803d 76%, var(--seed-fg, #1f2328));
+    --c-ok-soft: color-mix(in srgb, #15803d 11%, transparent);
+    --c-warn: color-mix(in oklab, #b45309 78%, var(--seed-fg, #1f2328));
+    --c-warn-soft: color-mix(in srgb, #b45309 12%, transparent);
+    --c-danger: color-mix(in oklab, #be123c 78%, var(--seed-fg, #1f2328));
+    --c-danger-soft: color-mix(in srgb, #be123c 10%, transparent);
+    --c-violet: color-mix(in oklab, #7c3aed 72%, var(--seed-fg, #1f2328));
+    --c-violet-soft: color-mix(in srgb, #7c3aed 11%, transparent);
+    --c-code-bg: #0c1424;
+    --c-code-fg: #dbe7f5;
+    --c-code-muted: #8fa3bd;
+    --mono: var(--font-code, "SFMono-Regular", Consolas, "Liberation Mono", monospace);
+    --sans: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif);
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--c-ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.68;
+    background: var(--c-card);
+    border: 1px solid var(--c-line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 22px 55px -34px color-mix(in srgb, var(--c-ink) 32%, transparent);
+  }
+  #ch4-lesson *{ box-sizing: border-box; }
+  #ch4-lesson button, #ch4-lesson input, #ch4-lesson select, #ch4-lesson summary{ font: inherit; }
+  #ch4-lesson button{ -webkit-tap-highlight-color: transparent; }
+  #ch4-lesson button:focus-visible,
+  #ch4-lesson input:focus-visible,
+  #ch4-lesson summary:focus-visible{
+    outline: 2px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+  #ch4-lesson h1, #ch4-lesson h2, #ch4-lesson h3, #ch4-lesson h4, #ch4-lesson p{ margin: 0; }
+  #ch4-lesson code{ font-family: var(--mono); font-size: .94em; }
+  #ch4-lesson .ch4-mono{ font-family: var(--mono); }
+  #ch4-lesson .ch4-muted{ color: var(--c-muted); }
+  #ch4-lesson .ch4-small{ font-size: 10.5px; line-height: 1.7; }
+  #ch4-lesson .ch4-mt{ margin-top: 14px; }
+  #ch4-lesson .ch4-mt-s{ margin-top: 8px; }
+
+  /* header */
+  #ch4-lesson .ch4-header{
+    position: relative;
+    padding: 25px 27px 18px;
+    border-bottom: 1px solid var(--c-subtle);
+    background:
+      linear-gradient(color-mix(in srgb, var(--c-primary) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--c-primary) 4%, transparent) 1px, transparent 1px),
+      radial-gradient(660px 220px at 88% -18%, color-mix(in srgb, var(--c-cyan) 15%, transparent), transparent 70%),
+      linear-gradient(180deg, color-mix(in srgb, var(--c-primary) 4%, var(--c-card)), var(--c-card));
+    background-size: 26px 26px, 26px 26px, auto, auto;
+  }
+  #ch4-lesson .ch4-header::before{
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--c-primary), var(--c-cyan), var(--c-violet));
+  }
+  #ch4-lesson .ch4-head-grid{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 296px;
+    gap: 26px;
+    align-items: start;
+  }
+  #ch4-lesson .ch4-kicker{
+    display: flex; align-items: center; gap: 8px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+  }
+  #ch4-lesson .ch4-kicker::before{ content: ""; width: 22px; height: 1px; background: var(--c-primary); }
+  #ch4-lesson .ch4-title{
+    margin-top: 8px;
+    font-size: clamp(25px, 3.25vw, 38px);
+    line-height: 1.2;
+    letter-spacing: -.025em;
+    font-weight: 760;
+  }
+  #ch4-lesson .ch4-title em{
+    font-style: normal;
+    color: var(--c-primary);
+    background: linear-gradient(180deg, transparent 66%, color-mix(in srgb, var(--c-primary) 18%, transparent) 66%);
+  }
+  #ch4-lesson .ch4-sub{
+    margin-top: 10px;
+    max-width: 760px;
+    color: var(--c-muted);
+    font-size: 12.5px;
+    line-height: 1.78;
+  }
+  #ch4-lesson .ch4-sub b{ color: var(--c-ink); font-weight: 650; }
+  #ch4-lesson .ch4-chips{ display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  #ch4-lesson .ch4-chip{
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--c-card) 82%, transparent);
+    color: var(--c-muted);
+    font-size: 9.5px;
+  }
+  #ch4-lesson .ch4-chip b{ color: var(--c-ink); font-family: var(--mono); font-weight: 600; }
+  #ch4-lesson .ch4-head-ledgers{
+    padding: 12px;
+    border: 1px solid var(--c-line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--c-card) 76%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  #ch4-lesson .ch4-head-ledgers-title{
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8.8px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  #ch4-lesson .ch4-head-ledgers-title b{ color: var(--c-primary); font-weight: 700; letter-spacing: .06em; }
+  #ch4-lesson .ch4-head-ledger{ padding: 7px 0; border-top: 1px dashed var(--c-subtle); }
+  #ch4-lesson .ch4-head-ledger:first-of-type{ border-top: 0; }
+  #ch4-lesson .ch4-head-ledger-top{ display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  #ch4-lesson .ch4-head-ledger span{ font-family: var(--mono); font-size: 8.5px; color: var(--c-muted); letter-spacing: .08em; }
+  #ch4-lesson .ch4-head-ledger b{ font-size: 10px; font-weight: 600; text-align: right; }
+  #ch4-lesson .ch4-head-ledger i{
+    display: block; height: 3px; margin-top: 5px; border-radius: 99px;
+    background: linear-gradient(90deg, var(--c-primary), var(--c-cyan));
+    width: var(--v, 30%);
+    opacity: .65;
+  }
+  #ch4-lesson .ch4-progress-row{ margin-top: 15px; }
+  #ch4-lesson .ch4-progress-text{ display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  #ch4-lesson .ch4-progress-text b{ font-family: var(--mono); font-size: 10px; letter-spacing: .02em; }
+  #ch4-lesson .ch4-progress-text span{ color: var(--c-muted); font-size: 9.5px; }
+  #ch4-lesson .ch4-bar{ height: 5px; margin-top: 6px; border-radius: 99px; background: var(--c-fill); overflow: hidden; }
+  #ch4-lesson .ch4-bar > span{
+    display: block; height: 100%; width: 12.5%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--c-primary), var(--c-cyan));
+    transition: width .35s ease;
+  }
+
+  /* stepper */
+  #ch4-lesson .ch4-stepper{
+    position: sticky; top: 0; z-index: 30;
+    display: flex; gap: 5px;
+    padding: 9px 14px;
+    overflow-x: auto;
+    background: color-mix(in srgb, var(--c-card) 93%, transparent);
+    border-bottom: 1px solid var(--c-subtle);
+    backdrop-filter: blur(10px);
+    scrollbar-width: thin;
+  }
+  #ch4-lesson .ch4-step{
+    flex: 1 0 auto;
+    min-width: 92px;
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 9px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--c-muted);
+    font-size: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .18s, border-color .18s, color .18s;
+  }
+  #ch4-lesson .ch4-step span:first-child{
+    font-family: var(--mono);
+    font-size: 8.5px;
+    color: var(--c-muted);
+    opacity: .8;
+  }
+  #ch4-lesson .ch4-step:hover{ background: var(--c-fill); color: var(--c-ink); }
+  #ch4-lesson .ch4-step.is-active{
+    background: var(--c-primary-soft);
+    border-color: color-mix(in srgb, var(--c-primary) 34%, transparent);
+    color: var(--c-primary);
+    font-weight: 650;
+  }
+  #ch4-lesson .ch4-step.is-active span:first-child{ color: var(--c-primary); opacity: 1; }
+
+  /* stage */
+  #ch4-lesson .ch4-stage{ padding: 20px 22px 24px; }
+  #ch4-lesson .ch4-scene{ display: none; }
+  #ch4-lesson .ch4-scene.is-active{ display: block; animation: ch4-scene-in .3s ease both; }
+  @keyframes ch4-scene-in{
+    from{ opacity: 0; transform: translateY(7px); }
+    to{ opacity: 1; transform: none; }
+  }
+  #ch4-lesson .ch4-scene-head{ margin-bottom: 14px; }
+  #ch4-lesson .ch4-scene-title{
+    display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+    font-size: 20px; line-height: 1.35; letter-spacing: -.015em; font-weight: 720;
+  }
+  #ch4-lesson .ch4-scene-num{
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: var(--c-primary);
+    padding: 3px 6px;
+    border: 1px solid color-mix(in srgb, var(--c-primary) 25%, transparent);
+    border-radius: 5px;
+    background: var(--c-primary-soft);
+  }
+  #ch4-lesson .ch4-scene-desc{ margin-top: 7px; color: var(--c-muted); font-size: 11.5px; line-height: 1.75; max-width: 940px; }
+  #ch4-lesson .ch4-scene-desc b{ color: var(--c-ink); font-weight: 650; }
+
+  /* layout */
+  #ch4-lesson .ch4-grid2{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  #ch4-lesson .ch4-grid3{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  #ch4-lesson .ch4-stack{ display: flex; flex-direction: column; gap: 10px; }
+
+  /* card */
+  #ch4-lesson .ch4-card{
+    min-width: 0;
+    border: 1px solid var(--c-subtle);
+    border-radius: 12px;
+    background: var(--c-card);
+    padding: 15px;
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--c-ink) 2%, transparent);
+  }
+  #ch4-lesson .ch4-card-head{
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    margin-bottom: 11px;
+  }
+  #ch4-lesson .ch4-card-title{
+    font-size: 11.5px;
+    font-weight: 680;
+    letter-spacing: .005em;
+    line-height: 1.5;
+  }
+  #ch4-lesson .ch4-card-title::before{
+    content: "";
+    display: inline-block;
+    width: 4px; height: 11px;
+    margin-right: 6px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--c-primary), var(--c-cyan));
+    vertical-align: -1px;
+  }
+  #ch4-lesson .ch4-tag{
+    flex: 0 0 auto;
+    padding: 2px 6px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 4px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+
+  /* buttons */
+  #ch4-lesson .ch4-btn{
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    min-height: 28px;
+    padding: 5px 10px;
+    border: 1px solid var(--c-line);
+    border-radius: 7px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    font-size: 10px;
+    line-height: 1.3;
+    cursor: pointer;
+    transition: background .16s, border-color .16s, color .16s, transform .16s;
+  }
+  #ch4-lesson .ch4-btn:hover{ background: var(--c-fill); border-color: color-mix(in srgb, var(--c-ink) 24%, transparent); }
+  #ch4-lesson .ch4-btn:active{ transform: translateY(1px); }
+  #ch4-lesson .ch4-btn:disabled{ opacity: .4; cursor: not-allowed; transform: none; }
+  #ch4-lesson .ch4-btn-primary{
+    background: var(--c-primary);
+    border-color: var(--c-primary);
+    color: #fff;
+    font-weight: 650;
+  }
+  #ch4-lesson .ch4-btn-primary:hover{ background: color-mix(in srgb, var(--c-primary) 86%, #000); border-color: var(--c-primary); }
+  #ch4-lesson .ch4-btn-quiet{ background: transparent; color: var(--c-muted); }
+  #ch4-lesson .ch4-btn-quiet:hover{ color: var(--c-ink); }
+  #ch4-lesson .ch4-btn.is-active{
+    background: var(--c-primary-soft);
+    border-color: color-mix(in srgb, var(--c-primary) 34%, transparent);
+    color: var(--c-primary);
+    font-weight: 650;
+  }
+  #ch4-lesson .ch4-btnrow{ display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+  /* notes */
+  #ch4-lesson .ch4-note, #ch4-lesson .ch4-warn, #ch4-lesson .ch4-okbox{
+    padding: 9px 11px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+  #ch4-lesson .ch4-note b, #ch4-lesson .ch4-warn b, #ch4-lesson .ch4-okbox b{ color: var(--c-ink); }
+  #ch4-lesson .ch4-warn{
+    border-color: color-mix(in srgb, var(--c-warn) 30%, transparent);
+    background: var(--c-warn-soft);
+    color: color-mix(in srgb, var(--c-warn) 72%, var(--c-ink));
+  }
+  #ch4-lesson .ch4-okbox{
+    border-color: color-mix(in srgb, var(--c-ok) 28%, transparent);
+    background: var(--c-ok-soft);
+    color: color-mix(in srgb, var(--c-ok) 76%, var(--c-ink));
+  }
+
+  /* code */
+  #ch4-lesson .ch4-code{
+    display: block;
+    margin: 0;
+    padding: 11px 12px;
+    border: 1px solid rgba(148, 163, 184, .18);
+    border-radius: 9px;
+    background: var(--c-code-bg);
+    color: var(--c-code-fg);
+    font-family: var(--mono);
+    font-size: 10.3px;
+    line-height: 1.74;
+    tab-size: 4;
+    overflow-x: auto;
+    white-space: pre;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+  }
+  #ch4-lesson .ch4-code .cm{ color: var(--c-code-muted); }
+  #ch4-lesson .ch4-code .kw{ color: #93c5fd; font-weight: 600; }
+  #ch4-lesson .ch4-code .ty{ color: #67e8f9; }
+  #ch4-lesson .ch4-code .nu{ color: #fbbf24; }
+  #ch4-lesson .ch4-code .st{ color: #86efac; }
+  #ch4-lesson .ch4-code .pp{ color: #c4b5fd; }
+  #ch4-lesson .ch4-code .fn{ color: #f9a8d4; }
+  #ch4-lesson .ch4-code .bad{ color: #fda4af; font-weight: 650; }
+  #ch4-lesson .ch4-code .good{ color: #86efac; font-weight: 650; }
+  #ch4-lesson .ch4-code .dim{ color: #64748b; }
+
+  /* generic table */
+  #ch4-lesson .ch4-table-wrap{ overflow-x: auto; }
+  #ch4-lesson .ch4-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    line-height: 1.55;
+  }
+  #ch4-lesson .ch4-table th, #ch4-lesson .ch4-table td{
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--c-subtle);
+    text-align: left;
+    vertical-align: top;
+  }
+  #ch4-lesson .ch4-table th{
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 8.6px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    background: var(--c-inset);
+    white-space: nowrap;
+  }
+  #ch4-lesson .ch4-table tr:last-child td{ border-bottom: 0; }
+  #ch4-lesson .ch4-table td b{ font-weight: 650; }
+  #ch4-lesson .ch4-table code{ padding: 1px 3px; border-radius: 3px; background: var(--c-fill); }
+
+  /* scene 0: budget */
+  #ch4-lesson .ch4-budget-layout{
+    display: grid;
+    grid-template-columns: minmax(0, 1.32fr) minmax(0, .92fr);
+    gap: 12px;
+    align-items: start;
+  }
+  #ch4-lesson .ch4-presets{ display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
+  #ch4-lesson .ch4-presets .ch4-btn{ font-size: 9.5px; min-height: 25px; padding: 3px 8px; }
+  #ch4-lesson .ch4-feature-list{ display: flex; flex-direction: column; gap: 5px; }
+  #ch4-lesson .ch4-feature{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 9px;
+    background: var(--c-card);
+    transition: border-color .16s, background .16s;
+  }
+  #ch4-lesson .ch4-feature:hover{ border-color: color-mix(in srgb, var(--c-ink) 20%, transparent); }
+  #ch4-lesson .ch4-feature.is-selected{
+    border-color: color-mix(in srgb, var(--c-primary) 42%, transparent);
+    background: color-mix(in srgb, var(--c-primary) 4%, var(--c-card));
+  }
+  #ch4-lesson .ch4-feature-info{
+    display: flex; flex-direction: column; gap: 1px;
+    min-width: 0;
+    border: 0; padding: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  #ch4-lesson .ch4-feature-info b{ display: flex; align-items: center; gap: 5px; font-size: 10.8px; line-height: 1.45; font-weight: 650; }
+  #ch4-lesson .ch4-feature-info small{ color: var(--c-muted); font-size: 9.2px; line-height: 1.5; }
+  #ch4-lesson .ch4-feature-rec{
+    flex: 0 0 auto;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 7.8px;
+    font-weight: 600;
+    letter-spacing: .02em;
+  }
+  #ch4-lesson .ch4-feature-rec.on{ color: var(--c-ok); background: var(--c-ok-soft); }
+  #ch4-lesson .ch4-feature-rec.care{ color: var(--c-warn); background: var(--c-warn-soft); }
+  #ch4-lesson .ch4-feature-rec.off{ color: var(--c-danger); background: var(--c-danger-soft); }
+  #ch4-lesson .ch4-switch{
+    display: inline-flex; align-items: center; gap: 5px;
+    min-width: 58px;
+    border: 1px solid var(--c-line);
+    border-radius: 99px;
+    padding: 3px 6px 3px 4px;
+    background: var(--c-inset);
+    color: var(--c-muted);
+    cursor: pointer;
+    transition: background .18s, border-color .18s, color .18s;
+  }
+  #ch4-lesson .ch4-switch i{
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: var(--c-muted);
+    opacity: .4;
+    transition: transform .18s, background .18s, opacity .18s;
+  }
+  #ch4-lesson .ch4-switch em{ font-style: normal; font-family: var(--mono); font-size: 8px; letter-spacing: .02em; }
+  #ch4-lesson .ch4-switch[aria-pressed="true"]{
+    background: var(--c-primary-soft);
+    border-color: color-mix(in srgb, var(--c-primary) 38%, transparent);
+    color: var(--c-primary);
+  }
+  #ch4-lesson .ch4-switch[aria-pressed="true"] i{ background: var(--c-primary); opacity: 1; transform: translateX(0); }
+  #ch4-lesson .ch4-switch[aria-pressed="false"] i{ transform: translateX(0); }
+  #ch4-lesson .ch4-lock{
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--c-ok);
+    padding: 2px 5px;
+    border: 1px dashed color-mix(in srgb, var(--c-ok) 40%, transparent);
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  #ch4-lesson .ch4-ledger-panel{
+    position: sticky; top: 58px;
+    background:
+      linear-gradient(160deg, color-mix(in srgb, var(--c-primary) 4%, var(--c-card)), var(--c-card) 60%);
+  }
+  #ch4-lesson .ch4-ledger-head{ display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+  #ch4-lesson .ch4-ledger-head b{ font-size: 11.5px; }
+  #ch4-lesson .ch4-budget-badge{
+    font-family: var(--mono);
+    font-size: 8px;
+    padding: 2px 6px;
+    border-radius: 99px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  #ch4-lesson .ch4-budget-badge.ok{ color: var(--c-ok); border-color: color-mix(in srgb, var(--c-ok) 35%, transparent); background: var(--c-ok-soft); }
+  #ch4-lesson .ch4-budget-badge.warn{ color: var(--c-warn); border-color: color-mix(in srgb, var(--c-warn) 35%, transparent); background: var(--c-warn-soft); }
+  #ch4-lesson .ch4-budget-badge.bad{ color: var(--c-danger); border-color: color-mix(in srgb, var(--c-danger) 35%, transparent); background: var(--c-danger-soft); }
+  #ch4-lesson .ch4-meter-row{ margin-bottom: 9px; }
+  #ch4-lesson .ch4-meter-top{ display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  #ch4-lesson .ch4-meter-top span{ font-family: var(--mono); font-size: 8.8px; letter-spacing: .04em; color: var(--c-muted); }
+  #ch4-lesson .ch4-meter-top b{ font-family: var(--mono); font-size: 8.8px; font-weight: 500; }
+  #ch4-lesson .ch4-meter{
+    height: 7px; margin-top: 4px;
+    border-radius: 99px;
+    background: var(--c-fill);
+    overflow: hidden;
+  }
+  #ch4-lesson .ch4-meter > span{
+    display: block; height: 100%; width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--c-primary), var(--c-cyan));
+    transition: width .35s ease, background .3s;
+  }
+  #ch4-lesson .ch4-meter-row.is-warn .ch4-meter > span{ background: var(--c-warn); }
+  #ch4-lesson .ch4-meter-row.is-danger .ch4-meter > span{ background: var(--c-danger); }
+  #ch4-lesson .ch4-meter-row.is-warn .ch4-meter-top b{ color: var(--c-warn); }
+  #ch4-lesson .ch4-meter-row.is-danger .ch4-meter-top b{ color: var(--c-danger); }
+  #ch4-lesson .ch4-budget-note{
+    margin-top: 4px;
+    padding: 8px 9px;
+    border-radius: 7px;
+    border: 1px dashed var(--c-subtle);
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 9.5px;
+    line-height: 1.65;
+  }
+  #ch4-lesson .ch4-budget-note b{ color: var(--c-ink); }
+  #ch4-lesson .ch4-feature-detail{
+    margin-top: 9px;
+    padding: 10px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 9px;
+    background: var(--c-card);
+  }
+  #ch4-lesson .ch4-detail-title{ display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  #ch4-lesson .ch4-detail-title b{ font-size: 10.5px; }
+  #ch4-lesson .ch4-detail-grid{ display: grid; gap: 5px; margin-top: 7px; }
+  #ch4-lesson .ch4-detail-line{ font-size: 9.5px; line-height: 1.6; color: var(--c-muted); }
+  #ch4-lesson .ch4-detail-line b{ color: var(--c-ink); font-weight: 650; }
+  #ch4-lesson .ch4-detail-line code{ padding: 1px 3px; border-radius: 3px; background: var(--c-fill); }
+  #ch4-lesson .ch4-flags-card{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px; align-items: start; }
+  #ch4-lesson .ch4-flags{ display: flex; flex-direction: column; gap: 5px; }
+  #ch4-lesson .ch4-flag{
+    display: flex; align-items: flex-start; gap: 7px;
+    padding: 7px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-card);
+    font-size: 9.5px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  #ch4-lesson .ch4-flag:hover{ background: var(--c-fill); }
+  #ch4-lesson .ch4-flag input{ margin: 2px 0 0; accent-color: var(--c-primary); flex: 0 0 auto; }
+  #ch4-lesson .ch4-flag b{ display: block; font-family: var(--mono); font-size: 8.8px; font-weight: 600; }
+  #ch4-lesson .ch4-flag small{ display: block; color: var(--c-muted); font-size: 8.5px; }
+  #ch4-lesson .ch4-flag.is-risk{ border-color: color-mix(in srgb, var(--c-warn) 30%, transparent); background: var(--c-warn-soft); }
+  #ch4-lesson .ch4-flags-out{ display: flex; flex-direction: column; gap: 6px; }
+  #ch4-lesson .ch4-flag-risk{ font-size: 9.5px; line-height: 1.65; }
+
+  /* scene 1: RAII theater */
+  #ch4-lesson .ch4-theater{
+    display: grid;
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
+    gap: 12px;
+    align-items: stretch;
+  }
+  #ch4-lesson .ch4-mode-tabs{ display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
+  #ch4-lesson .ch4-mode-tabs .ch4-btn{ font-size: 9.5px; min-height: 25px; padding: 3px 8px; }
+  #ch4-lesson .ch4-theater-code .ch4-code{ min-height: 204px; }
+  #ch4-lesson .ch4-exit-list{ display: grid; gap: 6px; margin-top: 10px; }
+  #ch4-lesson .ch4-exit{
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .18s, background .18s;
+  }
+  #ch4-lesson .ch4-exit:hover:not(:disabled){ border-color: color-mix(in srgb, var(--c-primary) 38%, transparent); background: var(--c-primary-soft); }
+  #ch4-lesson .ch4-exit:disabled{ opacity: .45; cursor: not-allowed; }
+  #ch4-lesson .ch4-exit-icon{
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--c-inset);
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--c-muted);
+  }
+  #ch4-lesson .ch4-exit b{ display: block; font-size: 10px; }
+  #ch4-lesson .ch4-exit small{ display: block; color: var(--c-muted); font-size: 8.6px; }
+  #ch4-lesson .ch4-exit-state{ font-family: var(--mono); font-size: 8.5px; color: var(--c-muted); }
+  #ch4-lesson .ch4-exit.is-ok{ border-color: color-mix(in srgb, var(--c-ok) 35%, transparent); background: var(--c-ok-soft); }
+  #ch4-lesson .ch4-exit.is-ok .ch4-exit-state{ color: var(--c-ok); }
+  #ch4-lesson .ch4-exit.is-bad{ border-color: color-mix(in srgb, var(--c-danger) 35%, transparent); background: var(--c-danger-soft); }
+  #ch4-lesson .ch4-exit.is-bad .ch4-exit-state{ color: var(--c-danger); }
+  #ch4-lesson .ch4-theater-stage{ display: flex; flex-direction: column; }
+  #ch4-lesson .ch4-stack-stage{
+    position: relative;
+    flex: 1;
+    min-height: 236px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 15px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 10px;
+    overflow: hidden;
+    background:
+      linear-gradient(color-mix(in srgb, var(--c-primary) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--c-primary) 5%, transparent) 1px, transparent 1px),
+      var(--c-inset);
+    background-size: 18px 18px;
+  }
+  #ch4-lesson .ch4-stack-stage::before{
+    content: "STACK";
+    position: absolute; top: 7px; left: 9px;
+    color: var(--c-muted);
+    font-family: var(--mono);
+    font-size: 7.5px;
+    letter-spacing: .16em;
+    opacity: .5;
+  }
+  #ch4-lesson .ch4-frame{
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    border: 1px solid color-mix(in srgb, var(--c-primary) 25%, var(--c-line));
+    border-radius: 11px;
+    background: var(--c-card);
+    box-shadow: 0 10px 24px -18px color-mix(in srgb, var(--c-ink) 45%, transparent);
+    transition: transform .26s ease, opacity .26s ease;
+  }
+  #ch4-lesson .ch4-frame.is-closing{ transform: translateY(14px) scale(.97); opacity: .35; }
+  #ch4-lesson .ch4-frame.is-leaked{ border-color: var(--c-danger); box-shadow: 0 0 0 1px var(--c-danger-soft); }
+  #ch4-lesson .ch4-frame-head{
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 8px 10px;
+    border-bottom: 1px dashed var(--c-subtle);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+  #ch4-lesson .ch4-frame-head span:last-child{ font-family: var(--sans); font-size: 8.5px; color: var(--c-muted); }
+  #ch4-lesson .ch4-resource-rail{
+    position: relative;
+    min-height: 92px;
+    padding: 9px 10px 9px 25px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  #ch4-lesson .ch4-resource-rail::before{
+    content: "";
+    position: absolute; left: 13px; top: 9px; bottom: 9px;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--c-danger), var(--c-cyan));
+    opacity: .35;
+  }
+  #ch4-lesson .ch4-resource{
+    position: relative;
+    display: flex; align-items: flex-start; gap: 7px;
+    padding: 6px 7px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-card);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity .24s, transform .24s, border-color .2s, background .2s;
+  }
+  #ch4-lesson .ch4-resource::before{
+    content: "";
+    position: absolute; left: -16px; top: 12px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--c-card);
+    border: 2px solid var(--rc, var(--c-primary));
+  }
+  #ch4-lesson .ch4-resource.is-in{ opacity: 1; transform: none; }
+  #ch4-lesson .ch4-resource.is-releasing{ opacity: .45; transform: translateX(10px); }
+  #ch4-lesson .ch4-resource.is-released{ opacity: .18; filter: grayscale(1); transform: translateX(16px); }
+  #ch4-lesson .ch4-resource.is-leaked{
+    border-color: var(--c-danger);
+    background: var(--c-danger-soft);
+    animation: ch4-pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes ch4-pulse{ 50%{ box-shadow: 0 0 0 2px color-mix(in srgb, var(--c-danger) 18%, transparent); } }
+  #ch4-lesson .ch4-resource-icon{
+    flex: 0 0 auto;
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--rc, var(--c-primary)) 13%, transparent);
+    color: var(--rc, var(--c-primary));
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 700;
+  }
+  #ch4-lesson .ch4-resource b{ display: block; font-size: 9.5px; line-height: 1.4; }
+  #ch4-lesson .ch4-resource small{ display: block; color: var(--c-muted); font-size: 8.2px; line-height: 1.45; }
+  #ch4-lesson .ch4-frame-foot{
+    padding: 7px 10px;
+    border-top: 1px dashed var(--c-subtle);
+    color: var(--c-muted);
+    font-size: 8.5px;
+  }
+  #ch4-lesson .ch4-frame-empty{
+    padding: 24px 10px;
+    text-align: center;
+    color: var(--c-muted);
+    font-size: 9px;
+    font-style: italic;
+  }
+  #ch4-lesson .ch4-rail-log{
+    margin-top: 9px;
+    padding: 8px 9px;
+    min-height: 66px;
+    max-height: 104px;
+    overflow-y: auto;
+    border-radius: 8px;
+    background: var(--c-code-bg);
+    color: var(--c-code-fg);
+    font-family: var(--mono);
+    font-size: 8.7px;
+    line-height: 1.7;
+  }
+  #ch4-lesson .ch4-log-line{ display: flex; gap: 6px; }
+  #ch4-lesson .ch4-log-line .t{ color: var(--c-code-muted); flex: 0 0 auto; }
+  #ch4-lesson .ch4-log-line.ok{ color: #86efac; }
+  #ch4-lesson .ch4-log-line.bad{ color: #fda4af; }
+  #ch4-lesson .ch4-log-line.info{ color: #bfdbfe; }
+
+  /* footer */
+  #ch4-lesson .ch4-footer{
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--c-subtle);
+    background: var(--c-inset);
+  }
+  #ch4-lesson .ch4-footer-mid{ text-align: center; color: var(--c-muted); font-size: 9px; line-height: 1.5; }
+  #ch4-lesson .ch4-footer-mid b{ display: block; color: var(--c-ink); font-size: 10px; font-weight: 600; }
+
+  /* scene 2: guards & constructor failure */
+  #ch4-lesson .ch4-guard-layout{ display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: 12px; align-items: stretch; }
+  #ch4-lesson .ch4-guard-tabs{ display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+  #ch4-lesson .ch4-guard-tabs .ch4-btn{ font-size: 9.3px; min-height: 24px; padding: 3px 7px; }
+  #ch4-lesson .ch4-guard-code{ min-height: 220px; }
+  #ch4-lesson .ch4-ctor-stage{ display: flex; flex-direction: column; gap: 9px; }
+  #ch4-lesson .ch4-ctor-tabs{ display: flex; gap: 5px; flex-wrap: wrap; }
+  #ch4-lesson .ch4-ctor-tabs .ch4-btn{ font-size: 9.3px; min-height: 24px; padding: 3px 7px; }
+  #ch4-lesson .ch4-ctor-flow{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 14px minmax(0, 1fr) 14px minmax(0, 1fr);
+    gap: 5px;
+    align-items: stretch;
+  }
+  #ch4-lesson .ch4-ctor-box{
+    min-height: 66px;
+    padding: 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    transition: border-color .2s, background .2s;
+  }
+  #ch4-lesson .ch4-ctor-box b{ display: block; font-size: 9.3px; }
+  #ch4-lesson .ch4-ctor-box small{ display: block; margin-top: 2px; color: var(--c-muted); font-size: 8.2px; line-height: 1.45; }
+  #ch4-lesson .ch4-ctor-box .ch4-box-state{
+    display: inline-block; margin-top: 5px;
+    font-family: var(--mono); font-size: 8px;
+    padding: 1px 4px; border-radius: 3px;
+    background: var(--c-fill); color: var(--c-muted);
+  }
+  #ch4-lesson .ch4-ctor-box.is-on{ border-color: color-mix(in srgb, var(--c-primary) 38%, transparent); background: var(--c-primary-soft); }
+  #ch4-lesson .ch4-ctor-box.is-ok{ border-color: color-mix(in srgb, var(--c-ok) 35%, transparent); background: var(--c-ok-soft); }
+  #ch4-lesson .ch4-ctor-box.is-fail{ border-color: color-mix(in srgb, var(--c-danger) 38%, transparent); background: var(--c-danger-soft); }
+  #ch4-lesson .ch4-ctor-box.is-fail .ch4-box-state{ color: var(--c-danger); background: var(--c-danger-soft); }
+  #ch4-lesson .ch4-ctor-box.is-ok .ch4-box-state{ color: var(--c-ok); background: var(--c-ok-soft); }
+  #ch4-lesson .ch4-ctor-arrow{ display: flex; align-items: center; justify-content: center; color: var(--c-muted); font-family: var(--mono); font-size: 12px; }
+  #ch4-lesson .ch4-ctor-result{
+    padding: 8px 9px;
+    border-radius: 8px;
+    border: 1px dashed var(--c-subtle);
+    background: var(--c-inset);
+    color: var(--c-muted);
+    font-size: 9.3px;
+    line-height: 1.6;
+    min-height: 50px;
+  }
+  #ch4-lesson .ch4-ctor-result.is-ok{ border-color: color-mix(in srgb, var(--c-ok) 30%, transparent); background: var(--c-ok-soft); color: var(--c-ok); }
+  #ch4-lesson .ch4-ctor-result.is-bad{ border-color: color-mix(in srgb, var(--c-danger) 30%, transparent); background: var(--c-danger-soft); color: var(--c-danger); }
+  #ch4-lesson .ch4-guard-rule{ display: flex; flex-direction: column; gap: 5px; }
+  #ch4-lesson .ch4-guard-rule b{ font-size: 10px; }
+  #ch4-lesson .ch4-guard-rule p{ font-size: 9.5px; line-height: 1.65; color: var(--c-muted); }
+
+  /* scene 3: vtable anatomy */
+  #ch4-lesson .ch4-vtable-layout{ display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 12px; align-items: start; }
+  #ch4-lesson .ch4-vt-stage{
+    min-height: 280px;
+    padding: 13px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 10px;
+    background:
+      linear-gradient(color-mix(in srgb, var(--c-primary) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--c-primary) 4%, transparent) 1px, transparent 1px),
+      var(--c-inset);
+    background-size: 20px 20px;
+  }
+  #ch4-lesson .ch4-vt-top{ display: grid; grid-template-columns: minmax(0, .8fr) 32px minmax(0, 1.2fr); gap: 7px; align-items: center; }
+  #ch4-lesson .ch4-vt-object{
+    padding: 8px;
+    border: 1px solid color-mix(in srgb, var(--c-primary) 32%, var(--c-line));
+    border-radius: 8px;
+    background: var(--c-card);
+  }
+  #ch4-lesson .ch4-vt-obj-head{ display: flex; align-items: center; justify-content: space-between; gap: 5px; margin-bottom: 6px; }
+  #ch4-lesson .ch4-vt-obj-head b{ font-size: 9.5px; }
+  #ch4-lesson .ch4-vt-obj-head span{ font-family: var(--mono); font-size: 7.5px; color: var(--c-muted); }
+  #ch4-lesson .ch4-vt-bytes{ display: flex; gap: 3px; flex-wrap: wrap; }
+  #ch4-lesson .ch4-vt-byte{
+    min-width: 30px; min-height: 34px;
+    flex: 1 1 30px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px;
+    padding: 3px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 5px;
+    background: var(--c-inset);
+    font-family: var(--mono);
+    font-size: 7px;
+    color: var(--c-muted);
+    text-align: center;
+  }
+  #ch4-lesson .ch4-vt-byte b{ font-size: 8px; color: var(--c-ink); font-weight: 600; }
+  #ch4-lesson .ch4-vt-byte.is-vptr{
+    border-color: color-mix(in srgb, var(--c-primary) 45%, transparent);
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+  }
+  #ch4-lesson .ch4-vt-byte.is-pad{ border-style: dashed; opacity: .6; }
+  #ch4-lesson .ch4-vt-arrow{ position: relative; height: 2px; background: var(--c-primary); opacity: .45; }
+  #ch4-lesson .ch4-vt-arrow::after{
+    content: "";
+    position: absolute; right: -2px; top: -3px;
+    border-left: 6px solid var(--c-primary);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+  #ch4-lesson .ch4-vt-arrow.is-hit{ opacity: 1; animation: ch4-arrow-pulse .8s ease; }
+  @keyframes ch4-arrow-pulse{ 50%{ opacity: .25; } }
+  #ch4-lesson .ch4-vt-table{
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--c-card);
+  }
+  #ch4-lesson .ch4-vt-table-head{
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    padding: 5px 7px;
+    background: var(--c-fill);
+    font-family: var(--mono);
+    font-size: 7.8px;
+    color: var(--c-muted);
+  }
+  #ch4-lesson .ch4-vt-slot{
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    gap: 5px;
+    align-items: center;
+    padding: 5px 7px;
+    border-top: 1px solid var(--c-subtle);
+    font-family: var(--mono);
+    font-size: 7.9px;
+    transition: background .2s, color .2s;
+  }
+  #ch4-lesson .ch4-vt-slot .idx{ color: var(--c-muted); font-size: 7.5px; }
+  #ch4-lesson .ch4-vt-slot .fn{ color: var(--c-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #ch4-lesson .ch4-vt-slot .kind{ color: var(--c-muted); font-size: 7px; }
+  #ch4-lesson .ch4-vt-slot.is-hit{ background: var(--c-primary-soft); color: var(--c-primary); }
+  #ch4-lesson .ch4-vt-slot.is-hit .fn, #ch4-lesson .ch4-vt-slot.is-hit .idx{ color: var(--c-primary); font-weight: 650; }
+  #ch4-lesson .ch4-vt-call{
+    margin-top: 9px;
+    padding: 8px 9px;
+    border-radius: 7px;
+    background: var(--c-code-bg);
+    color: var(--c-code-fg);
+    font-family: var(--mono);
+    font-size: 8.4px;
+    line-height: 1.65;
+    min-height: 49px;
+  }
+  #ch4-lesson .ch4-vt-call .ok{ color: #86efac; }
+  #ch4-lesson .ch4-vt-call .bad{ color: #fda4af; }
+  #ch4-lesson .ch4-vt-call .dim{ color: var(--c-code-muted); }
+  #ch4-lesson .ch4-vt-controls{ margin-top: 8px; }
+  #ch4-lesson .ch4-vt-controls .ch4-btn{ font-size: 9.3px; min-height: 25px; padding: 3px 7px; }
+  #ch4-lesson .ch4-vt-side{ display: flex; flex-direction: column; gap: 9px; }
+  #ch4-lesson .ch4-vt-calc{
+    padding: 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-card);
+  }
+  #ch4-lesson .ch4-vt-calc-top{ display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  #ch4-lesson .ch4-vt-calc-top b{ font-size: 9.5px; }
+  #ch4-lesson .ch4-vt-calc-top output{ font-family: var(--mono); font-size: 10px; color: var(--c-primary); font-weight: 650; }
+  #ch4-lesson input[type="range"]{ width: 100%; margin: 5px 0 2px; accent-color: var(--c-primary); }
+  #ch4-lesson .ch4-range-label{ display: flex; justify-content: space-between; color: var(--c-muted); font-family: var(--mono); font-size: 7.5px; }
+  #ch4-lesson .ch4-calc-bars{ display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+  #ch4-lesson .ch4-calc-row{ display: grid; grid-template-columns: 82px minmax(0, 1fr) 62px; gap: 6px; align-items: center; font-size: 8.2px; }
+  #ch4-lesson .ch4-calc-row span{ color: var(--c-muted); }
+  #ch4-lesson .ch4-calc-row b{ font-family: var(--mono); font-size: 8px; font-weight: 500; text-align: right; }
+  #ch4-lesson .ch4-calc-bar{ height: 6px; border-radius: 99px; background: var(--c-fill); overflow: hidden; }
+  #ch4-lesson .ch4-calc-bar i{ display: block; height: 100%; border-radius: inherit; transition: width .3s; }
+  #ch4-lesson .ch4-calc-bar.virtual i{ background: var(--c-primary); }
+  #ch4-lesson .ch4-calc-bar.fp i{ background: var(--c-warn); }
+  #ch4-lesson .ch4-vt-note{ font-size: 8.8px; line-height: 1.6; color: var(--c-muted); }
+  #ch4-lesson .ch4-trap{
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+    gap: 12px;
+    align-items: start;
+  }
+  #ch4-lesson .ch4-trap-steps{ display: flex; flex-direction: column; gap: 5px; }
+  #ch4-lesson .ch4-trap-step{
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 7px; align-items: center;
+    padding: 7px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    text-align: left;
+    cursor: pointer;
+    font-size: 9.3px;
+  }
+  #ch4-lesson .ch4-trap-step i{
+    width: 19px; height: 19px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--c-inset);
+    font-family: var(--mono);
+    font-size: 7.5px;
+    font-style: normal;
+    color: var(--c-muted);
+  }
+  #ch4-lesson .ch4-trap-step.is-active{ border-color: color-mix(in srgb, var(--c-primary) 38%, transparent); background: var(--c-primary-soft); color: var(--c-primary); }
+  #ch4-lesson .ch4-trap-step.is-active i{ background: var(--c-primary); color: #fff; }
+  #ch4-lesson .ch4-trap-output{
+    min-height: 152px;
+    padding: 10px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 8px;
+    background: var(--c-inset);
+    font-size: 9.5px;
+    line-height: 1.7;
+  }
+  #ch4-lesson .ch4-trap-output .big{ display: block; margin: 4px 0; font-family: var(--mono); font-size: 11px; color: var(--c-primary); font-weight: 650; }
+  #ch4-lesson .ch4-trap-output .warnline{ color: var(--c-danger); }
+
+  /* scene 4: dependency injection */
+  #ch4-lesson .ch4-di-board{
+    border: 1px solid var(--c-subtle);
+    border-radius: 12px;
+    background:
+      radial-gradient(420px 180px at 50% 0%, color-mix(in srgb, var(--c-primary) 7%, transparent), transparent 70%),
+      var(--c-card);
+    padding: 15px;
+  }
+  #ch4-lesson .ch4-di-top{ display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 12px; }
+  #ch4-lesson .ch4-di-top .ch4-btnrow{ gap: 5px; }
+  #ch4-lesson .ch4-di-top .ch4-btn{ font-size: 9.2px; min-height: 25px; padding: 3px 7px; }
+  #ch4-lesson .ch4-wiring{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30px minmax(0, .9fr) 30px minmax(0, 1.06fr);
+    gap: 7px;
+    align-items: center;
+  }
+  #ch4-lesson .ch4-node{
+    padding: 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 9px;
+    background: var(--c-card);
+    transition: border-color .2s, background .2s, opacity .2s;
+  }
+  #ch4-lesson .ch4-node small{ display: block; font-family: var(--mono); font-size: 7.5px; letter-spacing: .04em; color: var(--c-muted); }
+  #ch4-lesson .ch4-node b{ display: block; margin-top: 2px; font-size: 10.5px; }
+  #ch4-lesson .ch4-node code{ display: block; margin-top: 4px; font-size: 8px; color: var(--c-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #ch4-lesson .ch4-node.is-active{ border-color: color-mix(in srgb, var(--c-primary) 38%, transparent); background: color-mix(in srgb, var(--c-primary) 4%, var(--c-card)); }
+  #ch4-lesson .ch4-node.is-dim{ opacity: .45; }
+  #ch4-lesson .ch4-wire{ position: relative; height: 2px; background: var(--c-line); transition: background .2s; }
+  #ch4-lesson .ch4-wire::after{
+    content: "";
+    position: absolute; right: -1px; top: -3px;
+    border-left: 5px solid var(--c-line);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+  #ch4-lesson .ch4-wire span{
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 7px; color: var(--c-muted); white-space: nowrap;
+  }
+  #ch4-lesson .ch4-wire.is-active{ background: var(--c-primary); }
+  #ch4-lesson .ch4-wire.is-active::after{ border-left-color: var(--c-primary); }
+  #ch4-lesson .ch4-wire.is-active span{ color: var(--c-primary); }
+  #ch4-lesson .ch4-impl-list{ display: flex; flex-direction: column; gap: 5px; }
+  #ch4-lesson .ch4-impl-btn{
+    display: block; width: 100%;
+    padding: 7px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .18s, background .18s;
+  }
+  #ch4-lesson .ch4-impl-btn b{ display: block; font-size: 9.5px; }
+  #ch4-lesson .ch4-impl-btn small{ display: block; color: var(--c-muted); font-size: 8px; line-height: 1.45; }
+  #ch4-lesson .ch4-impl-btn.is-active{ border-color: color-mix(in srgb, var(--c-primary) 40%, transparent); background: var(--c-primary-soft); }
+  #ch4-lesson .ch4-di-status{
+    margin-top: 10px;
+    padding: 8px 9px;
+    border-radius: 7px;
+    border: 1px dashed var(--c-subtle);
+    background: var(--c-inset);
+    font-size: 9.5px;
+    line-height: 1.6;
+    color: var(--c-muted);
+  }
+  #ch4-lesson .ch4-di-status b{ color: var(--c-ink); }
+  #ch4-lesson .ch4-term{
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: var(--c-code-bg);
+    color: var(--c-code-fg);
+    font-family: var(--mono);
+    font-size: 8.7px;
+    line-height: 1.75;
+    min-height: 86px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  #ch4-lesson .ch4-term .ok{ color: #86efac; }
+  #ch4-lesson .ch4-term .dim{ color: var(--c-code-muted); }
+  #ch4-lesson .ch4-term .bad{ color: #fda4af; }
+  #ch4-lesson .ch4-compare{ font-size: 9.3px; }
+  #ch4-lesson .ch4-compare td:first-child{ font-weight: 650; }
+  #ch4-lesson .ch4-compare .win{ color: var(--c-ok); font-weight: 600; }
+  #ch4-lesson .ch4-compare .cost{ color: var(--c-warn); }
+
+  /* scene 5: boot sequence */
+  #ch4-lesson .ch4-boot-layout{ display: grid; grid-template-columns: minmax(0, .98fr) minmax(0, 1.02fr); gap: 12px; align-items: stretch; }
+  #ch4-lesson .ch4-boot-plan{ display: flex; flex-direction: column; }
+  #ch4-lesson .ch4-boot-plan .ch4-code{ flex: 1; min-height: 196px; }
+  #ch4-lesson .ch4-boot-stage{ display: flex; flex-direction: column; }
+  #ch4-lesson .ch4-timeline{ position: relative; padding-left: 17px; }
+  #ch4-lesson .ch4-timeline::before{
+    content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px;
+    width: 2px; border-radius: 2px;
+    background: var(--c-line);
+  }
+  #ch4-lesson .ch4-tl-item{
+    position: relative;
+    padding: 5px 0 5px 9px;
+    opacity: .38;
+    transition: opacity .25s;
+  }
+  #ch4-lesson .ch4-tl-item::before{
+    content: "";
+    position: absolute; left: -15px; top: 11px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--c-card);
+    border: 2px solid var(--c-line);
+    transition: background .25s, border-color .25s, box-shadow .25s;
+  }
+  #ch4-lesson .ch4-tl-item b{ display: block; font-family: var(--mono); font-size: 8.6px; }
+  #ch4-lesson .ch4-tl-item small{ display: block; color: var(--c-muted); font-size: 8.1px; line-height: 1.45; }
+  #ch4-lesson .ch4-tl-item.is-active{ opacity: 1; }
+  #ch4-lesson .ch4-tl-item.is-active::before{ background: var(--c-primary); border-color: var(--c-primary); box-shadow: 0 0 0 3px var(--c-primary-soft); }
+  #ch4-lesson .ch4-tl-item.is-ok{ opacity: 1; }
+  #ch4-lesson .ch4-tl-item.is-ok::before{ background: var(--c-ok); border-color: var(--c-ok); }
+  #ch4-lesson .ch4-tl-item.is-fail{ opacity: 1; }
+  #ch4-lesson .ch4-tl-item.is-fail::before{ background: var(--c-danger); border-color: var(--c-danger); box-shadow: 0 0 0 3px var(--c-danger-soft); }
+  #ch4-lesson .ch4-tl-item.is-fail b{ color: var(--c-danger); }
+  #ch4-lesson .ch4-tl-item.is-fail small{ color: var(--c-danger); }
+  #ch4-lesson .ch4-boot-status{
+    margin-top: 8px;
+    padding: 8px 9px;
+    border: 1px dashed var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-inset);
+    font-size: 9.3px;
+    line-height: 1.6;
+    color: var(--c-muted);
+    min-height: 48px;
+  }
+  #ch4-lesson .ch4-boot-status b{ color: var(--c-ink); }
+  #ch4-lesson .ch4-boot-status.is-ok{ border-color: color-mix(in srgb, var(--c-ok) 30%, transparent); background: var(--c-ok-soft); color: var(--c-ok); }
+  #ch4-lesson .ch4-boot-status.is-bad{ border-color: color-mix(in srgb, var(--c-danger) 30%, transparent); background: var(--c-danger-soft); color: var(--c-danger); }
+  #ch4-lesson .ch4-order-lab{ display: flex; flex-direction: column; gap: 7px; }
+  #ch4-lesson .ch4-order-row{
+    display: grid; grid-template-columns: 54px minmax(0, 1fr);
+    gap: 7px; align-items: center;
+    font-family: var(--mono); font-size: 8.5px;
+  }
+  #ch4-lesson .ch4-order-row span{ color: var(--c-muted); }
+  #ch4-lesson .ch4-order-row b{ font-weight: 500; }
+  #ch4-lesson .ch4-order-row.is-bad b{ color: var(--c-danger); }
+  #ch4-lesson .ch4-order-row.is-ok b{ color: var(--c-ok); }
+  #ch4-lesson .ch4-static-code{ font-size: 9px; }
+  #ch4-lesson .ch4-safety{ display: grid; gap: 5px; }
+  #ch4-lesson .ch4-safety div{ display: flex; gap: 6px; font-size: 9.3px; line-height: 1.6; color: var(--c-muted); }
+  #ch4-lesson .ch4-safety b{ flex: 0 0 auto; color: var(--c-ok); }
+
+  /* scene 6: troubleshooting */
+  #ch4-lesson .ch4-nm-card{ display: flex; flex-direction: column; }
+  #ch4-lesson .ch4-nm-rows{ display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  #ch4-lesson .ch4-nm-row{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 52px;
+    gap: 7px;
+    padding: 7px 8px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-card);
+    color: var(--c-ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .18s, background .18s;
+  }
+  #ch4-lesson .ch4-nm-row:hover{ border-color: color-mix(in srgb, var(--c-primary) 35%, transparent); }
+  #ch4-lesson .ch4-nm-row.is-selected{ border-color: color-mix(in srgb, var(--c-primary) 42%, transparent); background: var(--c-primary-soft); }
+  #ch4-lesson .ch4-nm-main{ min-width: 0; }
+  #ch4-lesson .ch4-nm-name{ display: block; font-family: var(--mono); font-size: 8.4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #ch4-lesson .ch4-nm-bar{ height: 4px; margin-top: 4px; border-radius: 99px; background: var(--c-fill); overflow: hidden; }
+  #ch4-lesson .ch4-nm-bar i{ display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--c-warn), var(--c-danger)); }
+  #ch4-lesson .ch4-nm-size{ font-family: var(--mono); font-size: 8px; text-align: right; color: var(--c-muted); }
+  #ch4-lesson .ch4-nm-note{
+    margin-top: 8px; padding: 8px 9px;
+    border-radius: 7px; border: 1px dashed var(--c-subtle);
+    background: var(--c-inset); color: var(--c-muted);
+    font-size: 9.3px; line-height: 1.6; min-height: 52px;
+  }
+  #ch4-lesson .ch4-nm-note b{ color: var(--c-ink); }
+  #ch4-lesson .ch4-qa-grid{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  #ch4-lesson .ch4-qa{
+    border: 1px solid var(--c-subtle);
+    border-radius: 9px;
+    background: var(--c-card);
+    overflow: hidden;
+  }
+  #ch4-lesson .ch4-qa summary{
+    list-style: none;
+    padding: 9px 10px;
+    cursor: pointer;
+    font-size: 9.8px;
+    font-weight: 650;
+    line-height: 1.5;
+    display: flex; justify-content: space-between; gap: 8px;
+  }
+  #ch4-lesson .ch4-qa summary::-webkit-details-marker{ display: none; }
+  #ch4-lesson .ch4-qa summary::after{ content: "+"; color: var(--c-muted); font-family: var(--mono); }
+  #ch4-lesson .ch4-qa[open] summary::after{ content: "−"; }
+  #ch4-lesson .ch4-qa[open] summary{ border-bottom: 1px solid var(--c-subtle); background: var(--c-inset); }
+  #ch4-lesson .ch4-qa-body{ padding: 8px 10px; font-size: 9.3px; line-height: 1.7; color: var(--c-muted); }
+  #ch4-lesson .ch4-qa-body b{ color: var(--c-ink); }
+  #ch4-lesson .ch4-qa-body code{ padding: 1px 3px; border-radius: 3px; background: var(--c-fill); }
+  #ch4-lesson .ch4-isa-tabs{ display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+  #ch4-lesson .ch4-isa-tabs .ch4-btn{ font-size: 9.2px; min-height: 24px; padding: 3px 7px; }
+  #ch4-lesson .ch4-isa-code{ min-height: 134px; }
+  #ch4-lesson .ch4-faq{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+
+  /* scene 7: lab */
+  #ch4-lesson .ch4-lab-layout{ display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 12px; align-items: start; }
+  #ch4-lesson .ch4-lab-list{ display: flex; flex-direction: column; gap: 5px; }
+  #ch4-lesson .ch4-lab-item{
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 9px;
+    border: 1px solid var(--c-subtle);
+    border-radius: 7px;
+    background: var(--c-card);
+    font-size: 9.5px;
+    line-height: 1.55;
+    cursor: pointer;
+  }
+  #ch4-lesson .ch4-lab-item:hover{ background: var(--c-fill); }
+  #ch4-lesson .ch4-lab-item input{ margin: 2px 0 0; accent-color: var(--c-primary); flex: 0 0 auto; }
+  #ch4-lesson .ch4-lab-item.is-done{ border-color: color-mix(in srgb, var(--c-ok) 30%, transparent); background: var(--c-ok-soft); }
+  #ch4-lesson .ch4-lab-item.is-done span{ color: var(--c-ok); }
+  #ch4-lesson .ch4-lab-progress-top{ display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 8.5px; color: var(--c-muted); }
+  #ch4-lesson .ch4-lab-progress{ height: 5px; margin-top: 5px; border-radius: 99px; background: var(--c-fill); overflow: hidden; }
+  #ch4-lesson .ch4-lab-progress i{ display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--c-primary), var(--c-ok)); transition: width .3s; }
+  #ch4-lesson .ch4-lab-tasks{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+  #ch4-lesson .ch4-lab-task{ padding: 10px; border: 1px solid var(--c-subtle); border-radius: 9px; background: var(--c-card); }
+  #ch4-lesson .ch4-lab-task b{ display: block; font-size: 10px; }
+  #ch4-lesson .ch4-lab-task small{ display: block; margin-top: 3px; color: var(--c-muted); font-size: 8.5px; line-height: 1.55; }
+  #ch4-lesson .ch4-lab-task .ch4-tag{ display: inline-block; margin-top: 6px; }
+  #ch4-lesson .ch4-commands{ min-height: 110px; }
+  #ch4-lesson .ch4-takeaways{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  #ch4-lesson .ch4-takeaway{ display: flex; gap: 8px; padding: 9px; border: 1px solid var(--c-subtle); border-radius: 8px; background: var(--c-card); }
+  #ch4-lesson .ch4-takeaway i{
+    flex: 0 0 auto;
+    width: 19px; height: 19px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--c-primary-soft);
+    color: var(--c-primary);
+    font-family: var(--mono); font-size: 8px; font-style: normal; font-weight: 700;
+  }
+  #ch4-lesson .ch4-takeaway b{ display: block; font-size: 9.7px; }
+  #ch4-lesson .ch4-takeaway small{ display: block; color: var(--c-muted); font-size: 8.5px; line-height: 1.55; }
+  #ch4-lesson .ch4-next-card{
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 13px 14px;
+    border: 1px solid color-mix(in srgb, var(--c-primary) 28%, transparent);
+    border-radius: 10px;
+    background: linear-gradient(110deg, var(--c-primary-soft), transparent 68%);
+  }
+  #ch4-lesson .ch4-next-card b{ display: block; font-size: 11px; }
+  #ch4-lesson .ch4-next-card small{ display: block; color: var(--c-muted); font-size: 9px; line-height: 1.55; }
+  #ch4-lesson .ch4-next-card span.big{ font-family: var(--mono); font-size: 20px; color: var(--c-primary); opacity: .7; }
+
+  /* responsive */
+  @media (max-width: 980px){
+    #ch4-lesson .ch4-head-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-head-ledgers{ display: none; }
+    #ch4-lesson .ch4-budget-layout,
+    #ch4-lesson .ch4-theater,
+    #ch4-lesson .ch4-guard-layout,
+    #ch4-lesson .ch4-vtable-layout,
+    #ch4-lesson .ch4-boot-layout,
+    #ch4-lesson .ch4-lab-layout{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-ledger-panel{ position: static; }
+    #ch4-lesson .ch4-flags-card{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-trap{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-lab-tasks{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #ch4-lesson .ch4-wiring{ grid-template-columns: minmax(0, 1fr) 34px minmax(0, .9fr) 34px minmax(0, 1.05fr); }
+  }
+  @media (max-width: 760px){
+    #ch4-lesson .ch4-grid2, #ch4-lesson .ch4-grid3, #ch4-lesson .ch4-qa-grid, #ch4-lesson .ch4-faq{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-lab-tasks{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-wiring{ grid-template-columns: minmax(0, 1fr); gap: 7px; }
+    #ch4-lesson .ch4-wire{ width: 2px; height: 18px; margin-left: 15px; }
+    #ch4-lesson .ch4-wire::after{
+      right: auto; left: -3px; top: auto; bottom: -1px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--c-line);
+      border-bottom: 0;
+    }
+    #ch4-lesson .ch4-wire.is-active::after{ border-top-color: var(--c-primary); border-left-color: transparent; border-right-color: transparent; }
+    #ch4-lesson .ch4-wire span{ top: 50%; left: 12px; transform: translateY(-50%); }
+    #ch4-lesson .ch4-vt-top{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-vt-arrow{ width: 2px; height: 18px; margin-left: 14px; }
+    #ch4-lesson .ch4-vt-arrow::after{
+      right: auto; left: -3px; top: auto; bottom: -1px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--c-primary);
+      border-bottom: 0;
+    }
+    #ch4-lesson .ch4-takeaways{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-ctor-flow{ grid-template-columns: minmax(0, 1fr); }
+    #ch4-lesson .ch4-ctor-arrow{ height: 12px; transform: rotate(90deg); }
+    #ch4-lesson .ch4-exit{ grid-template-columns: auto minmax(0, 1fr); }
+    #ch4-lesson .ch4-exit-state{ display: none; }
+  }
+  @media (max-width: 560px){
+    #ch4-lesson{ border-radius: 14px; }
+    #ch4-lesson .ch4-header{ padding: 19px 16px 14px; }
+    #ch4-lesson .ch4-stage{ padding: 15px 13px 18px; }
+    #ch4-lesson .ch4-card{ padding: 12px; }
+    #ch4-lesson .ch4-stepper{ padding: 7px 9px; }
+    #ch4-lesson .ch4-step{ min-width: 84px; padding: 5px 6px; gap: 4px; }
+    #ch4-lesson .ch4-step span:last-child{ font-size: 9px; }
+    #ch4-lesson .ch4-scene-title{ font-size: 17px; }
+    #ch4-lesson .ch4-scene-desc{ font-size: 10.5px; }
+    #ch4-lesson .ch4-progress-text span{ display: none; }
+    #ch4-lesson .ch4-footer{ flex-wrap: wrap; justify-content: center; }
+    #ch4-lesson .ch4-footer-mid{ order: 3; flex-basis: 100%; }
+    #ch4-lesson .ch4-feature{ padding: 7px; }
+    #ch4-lesson .ch4-switch{ min-width: 52px; }
+    #ch4-lesson .ch4-vt-byte{ min-width: 24px; flex-basis: 24px; }
+    #ch4-lesson .ch4-lab-item{ font-size: 9px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #ch4-lesson *, #ch4-lesson *::before, #ch4-lesson *::after{
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
+</style>
+
+<header class="ch4-header">
+  <div class="ch4-head-grid">
+    <div>
+      <div class="ch4-kicker">第 1 篇 · 编程基础 / 第 4 章</div>
+      <h1 class="ch4-title">C++ 嵌入式子集：<em>让抽象进入预算表</em></h1>
+      <p class="ch4-sub">现代 C++ 在 MCU 上不是“能不能用”，而是“怎么裁剪着用”。这一章把每个特性记进三本账：<b>RAM 账</b>看对象里的隐藏字段，<b>Flash 账</b>看链接器带进来的代码，<b>时间账</b>看运行路径是否确定。</p>
+      <div class="ch4-chips">
+        <span class="ch4-chip"><b>三本账</b> 特性取舍</span>
+        <span class="ch4-chip"><b>RAII</b> 生命周期即资源</span>
+        <span class="ch4-chip"><b>vptr / vtable</b> 多态的真实成本</span>
+        <span class="ch4-chip"><b>接口注入</b> 可替换与可测试</span>
+        <span class="ch4-chip"><b>两段式启动</b> 全局构造陷阱</span>
+        <span class="ch4-chip"><b>Lab</b> 用 size / nm 对账</span>
+      </div>
+    </div>
+    <div class="ch4-head-ledgers" aria-label="本章的三本账">
+      <div class="ch4-head-ledgers-title"><span>本章三本账</span><b>BUDGET</b></div>
+      <div class="ch4-head-ledger">
+        <div class="ch4-head-ledger-top"><span>RAM</span><b>vptr · padding · 静态对象</b></div>
+        <i style="--v:36%"></i>
+      </div>
+      <div class="ch4-head-ledger">
+        <div class="ch4-head-ledger-top"><span>FLASH</span><b>模板 · 异常表 · typeinfo</b></div>
+        <i style="--v:62%"></i>
+      </div>
+      <div class="ch4-head-ledger">
+        <div class="ch4-head-ledger-top"><span>TIME</span><b>间接调用 · 启动构造 · 堆</b></div>
+        <i style="--v:24%"></i>
+      </div>
+    </div>
+  </div>
+  <div class="ch4-progress-row">
+    <div class="ch4-progress-text"><b id="ch4-progress-label">01 / 08 · 三本账</b><span>全章约 55 分钟</span></div>
+    <div class="ch4-bar" id="ch4-progress" role="progressbar" aria-label="章节学习进度" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
+      <span id="ch4-progress-fill"></span>
+    </div>
+  </div>
+</header>
+
+<nav class="ch4-stepper" aria-label="第4章场景导航">
+  <button type="button" class="ch4-step is-active" data-goto="0"><span>01</span><span>三本账</span></button>
+  <button type="button" class="ch4-step" data-goto="1"><span>02</span><span>RAII 剧场</span></button>
+  <button type="button" class="ch4-step" data-goto="2"><span>03</span><span>守卫与失败</span></button>
+  <button type="button" class="ch4-step" data-goto="3"><span>04</span><span>虚表解剖</span></button>
+  <button type="button" class="ch4-step" data-goto="4"><span>05</span><span>依赖接线</span></button>
+  <button type="button" class="ch4-step" data-goto="5"><span>06</span><span>启动时序</span></button>
+  <button type="button" class="ch4-step" data-goto="6"><span>07</span><span>故障排查</span></button>
+  <button type="button" class="ch4-step" data-goto="7"><span>08</span><span>测量与 Lab</span></button>
+</nav>
+
+<main class="ch4-stage">
+
+  <!-- ================= scene 0: budget ================= -->
+  <section class="ch4-scene is-active" data-scene="0" aria-labelledby="ch4-s0-title">
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s0-title"><span class="ch4-scene-num">4.1</span>三本账：特性取舍与编译配置</h2>
+      <p class="ch4-scene-desc">C++ 的代价不会凭空消失，只会记在某一本账上。先学会给特性“记账”，再谈启用与禁用；预算表不是绝对 KB，而是一张决策地图。</p>
+    </div>
+
+    <div class="ch4-budget-layout">
+      <div class="ch4-card">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">特性预算板</span>
+          <span class="ch4-tag">点击开关 · 右侧记账</span>
+        </div>
+        <div class="ch4-presets" id="ch4-presets" role="group" aria-label="预算预设">
+          <button type="button" class="ch4-btn" data-preset="min">最小固件</button>
+          <button type="button" class="ch4-btn is-active" data-preset="prod">量产推荐</button>
+          <button type="button" class="ch4-btn" data-preset="ui">软实时 + UI</button>
+          <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-budget-reset">恢复推荐</button>
+        </div>
+        <div class="ch4-feature-list" id="ch4-feature-list"></div>
+        <div class="ch4-note ch4-mt-s">“启用 / 关闭”改变的是预算位置，不是语法正确性。真正的结论要用 <code>size</code>、<code>nm</code> 和示波器在你的工具链上复核。</div>
+      </div>
+
+      <aside class="ch4-card ch4-ledger-panel" aria-label="预算账本">
+        <div class="ch4-ledger-head">
+          <b>三本账 · 实时预算</b>
+          <span class="ch4-budget-badge ok" id="ch4-budget-badge">预算内</span>
+        </div>
+        <div class="ch4-meter-row" data-meter="flash">
+          <div class="ch4-meter-top"><span>FLASH 账</span><b id="ch4-meter-flash-val">7 / 12</b></div>
+          <div class="ch4-meter"><span id="ch4-meter-flash-fill"></span></div>
+        </div>
+        <div class="ch4-meter-row" data-meter="ram">
+          <div class="ch4-meter-top"><span>RAM 账</span><b id="ch4-meter-ram-val">2 / 8</b></div>
+          <div class="ch4-meter"><span id="ch4-meter-ram-fill"></span></div>
+        </div>
+        <div class="ch4-meter-row" data-meter="time">
+          <div class="ch4-meter-top"><span>时间 / 确定性账</span><b id="ch4-meter-time-val">2 / 8</b></div>
+          <div class="ch4-meter"><span id="ch4-meter-time-fill"></span></div>
+        </div>
+        <div class="ch4-budget-note" id="ch4-budget-note" aria-live="polite"></div>
+        <div class="ch4-feature-detail" id="ch4-feature-detail"></div>
+      </aside>
+    </div>
+
+    <div class="ch4-card ch4-mt">
+      <div class="ch4-card-head">
+        <span class="ch4-card-title">推荐编译配置：把“不要的东西”关掉</span>
+        <span class="ch4-tag">C++17 · GCC-ARM</span>
+      </div>
+      <div class="ch4-flags-card">
+        <div class="ch4-flags" id="ch4-flags">
+          <label class="ch4-flag"><input type="checkbox" id="ch4-flag-exceptions" checked><span><b>-fno-exceptions</b><small>关闭异常展开表与不确定路径</small></span></label>
+          <label class="ch4-flag"><input type="checkbox" id="ch4-flag-rtti" checked><span><b>-fno-rtti</b><small>去掉 type_info、dynamic_cast、typeid</small></span></label>
+          <label class="ch4-flag" id="ch4-flag-ts-wrap"><input type="checkbox" id="ch4-flag-threadsafe" checked><span><b>-fno-threadsafe-statics</b><small>去掉局部 static 的首次初始化锁</small></span></label>
+          <label class="ch4-flag"><input type="checkbox" id="ch4-flag-gc" checked><span><b>-ffunction-sections -fdata-sections</b><small>配合 --gc-sections 删掉未引用段</small></span></label>
+          <label class="ch4-flag"><input type="checkbox" id="ch4-flag-warn" checked><span><b>-Wuseless-cast -Wold-style-cast</b><small>强制显式转换，减少隐式截断</small></span></label>
+        </div>
+        <div class="ch4-flags-out">
+          <pre class="ch4-code" id="ch4-flags-out"></pre>
+          <div class="ch4-flag-risk ch4-note" id="ch4-flag-risk" aria-live="polite"></div>
+          <div class="ch4-btnrow">
+            <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-flags-reset">恢复推荐配置</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch4-grid2 ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">什么时候值得用 C++？</span><span class="ch4-tag">选型判断</span></div>
+        <div class="ch4-detail-grid">
+          <div class="ch4-detail-line"><b>适合：</b>模块超过 20 个、有多个状态机/协议栈/UI 的中型项目；需要接口抽象与主机测试的团队。</div>
+          <div class="ch4-detail-line"><b>不适合：</b>几百行、单文件、生命周期极短的小固件；C 更轻、更直接。</div>
+          <div class="ch4-detail-line"><b>常见混合：</b>驱动层 C 对接厂商 HAL，业务层 C++ 子集；边界用 <code>extern "C"</code> 桥接。</div>
+        </div>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">零开销抽象 ≠ 零成本</span><span class="ch4-tag">本章主线</span></div>
+        <p class="ch4-small ch4-muted">封装、RAII、<code>constexpr</code> 通常没有每对象开销；模板会增加实例化代码，虚函数会增加 vptr 和间接调用，异常/RTTI 会带入表与元数据。<b>“零开销”指你不用的东西不付费，不是所有抽象都免费。</b></p>
+        <div class="ch4-note ch4-mt-s">记账顺序：对象隐藏字段 → 链接器带入的代码 → 运行路径是否确定。先看这三处，再谈优化技巧。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 1: RAII theater ================= -->
+  <section class="ch4-scene" data-scene="1" aria-labelledby="ch4-s1-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s1-title"><span class="ch4-scene-num">4.2</span>RAII 生命周期剧场：让作用域负责恢复</h2>
+      <p class="ch4-scene-desc">C 的 cleanup 靠纪律，C++ 的 cleanup 靠作用域。构造即取得资源，析构即归还；无论从哪条路径离开作用域，编译器都会按<b>构造的逆序</b>调用析构。</p>
+    </div>
+
+    <div class="ch4-theater">
+      <div class="ch4-card ch4-theater-code">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">read_frame()：同一段逻辑，三种退出纪律</span>
+          <span class="ch4-tag">提前 return 是常态</span>
+        </div>
+        <div class="ch4-mode-tabs" role="group" aria-label="资源清理方式">
+          <button type="button" class="ch4-btn is-active" data-raii-mode="raii">RAII</button>
+          <button type="button" class="ch4-btn" data-raii-mode="manual">手工 return</button>
+          <button type="button" class="ch4-btn" data-raii-mode="goto">goto cleanup</button>
+        </div>
+        <pre class="ch4-code" id="ch4-raii-code"></pre>
+        <div class="ch4-btnrow ch4-mt-s">
+          <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-raii-enter">进入函数</button>
+          <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-raii-reset">重置</button>
+        </div>
+        <div class="ch4-note ch4-mt-s" id="ch4-raii-hint">先点“进入函数”，观察两个资源如何挂到栈帧上；再选择一条退出路径。</div>
+      </div>
+
+      <div class="ch4-card ch4-theater-stage">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">栈帧与资源令牌</span>
+          <span class="ch4-tag">析构顺序 = 构造逆序</span>
+        </div>
+        <div class="ch4-stack-stage">
+          <div class="ch4-frame" id="ch4-raii-frame">
+            <div class="ch4-frame-head"><span>read_frame()</span><span id="ch4-raii-state">等待进入</span></div>
+            <div class="ch4-resource-rail" id="ch4-raii-resources">
+              <div class="ch4-frame-empty" id="ch4-raii-empty">作用域尚未进入</div>
+            </div>
+            <div class="ch4-frame-foot">离开作用域时，后构造的资源先析构</div>
+          </div>
+        </div>
+        <div class="ch4-exit-list" id="ch4-raii-exits">
+          <button type="button" class="ch4-exit" data-exit="normal" disabled>
+            <span class="ch4-exit-icon">✓</span>
+            <span><b>正常返回</b><small>sensor_ok() 与 CRC 都通过</small></span>
+            <span class="ch4-exit-state">待运行</span>
+          </button>
+          <button type="button" class="ch4-exit" data-exit="sensor" disabled>
+            <span class="ch4-exit-icon">!</span>
+            <span><b>传感器失败</b><small>第一个 if 提前 return false</small></span>
+            <span class="ch4-exit-state">待运行</span>
+          </button>
+          <button type="button" class="ch4-exit" data-exit="crc" disabled>
+            <span class="ch4-exit-icon">!</span>
+            <span><b>CRC 校验失败</b><small>第二个 if 提前 return false</small></span>
+            <span class="ch4-exit-state">待运行</span>
+          </button>
+        </div>
+        <div class="ch4-rail-log" id="ch4-raii-log" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="ch4-grid2 ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">为什么 RAII 能覆盖所有出口</span><span class="ch4-tag">语言保证</span></div>
+        <p class="ch4-small ch4-muted">析构由作用域结束触发，而不是由某个 <code>return</code> 触发：正常返回、提前返回、<code>break/continue</code>、<code>goto</code> 跳出、异常展开，都会销毁已构造的自动对象。你不需要在每个出口复制清理代码。</p>
+        <div class="ch4-okbox ch4-mt-s"><b>顺序记忆：</b>先构造的后析构。栈帧里的资源像叠盘子，最后放上去的最先拿下来。</div>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">goto cleanup 的问题不是“错”，是“脆”</span><span class="ch4-tag">可维护性</span></div>
+        <p class="ch4-small ch4-muted"><code>goto cleanup</code> 在 C 里可以完全正确；问题是每新增一个资源，都要记得在 cleanup 块里按逆序释放，还要保证所有路径都跳到那里。RAII 把这套纪律变成类型和析构函数，新增成员时自动生效。</p>
+        <div class="ch4-warn ch4-mt-s"><b>别把 RAII 当“自动 goto”：</b>它只管理生命周期明确的资源；动态数组、引用计数和共享所有权仍要单独设计。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 2: guards & constructor failure ================= -->
+  <section class="ch4-scene" data-scene="2" aria-labelledby="ch4-s2-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s2-title"><span class="ch4-scene-num">4.3</span>守卫与失败：把“可能失败”也放进生命周期</h2>
+      <p class="ch4-scene-desc">RAII 不只处理“成功后的释放”，还要处理“中途失败”。构造阶段拿资源、失败后无法报告，是嵌入式 C++ 最常见的半初始化陷阱。</p>
+    </div>
+
+    <div class="ch4-guard-layout">
+      <div class="ch4-card">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">三个可直接复用的守卫</span>
+          <span class="ch4-tag">保存状态 · 逆序恢复</span>
+        </div>
+        <div class="ch4-guard-tabs" role="group" aria-label="守卫示例">
+          <button type="button" class="ch4-btn is-active" data-guard="irq">IrqLock</button>
+          <button type="button" class="ch4-btn" data-guard="spi">SpiTransaction</button>
+          <button type="button" class="ch4-btn" data-guard="scope">ScopeExit</button>
+        </div>
+        <pre class="ch4-code ch4-guard-code" id="ch4-guard-code"></pre>
+        <div class="ch4-note ch4-mt-s" id="ch4-guard-note"></div>
+      </div>
+
+      <div class="ch4-card">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">构造失败实验：对象活着，资源却未必就绪</span>
+          <span class="ch4-tag">点击“claim 失败”</span>
+        </div>
+        <div class="ch4-ctor-tabs" role="group" aria-label="构造设计">
+          <button type="button" class="ch4-btn is-active" data-ctor="bad">坏设计：构造函数里 claim</button>
+          <button type="button" class="ch4-btn" data-ctor="good">好设计：成员 RAII + begin()</button>
+        </div>
+        <pre class="ch4-code ch4-mt-s" id="ch4-ctor-code"></pre>
+        <div class="ch4-ctor-stage ch4-mt-s">
+          <div class="ch4-ctor-flow">
+            <div class="ch4-ctor-box" id="ch4-ctor-caller">
+              <b>调用方</b><small>Monitor / 业务代码</small><span class="ch4-box-state">等待</span>
+            </div>
+            <div class="ch4-ctor-arrow">→</div>
+            <div class="ch4-ctor-box" id="ch4-ctor-object">
+              <b>SpiTransaction</b><small>对象生命周期</small><span class="ch4-box-state">未构造</span>
+            </div>
+            <div class="ch4-ctor-arrow">→</div>
+            <div class="ch4-ctor-box" id="ch4-ctor-bus">
+              <b>SPI 总线</b><small>CS + 总线所有权</small><span class="ch4-box-state">空闲</span>
+            </div>
+          </div>
+          <div class="ch4-ctor-result" id="ch4-ctor-result" aria-live="polite">选择一种设计，然后触发一次总线申请失败。</div>
+          <div class="ch4-btnrow">
+            <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-ctor-fail">claim() 失败</button>
+            <button type="button" class="ch4-btn" id="ch4-ctor-normal">正常路径</button>
+            <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-ctor-reset">重置</button>
+          </div>
+          <div class="ch4-rail-log" id="ch4-ctor-log" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch4-grid3 ch4-mt">
+      <div class="ch4-card ch4-guard-rule">
+        <div class="ch4-card-head"><span class="ch4-card-title">构造不失败</span><span class="ch4-tag">两段式</span></div>
+        <p>构造函数只做“不可能失败”的取得；可能失败的操作放到 <code>begin()</code> / 工厂，返回 <code>bool</code> 或错误码。对象构造完成，但“是否可用”由 <code>begin()</code> 报告。</p>
+      </div>
+      <div class="ch4-card ch4-guard-rule">
+        <div class="ch4-card-head"><span class="ch4-card-title">资源交给成员</span><span class="ch4-tag">失败也能回收</span></div>
+        <p>不要在构造函数体内裸拿资源再保存到裸指针；把 CS、总线锁、DMA 句柄做成成员对象。成员按声明顺序构造、按逆序析构，失败路径也不会漏。</p>
+      </div>
+      <div class="ch4-card ch4-guard-rule">
+        <div class="ch4-card-head"><span class="ch4-card-title">ScopeExit 的模板税</span><span class="ch4-tag">C API 清理</span></div>
+        <p>模板版 ScopeExit 为每个 lambda 类型生成一份代码；函数指针版省 Flash 但丢捕获。热路径优先显式守卫类，C API 清理才用 ScopeExit。</p>
+      </div>
+    </div>
+
+    <div class="ch4-warn ch4-mt">
+      <b>异常路径的额外规则：</b>若项目开启异常，构造函数抛出时，对象自身的析构函数不会执行，只有已经构造完成的成员会析构。因此资源必须由成员对象持有，而不是在构造函数体里手工获取后等析构函数来善后。
+    </div>
+  </section>
+
+  <!-- ================= scene 3: vtable ================= -->
+  <section class="ch4-scene" data-scene="3" aria-labelledby="ch4-s3-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s3-title"><span class="ch4-scene-num">4.4</span>对象解剖台：vptr、vtable 与调用路径</h2>
+      <p class="ch4-scene-desc">虚函数不是魔法：对象里多一个隐藏指针，类外多一张函数地址表，调用时多一次查表。把它拆开看，才能判断“可替换性”值不值这份预算。</p>
+    </div>
+
+    <div class="ch4-vtable-layout">
+      <div class="ch4-card">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">接口与两个实现</span>
+          <span class="ch4-tag">单继承 · 32 位</span>
+        </div>
+        <div class="ch4-mode-tabs" role="group" aria-label="对象类型">
+          <button type="button" class="ch4-btn is-active" data-vt-obj="fake">FakeSensor</button>
+          <button type="button" class="ch4-btn" data-vt-obj="real">Ds18b20</button>
+        </div>
+        <pre class="ch4-code" id="ch4-vt-code"></pre>
+        <div class="ch4-note ch4-mt-s">抽象接口本身不能实例化；它规定了 vtable 的“槽位形状”。每个具体类各有一张自己的表，同一类的所有对象共享它。</div>
+      </div>
+
+      <div class="ch4-card">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">对象字节与虚表</span>
+          <span class="ch4-tag">示意布局 · 省略表头</span>
+        </div>
+        <div class="ch4-vt-stage">
+          <div class="ch4-vt-top">
+            <div class="ch4-vt-object">
+              <div class="ch4-vt-obj-head"><b id="ch4-vt-object-name">FakeSensor</b><span id="ch4-vt-obj-size">sizeof = 4 B</span></div>
+              <div class="ch4-vt-bytes" id="ch4-vt-bytes"></div>
+            </div>
+            <div class="ch4-vt-arrow" id="ch4-vt-arrow"></div>
+            <div class="ch4-vt-table">
+              <div class="ch4-vt-table-head"><span id="ch4-vt-table-title">VT_FakeSensor</span><span>4 slots</span></div>
+              <div id="ch4-vt-slots"></div>
+            </div>
+          </div>
+          <div class="ch4-vt-call" id="ch4-vt-call" aria-live="polite"><span class="dim">// 选择“通过接口调用 read()”或“直接对象调用”，观察路径差异</span></div>
+          <div class="ch4-btnrow ch4-vt-controls">
+            <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-vt-call-btn">接口指针 → read()</button>
+            <button type="button" class="ch4-btn" id="ch4-vt-direct-btn">直接对象 → read()</button>
+            <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-vt-reset">重置</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch4-grid2 ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">对象数量 → RAM 增量</span><span class="ch4-tag">vptr 每对象一份</span></div>
+        <div class="ch4-vt-calc">
+          <div class="ch4-vt-calc-top"><b>多态对象数量</b><output id="ch4-vt-objcount">100</output></div>
+          <input type="range" id="ch4-vt-count" min="1" max="500" step="1" value="100" aria-label="多态对象数量">
+          <div class="ch4-range-label"><span>1</span><span>500</span></div>
+          <div class="ch4-calc-bars">
+            <div class="ch4-calc-row"><span>虚接口（vptr）</span><div class="ch4-calc-bar virtual"><i id="ch4-vt-virtual-bar" style="width:20%"></i></div><b id="ch4-vt-virtual-val">400 B</b></div>
+            <div class="ch4-calc-row"><span>3 个函数指针/对象</span><div class="ch4-calc-bar fp"><i id="ch4-vt-fp-bar" style="width:60%"></i></div><b id="ch4-vt-fp-val">1200 B</b></div>
+          </div>
+          <div class="ch4-vt-note ch4-mt-s">按 32 位单继承估算：虚接口 = 每对象 4 B vptr，vtable 在 Flash 中每类一份；函数指针结构体 = 每对象 4 B × 3 个函数。未计对齐、vtable 表头与 RTTI。</div>
+        </div>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">这笔钱什么时候值得花</span><span class="ch4-tag">决策</span></div>
+        <div class="ch4-detail-grid">
+          <div class="ch4-detail-line"><b>值得：</b>驱动可替换、主机测试替身、运行期换实现；接口窄、对象数量适中时，vptr 成本很低。</div>
+          <div class="ch4-detail-line"><b>不值得：</b>ISR 热路径、成千上万个微小对象、每个对象只有一个实现；这时函数指针或模板注入更合适。</div>
+          <div class="ch4-detail-line"><b>能省掉：</b>类型已知或类标记 <code>final</code> 时，编译器可能去虚化并内联；不要假设一定发生，用 <code>objdump</code> 验证。</div>
+          <div class="ch4-detail-line"><b>多重继承：</b>通常每个多态基类子对象一个 vptr，还要做 <code>this</code> 调整；接口用纯虚单继承，避免多重继承。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch4-card ch4-mt">
+      <div class="ch4-card-head">
+        <span class="ch4-card-title">构造陷阱：构造期间的虚调用不会落到派生类</span>
+        <span class="ch4-tag">纯虚调用可触发 HardFault</span>
+      </div>
+      <div class="ch4-trap">
+        <div class="ch4-trap-steps" id="ch4-trap-steps">
+          <button type="button" class="ch4-trap-step is-active" data-trap="base"><i>1</i><span>Base 构造中：vptr 指向 Base 表</span></button>
+          <button type="button" class="ch4-trap-step" data-trap="der"><i>2</i><span>Der 构造中：vptr 指向 Der 表</span></button>
+          <button type="button" class="ch4-trap-step" data-trap="done"><i>3</i><span>构造完成：动态类型才是 Der</span></button>
+        </div>
+        <div class="ch4-trap-output" id="ch4-trap-output" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 4: dependency injection ================= -->
+  <section class="ch4-scene" data-scene="4" aria-labelledby="ch4-s4-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s4-title"><span class="ch4-scene-num">4.5</span>依赖接线台：换传感器，不改业务代码</h2>
+      <p class="ch4-scene-desc">接口不是“为了多态而多态”，而是把<b>业务逻辑</b>与<b>具体硬件</b>隔开。业务层只依赖能力，驱动层负责实现；测试时接一个假传感器，主机上就能跑。</p>
+    </div>
+
+    <div class="ch4-di-board">
+      <div class="ch4-di-top">
+        <div class="ch4-card-title">组合根：在 main 里完成接线</div>
+        <div class="ch4-btnrow" role="group" aria-label="注入方式">
+          <button type="button" class="ch4-btn is-active" data-di-mode="runtime">运行期接口</button>
+          <button type="button" class="ch4-btn" data-di-mode="compile">编译期模板</button>
+        </div>
+      </div>
+      <div class="ch4-wiring">
+        <div class="ch4-node is-active" id="ch4-di-monitor">
+          <small>业务层</small><b>Monitor</b><code>read / clamp / publish</code>
+        </div>
+        <div class="ch4-wire is-active" id="ch4-di-wire1"><span>依赖</span></div>
+        <div class="ch4-node is-active" id="ch4-di-iface">
+          <small>接口</small><b id="ch4-di-iface-name">ITempSensor</b><code id="ch4-di-iface-code">virtual bool read(float*) = 0;</code>
+        </div>
+        <div class="ch4-wire is-active" id="ch4-di-wire2"><span>实现</span></div>
+        <div class="ch4-impl-list">
+          <button type="button" class="ch4-impl-btn is-active" data-impl="real"><b>Ds18b20</b><small>真实单总线传感器</small></button>
+          <button type="button" class="ch4-impl-btn" data-impl="fake"><b>FakeSensor</b><small>主机测试替身：固定 25.0 °C</small></button>
+        </div>
+      </div>
+      <div class="ch4-di-status" id="ch4-di-status" aria-live="polite"><b>当前：</b>量产接线，Monitor 依赖 ITempSensor，具体实现是 Ds18b20。业务代码不需要知道 OneWire 细节。</div>
+    </div>
+
+    <div class="ch4-grid2 ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">接线代码与测试替身</span><span class="ch4-tag">主机可跑</span></div>
+        <pre class="ch4-code" id="ch4-di-code"></pre>
+        <div class="ch4-btnrow ch4-mt-s">
+          <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-di-test-btn">运行主机测试</button>
+          <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-di-test-reset">清空</button>
+        </div>
+        <div class="ch4-term ch4-mt-s" id="ch4-di-test" aria-live="polite">$ ctest -R monitor
+<span class="dim">等待运行：不需要开发板，FakeSensor 直接返回固定温度</span></div>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">三种接线方式的账</span><span class="ch4-tag">没有唯一答案</span></div>
+        <div class="ch4-table-wrap">
+          <table class="ch4-table ch4-compare">
+            <thead><tr><th>方式</th><th>换实现</th><th>RAM</th><th>Flash</th><th>测试</th></tr></thead>
+            <tbody>
+              <tr><td>虚接口</td><td class="win">运行期可换</td><td>+4 B/对象</td><td>每类一张 vtable</td><td>注入 Fake 很容易</td></tr>
+              <tr><td>模板注入</td><td class="cost">编译期固定</td><td class="win">0 额外</td><td class="cost">每类型一份实例化</td><td>Fake 需重新实例化</td></tr>
+              <tr><td>函数指针</td><td class="win">运行期可换</td><td>4 B/函数/对象</td><td>无 vtable</td><td>C 接口友好</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ch4-note ch4-mt-s"><b>选择原则：</b>需要运行期替换/驱动可插拔 → 虚接口；类型固定、追求零 vptr → 模板；跨 C/ISR、接口极小 → 函数指针。<code>std::function</code> 可能为捕获分配堆，热路径避免。</div>
+        <div class="ch4-okbox ch4-mt-s"><b>ETL 补充：</b><code>etl::vector&lt;T,N&gt;</code>、<code>etl::queue&lt;T,N&gt;</code> 用编译期容量换零堆；它们是“想用 STL 但不能上堆”的常用替代。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 5: boot sequence ================= -->
+  <section class="ch4-scene" data-scene="5" aria-labelledby="ch4-s5-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s5-title"><span class="ch4-scene-num">4.6</span>启动时序：全局构造发生在 main 之前</h2>
+      <p class="ch4-scene-desc">C++ 的全局对象会在 <code>main()</code> 之前由启动代码调用构造函数。此时应用级的时钟、引脚、RTOS 往往还没初始化；把硬件操作放进构造函数，就会得到“上电偶尔卡死”的经典故障。</p>
+    </div>
+
+    <div class="ch4-boot-layout">
+      <div class="ch4-card ch4-boot-plan">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">三种启动方案</span>
+          <span class="ch4-tag">选择后运行</span>
+        </div>
+        <div class="ch4-mode-tabs" role="group" aria-label="启动方案">
+          <button type="button" class="ch4-btn is-active" data-boot-plan="A">A · 全局构造</button>
+          <button type="button" class="ch4-btn" data-boot-plan="B">B · 两段式</button>
+          <button type="button" class="ch4-btn" data-boot-plan="C">C · constexpr + 两段式</button>
+        </div>
+        <pre class="ch4-code" id="ch4-boot-code"></pre>
+        <div class="ch4-btnrow ch4-mt-s">
+          <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-boot-run">运行启动</button>
+          <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-boot-reset">重置</button>
+        </div>
+        <div class="ch4-note ch4-mt-s">启动代码通常先拷贝 <code>.data</code>、清零 <code>.bss</code>，再调用 <code>__libc_init_array</code> 执行全局构造函数，最后进入 <code>main</code>。不同工具链细节略有差异，但“全局构造早于 main”这一点是稳定的。</div>
+      </div>
+
+      <div class="ch4-card ch4-boot-stage">
+        <div class="ch4-card-head">
+          <span class="ch4-card-title">上电时序带</span>
+          <span class="ch4-tag">应用级初始化</span>
+        </div>
+        <div class="ch4-timeline" id="ch4-boot-timeline">
+          <div class="ch4-tl-item" data-boot-step="0"><b>复位 / startup.S</b><small>向量表、栈、基础启动代码</small></div>
+          <div class="ch4-tl-item" data-boot-step="1"><b>.data / .bss 初始化</b><small>拷贝初值、清零未初始化数据</small></div>
+          <div class="ch4-tl-item" data-boot-step="2"><b>__libc_init_array</b><small>调用 .init_array 中的全局构造函数</small></div>
+          <div class="ch4-tl-item" data-boot-step="3"><b>全局对象构造</b><small>应用级时钟、引脚、RTOS 通常尚未就绪</small></div>
+          <div class="ch4-tl-item" data-boot-step="4"><b>main()</b><small>应用入口</small></div>
+          <div class="ch4-tl-item" data-boot-step="5"><b>board_init()</b><small>配置时钟、引脚、外设实例</small></div>
+          <div class="ch4-tl-item" data-boot-step="6"><b>app_init() / begin()</b><small>两段式初始化，开始使用硬件</small></div>
+        </div>
+        <div class="ch4-boot-status" id="ch4-boot-status" aria-live="polite">选择方案后点“运行启动”，观察在哪一步触碰硬件。</div>
+      </div>
+    </div>
+
+    <div class="ch4-grid2 ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">链接顺序实验：静态初始化顺序不保证</span><span class="ch4-tag">跨编译单元</span></div>
+        <div class="ch4-btnrow">
+          <button type="button" class="ch4-btn is-active" data-order="ab">链接顺序 A → B</button>
+          <button type="button" class="ch4-btn" data-order="ba">链接顺序 B → A</button>
+        </div>
+        <label class="ch4-flag ch4-mt-s"><input type="checkbox" id="ch4-order-dep"><span><b>g_sensor 依赖 g_config</b><small>模拟 B 的构造函数读取 A 的字段</small></span></label>
+        <div class="ch4-order-lab ch4-mt-s" id="ch4-order-rows">
+          <div class="ch4-order-row"><span>先构造</span><b id="ch4-order-first">g_config（A）</b></div>
+          <div class="ch4-order-row"><span>后构造</span><b id="ch4-order-second">g_sensor（B）</b></div>
+        </div>
+        <div class="ch4-note ch4-mt-s" id="ch4-order-note">同一编译单元内按声明顺序构造；不同编译单元之间的顺序由链接顺序决定，标准不保证。跨全局对象依赖必须消除。</div>
+      </div>
+
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">局部 static 与全局析构</span><span class="ch4-tag">两个容易忽略的边界</span></div>
+        <pre class="ch4-code ch4-static-code"><span class="cm">// 第一次调用时构造；默认带线程安全守卫</span>
+<span class="ty">Sensor</span>&amp; sensor() {
+    <span class="kw">static</span> <span class="ty">Sensor</span> s;
+    <span class="kw">return</span> s;
+}
+
+<span class="cm">// -fno-threadsafe-statics 后：去掉 guard</span>
+<span class="cm">// 裸机单线程 / 调度器启动前首次调用 → 可安全</span>
+<span class="cm">// RTOS 多任务并发首次调用 → 可能重复构造</span></pre>
+        <div class="ch4-safety ch4-mt-s">
+          <div><b>✓</b><span>RTOS 下：在创建任务之前完成首次调用，或用显式 <code>init()</code>。</span></div>
+          <div><b>✓</b><span>全局对象只做平凡初始化；硬件操作放 <code>begin()</code>，在 <code>board_init()</code> 之后调用。</span></div>
+          <div><b>✓</b><span><code>main</code> 通常不返回，静态析构不保证执行；硬件关闭用显式 <code>shutdown()</code>。</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 6: troubleshooting ================= -->
+  <section class="ch4-scene" data-scene="6" aria-labelledby="ch4-s6-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s6-title"><span class="ch4-scene-num">4.7</span>故障排查：Flash、启动、HardFault 与 new</h2>
+      <p class="ch4-scene-desc">C++ 的问题常常不是语法错误，而是“链接器悄悄拉进来一大段”或“构造函数在错误的时机跑了”。这一节用符号表、启动时序和最小复现来定位。</p>
+    </div>
+
+    <div class="ch4-grid2">
+      <div class="ch4-card ch4-nm-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">Flash 法证：先看符号，不要猜</span><span class="ch4-tag">示例输出</span></div>
+        <pre class="ch4-code ch4-mt-s">$ arm-none-eabi-nm --size-sort -C fw.elf | tail -20</pre>
+        <div class="ch4-btnrow ch4-mt-s">
+          <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-nm-run">运行 nm 采样</button>
+          <button type="button" class="ch4-btn ch4-btn-quiet" id="ch4-nm-reset">重置</button>
+        </div>
+        <div class="ch4-nm-rows" id="ch4-nm-rows"></div>
+        <div class="ch4-nm-note" id="ch4-nm-note">点击一行查看对应的“删/换/限”处理。符号名与体积为示意，真实数值以你的 ELF 为准。</div>
+      </div>
+
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">ISR、new/delete 与 HardFault</span><span class="ch4-tag">运行时边界</span></div>
+        <div class="ch4-isa-tabs" role="group" aria-label="运行时示例">
+          <button type="button" class="ch4-btn is-active" data-isa="isr">ISR 桥接</button>
+          <button type="button" class="ch4-btn" data-isa="new">new/delete</button>
+          <button type="button" class="ch4-btn" data-isa="fault">HardFault</button>
+        </div>
+        <pre class="ch4-code ch4-isa-code" id="ch4-isa-code"></pre>
+        <div class="ch4-note ch4-mt-s" id="ch4-isa-note"></div>
+      </div>
+    </div>
+
+    <div class="ch4-qa-grid ch4-mt">
+      <details class="ch4-qa" open>
+        <summary>Flash 占用暴涨几百 KB</summary>
+        <div class="ch4-qa-body"><b>根因：</b>iostream/locale 被拉入；模板过度实例化；异常表或 RTTI 残留；printf 浮点格式。<b>定位：</b><code>nm --size-sort -C</code> 找大符号，<code>size -A</code> 看段分布；关异常/RTTI、去 iostream、限制模板类型数量、启用 section GC。</div>
+      </details>
+      <details class="ch4-qa">
+        <summary>启动卡死在 static 初始化</summary>
+        <div class="ch4-qa-body"><b>根因：</b>全局对象构造函数依赖外设/时钟/RTOS，而这些还没初始化。<b>定位：</b>在 <code>__libc_init_array</code> 前后打点（早期 UART 轮询），检查 <code>.init_array</code>；改为全局平凡初始化 + <code>begin()</code> 两段式。</div>
+      </details>
+      <details class="ch4-qa">
+        <summary>ISR / 回调里偶发 HardFault</summary>
+        <div class="ch4-qa-body"><b>根因：</b>ISR 与 C++ 函数签名/链接名不匹配；构造期间调用虚函数；纯虚调用；ISR 里使用堆、阻塞锁或过长路径。<b>定位：</b>用 <code>extern "C"</code> 桥接，检查向量表与反汇编；读 CFSR/HFSR/BFAR/MMFAR 和异常栈帧，再 <code>addr2line</code> 定位。</div>
+      </details>
+      <details class="ch4-qa">
+        <summary>new 返回野指针 / 堆与内存池冲突</summary>
+        <div class="ch4-qa-body"><b>根因：</b>没有重载全局 <code>operator new/delete</code>，默认落到 malloc；池分配器与 C 库堆各自管理同一块内存。<b>定位：</b>重载并统一到池；链接 <code>--wrap=malloc</code> 校验；更彻底的做法是禁用动态分配，改用静态池 + placement new。</div>
+      </details>
+    </div>
+
+    <div class="ch4-faq ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">FAQ：裸机项目有必要用 C++ 吗？</span><span class="ch4-tag">选型</span></div>
+        <p class="ch4-small ch4-muted">看团队与规模：模块超过 20 个、有状态机集群/UI 的中型项目，C++ 子集收益明显；几百行的小固件 C 更轻快。混合方案很常见——驱动层 C 对接 HAL，业务层 C++。</p>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">FAQ：异常真的绝对不能用吗？</span><span class="ch4-tag">边界</span></div>
+        <p class="ch4-small ch4-muted">M 核硬实时默认禁用。A 核 Linux 应用进程内可用；原则是<b>资源受限 + 硬实时 = 禁，富资源 + 软实时 = 可议</b>。禁用异常后，用返回码 + RAII 管理错误路径。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= scene 7: lab ================= -->
+  <section class="ch4-scene" data-scene="7" aria-labelledby="ch4-s7-title" hidden>
+    <div class="ch4-scene-head">
+      <h2 class="ch4-scene-title" id="ch4-s7-title"><span class="ch4-scene-num">4.8</span>测量与 Lab：把预算变成证据</h2>
+      <p class="ch4-scene-desc">C++ 嵌入式的结论不能停在“应该差不多”。用 <code>size</code>、<code>nm</code>、<code>objdump</code> 和主机测试，把每一项抽象的成本变成可复现的数字。</p>
+    </div>
+
+    <div class="ch4-lab-layout">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">本章验收清单</span><span class="ch4-tag">逐项勾选</span></div>
+        <div class="ch4-lab-progress-top"><span id="ch4-lab-count">完成 0 / 5</span><span>Lab L4-1 · L4-2 · L4-3</span></div>
+        <div class="ch4-lab-progress"><i id="ch4-lab-fill"></i></div>
+        <div class="ch4-lab-list ch4-mt-s" id="ch4-lab-list">
+          <label class="ch4-lab-item"><input type="checkbox"><span>RAII 版 <code>read_frame()</code> 的三条出口都能恢复 IRQ 与 CS，不依赖手写 cleanup。</span></label>
+          <label class="ch4-lab-item"><input type="checkbox"><span>关键约束有编译期断言：<code>sizeof(Frame) == 12</code> 且 <code>Telemetry</code> 可平凡拷贝。</span></label>
+          <label class="ch4-lab-item"><input type="checkbox"><span>关闭异常/RTTI 后，<code>nm</code> 中不再出现 <code>__cxa_throw</code> 与业务类 <code>typeinfo</code>（按工具链复核）。</span></label>
+          <label class="ch4-lab-item"><input type="checkbox"><span>记录 100 个多态对象的 RAM 增量，并解释 vptr 与 vtable 的归属。</span></label>
+          <label class="ch4-lab-item"><input type="checkbox"><span>全局构造不访问硬件；<code>begin()</code> 在 <code>board_init()</code> 之后调用。</span></label>
+        </div>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">测量命令：从 ELF 里找证据</span><span class="ch4-tag">ARM GCC</span></div>
+        <pre class="ch4-code ch4-commands">$ arm-none-eabi-size -A build/fw.elf
+$ arm-none-eabi-nm -C --size-sort build/fw.elf | tail -20
+$ arm-none-eabi-objdump -d -C build/fw.elf | sed -n '/&lt;Monitor/,/^$/p'
+$ arm-none-eabi-readelf -S build/fw.elf | grep -E 'init_array|fini_array'</pre>
+        <div class="ch4-note ch4-mt-s"><b>看什么：</b><code>.text/.rodata</code> 增量对应 Flash；<code>.data/.bss</code> 增量对应 RAM；<code>init_array</code> 里是否有业务构造函数；<code>nm</code> 顶部符号是否来自异常、RTTI、iostream 或模板实例化。</div>
+      </div>
+    </div>
+
+    <div class="ch4-lab-tasks ch4-mt">
+      <div class="ch4-lab-task"><b>L4-1 · RAII 改造</b><small>把上一章 C 版 <code>read_frame()</code> 改成守卫类；制造传感器失败和 CRC 失败，确认两条早退路径都恢复 IRQ/CS。</small><span class="ch4-tag">约 20 分钟</span></div>
+      <div class="ch4-lab-task"><b>L4-2 · 多态账本</b><small>创建 100 个多态对象，比较 <code>.bss</code> 增量与函数指针结构体方案；用 <code>nm</code> 找到 vtable，用 <code>objdump</code> 确认调用是直接还是间接。</small><span class="ch4-tag">约 20 分钟</span></div>
+      <div class="ch4-lab-task"><b>L4-3 · 主机替身</b><small>用 <code>FakeSensor</code> 注入 <code>Monitor</code>，在主机跑一条测试；再切到模板注入，记录 Flash 与可替换性的变化。</small><span class="ch4-tag">约 15 分钟</span></div>
+    </div>
+
+    <div class="ch4-grid2 ch4-mt">
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">预算对账单</span><span class="ch4-tag">预期 vs 实测</span></div>
+        <div class="ch4-table-wrap">
+          <table class="ch4-table">
+            <thead><tr><th>项目</th><th>预期量级</th><th>你的实测</th></tr></thead>
+            <tbody>
+              <tr><td>100 个多态对象</td><td>+400 B RAM（4 B vptr/对象）</td><td>____ B</td></tr>
+              <tr><td>每类 vtable 槽位</td><td>约 16 B Flash（4 槽 × 4 B，省略表头）</td><td>____ B</td></tr>
+              <tr><td><code>__cxa_throw</code></td><td>0（-fno-exceptions）</td><td>____</td></tr>
+              <tr><td>业务代码改动</td><td>只改组合根 1 处注入点</td><td>____ 处</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ch4-card">
+        <div class="ch4-card-head"><span class="ch4-card-title">验收标准</span><span class="ch4-tag">可复现</span></div>
+        <div class="ch4-safety">
+          <div><b>✓</b><span>三条出口 + 两个 <code>static_assert</code> + 一次 <code>nm</code> 体积对比，全部有记录。</span></div>
+          <div><b>✓</b><span>能解释“为什么这个对象有 vptr、为什么那张表在 Flash、为什么调用多一次访存”。</span></div>
+          <div><b>✓</b><span>能指出全局构造发生在 <code>main</code> 之前，并说明两段式初始化如何避免碰未就绪硬件。</span></div>
+        </div>
+        <div class="ch4-okbox ch4-mt-s"><b>如果只能做一件事：</b>把 <code>read_frame()</code> 的三条出口跑通，并用 <code>nm</code> 证明没有异常/RTTI 符号残留。</div>
+      </div>
+    </div>
+
+    <div class="ch4-card ch4-mt">
+      <div class="ch4-card-head"><span class="ch4-card-title">本章五句话</span><span class="ch4-tag">带走</span></div>
+      <div class="ch4-takeaways">
+        <div class="ch4-takeaway"><i>1</i><div><b>成本记在三本账</b><small>对象隐藏字段、链接器带入的代码、运行路径是否确定。</small></div></div>
+        <div class="ch4-takeaway"><i>2</i><div><b>RAII 是作用域的所有权</b><small>构造取得、析构归还，所有出口自动覆盖，顺序是构造的逆序。</small></div></div>
+        <div class="ch4-takeaway"><i>3</i><div><b>多态用 4 B 换可替换性</b><small>接口要窄，对象别太多；类型已知或 final 时可能去虚化，测量确认。</small></div></div>
+        <div class="ch4-takeaway"><i>4</i><div><b>全局构造早于 main</b><small>全局对象只做平凡初始化；硬件两段式；能 constexpr 就编译期算。</small></div></div>
+        <div class="ch4-takeaway"><i>5</i><div><b>先测量再优化</b><small>size、nm、objdump 是 C++ 嵌入式的显微镜；没有数字就没有结论。</small></div></div>
+      </div>
+    </div>
+
+    <div class="ch4-next-card ch4-mt">
+      <div><b>下一章 · ARM 汇编与反汇编排障</b><small>HardFault/Oops 定位：看懂异常栈帧、寄存器与反汇编，把“偶发崩溃”变成可复现的证据。</small></div>
+      <span class="big">CH 05 →</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ch4-footer">
+  <button type="button" class="ch4-btn" id="ch4-prev">← 上一节</button>
+  <div class="ch4-footer-mid"><b id="ch4-footer-title">4.1 三本账</b><span>点击上方数字可直接跳转</span></div>
+  <button type="button" class="ch4-btn ch4-btn-primary" id="ch4-next">下一节 →</button>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var root = document.getElementById('ch4-lesson');
+  if(!root){ return; }
+  var $ = function(sel, ctx){ return (ctx || root).querySelector(sel); };
+  var $$ = function(sel, ctx){ return Array.prototype.slice.call((ctx || root).querySelectorAll(sel)); };
+  var scenes = $$('.ch4-scene');
+  var steps = $$('.ch4-step');
+  var names = ['三本账','RAII 剧场','守卫与失败','虚表解剖','依赖接线','启动时序','故障排查','测量与 Lab'];
+  var secs = ['4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8'];
+  var current = 0;
+
+  function go(n){
+    current = Math.max(0, Math.min(scenes.length - 1, n));
+    scenes.forEach(function(s, i){
+      s.hidden = i !== current;
+      s.classList.toggle('is-active', i === current);
+    });
+    steps.forEach(function(b, i){
+      b.classList.toggle('is-active', i === current);
+      if(i === current){ b.setAttribute('aria-current', 'step'); }
+      else{ b.removeAttribute('aria-current'); }
+    });
+    var label = ('0' + (current + 1)).slice(-2) + ' / 08 · ' + names[current];
+    $('#ch4-progress-label').textContent = label;
+    $('#ch4-progress').setAttribute('aria-valuenow', String(current + 1));
+    $('#ch4-progress-fill').style.width = ((current + 1) / 8 * 100) + '%';
+    $('#ch4-footer-title').textContent = secs[current] + ' ' + names[current];
+    $('#ch4-prev').disabled = current === 0;
+    $('#ch4-next').textContent = current === 7 ? '回到 4.1 ↺' : '下一节 →';
+  }
+
+  steps.forEach(function(b){
+    b.addEventListener('click', function(){ go(parseInt(b.getAttribute('data-goto'), 10)); });
+  });
+  $('#ch4-prev').addEventListener('click', function(){ if(current > 0){ go(current - 1); } });
+  $('#ch4-next').addEventListener('click', function(){ go(current === 7 ? 0 : current + 1); });
+
+  /* ---------------- budget board ---------------- */
+  var features = [
+    {
+      id: 'classes', name: '类封装 / 构造析构', rec: 'on', recLabel: '启用', locked: true, defaultOn: true,
+      flash: 1, ram: 0, time: 0,
+      short: '把不变量封进类型；构造/析构代码本身占 Flash',
+      cost: '没有额外每对象隐藏字段；构造/析构有代码体积，常被内联。',
+      benefit: '减少“忘记初始化/忘记反初始化”的约定错误。',
+      alt: '纯 C 的 init/deinit 函数 + 代码评审。'
+    },
+    {
+      id: 'raii', name: 'RAII', rec: 'on', recLabel: '启用', locked: true, defaultOn: true,
+      flash: 1, ram: 0, time: 0,
+      short: '栈对象确定性析构，所有出口自动恢复资源',
+      cost: '通常零额外运行时开销；析构函数需要可被调用。',
+      benefit: '提前 return、break、异常展开都不会漏释放。',
+      alt: 'goto cleanup；正确但依赖纪律。'
+    },
+    {
+      id: 'constexpr', name: 'constexpr / 编译期算表', rec: 'on', recLabel: '启用', locked: true, defaultOn: true,
+      flash: 1, ram: 0, time: 0,
+      short: '查表、CRC、配置在编译期生成，省启动时间',
+      cost: '编译期计算；表仍在 Flash 中，注意大小。',
+      benefit: '去掉动态初始化和运行时计算，启动更确定。',
+      alt: '运行时初始化 + 手动缓存。'
+    },
+    {
+      id: 'templates', name: '模板', rec: 'care', recLabel: '谨慎', defaultOn: true,
+      flash: 3, ram: 1, time: 1,
+      short: '零抽象税的类型安全容器；每种实例化一份代码',
+      cost: 'Flash 随实例化类型数量增长；错误信息较长。',
+      benefit: '静态分发、可内联、无 vptr；配合 static_assert 约束类型。',
+      alt: '非模板基类 + 虚接口；或用 etl 的固定容量容器。'
+    },
+    {
+      id: 'exceptions', name: '异常 exception', rec: 'off', recLabel: '禁用', defaultOn: false,
+      flash: 3, ram: 1, time: 3,
+      short: '展开表 + 不确定路径，硬实时 M 核默认关闭',
+      cost: 'Flash 表、栈展开代码、路径不确定；ISR 中尤其危险。',
+      benefit: '在富资源/软实时系统中简化错误传播。',
+      alt: '返回码 + RAII；错误路径显式但可预测。'
+    },
+    {
+      id: 'rtti', name: 'RTTI', rec: 'off', recLabel: '禁用', defaultOn: false,
+      flash: 2, ram: 1, time: 1,
+      short: 'type_info / dynamic_cast / typeid 的元数据',
+      cost: '每个多态类带 type_info，Flash 和间接查表增加。',
+      benefit: '运行期类型识别；嵌入式一般不需要。',
+      alt: 'enum class + 访问者/虚函数；编译期分派。'
+    },
+    {
+      id: 'iostream', name: 'iostream / 默认分配器', rec: 'off', recLabel: '禁用', defaultOn: false,
+      flash: 5, ram: 2, time: 2,
+      short: 'locale、缓冲、堆依赖，体积巨大',
+      cost: '可能拉入几百 KB 的库代码；依赖堆和全局构造。',
+      benefit: '桌面式流式 I/O；MCU 上收益极低。',
+      alt: '精简 printf / 自写日志接口 / ETL 静态容器。'
+    },
+    {
+      id: 'function', name: 'std::function / 捕获 lambda', rec: 'care', recLabel: '谨慎', defaultOn: false,
+      flash: 1, ram: 1, time: 2,
+      short: '类型擦除方便，但可能为捕获分配堆',
+      cost: '可能堆分配；调用链更长；异常路径不可控。',
+      benefit: '回调注册灵活；无捕获 lambda 可退化为函数指针。',
+      alt: '函数指针 + void* ctx；模板回调；小对象静态存储。'
+    },
+    {
+      id: 'virtual', name: '虚函数', rec: 'on', recLabel: '启用', defaultOn: true,
+      flash: 1, ram: 1, time: 1,
+      short: '每对象 4 B vptr，换驱动可替换与主机测试',
+      cost: '每对象一个隐藏指针；调用多一次查表，可能阻止内联。',
+      benefit: '运行期替换实现；接口窄时性价比高。',
+      alt: '函数指针结构体；模板注入（编译期固定）。'
+    },
+    {
+      id: 'mi', name: '多重继承', rec: 'off', recLabel: '避免', defaultOn: false,
+      flash: 2, ram: 2, time: 2,
+      short: 'vptr 布局复杂化，this 指针需要调整',
+      cost: '每个多态基类子对象可能有 vptr；转换有地址调整开销。',
+      benefit: '少见；接口组合可用单继承 + 组合替代。',
+      alt: '纯虚单继承接口；组合优于继承。'
+    }
+  ];
+  var featureState = {};
+  features.forEach(function(f){ featureState[f.id] = f.locked ? true : !!f.defaultOn; });
+  var selectedFeature = 'exceptions';
+  var presets = {
+    min: { templates: false, exceptions: false, rtti: false, iostream: false, function: false, virtual: false, mi: false },
+    prod: { templates: true, exceptions: false, rtti: false, iostream: false, function: false, virtual: true, mi: false },
+    ui: { templates: true, exceptions: true, rtti: true, iostream: false, function: true, virtual: true, mi: false }
+  };
+
+  (function buildFeatures(){
+    var list = $('#ch4-feature-list');
+    features.forEach(function(f){
+      var row = document.createElement('div');
+      row.className = 'ch4-feature';
+      row.setAttribute('data-feature', f.id);
+      var info = document.createElement('button');
+      info.type = 'button';
+      info.className = 'ch4-feature-info';
+      info.setAttribute('data-select', f.id);
+      info.innerHTML = '<b>' + f.name + ' <span class="ch4-feature-rec ' + f.rec + '">' + f.recLabel + '</span></b><small>' + f.short + '</small>';
+      row.appendChild(info);
+      if(f.locked){
+        var lock = document.createElement('span');
+        lock.className = 'ch4-lock';
+        lock.textContent = '锁定';
+        row.appendChild(lock);
+      } else {
+        var sw = document.createElement('button');
+        sw.type = 'button';
+        sw.className = 'ch4-switch';
+        sw.setAttribute('data-toggle', f.id);
+        sw.setAttribute('aria-pressed', 'false');
+        sw.innerHTML = '<i></i><em>关闭</em>';
+        row.appendChild(sw);
+      }
+      list.appendChild(row);
+    });
+    list.addEventListener('click', function(e){
+      var toggle = e.target.closest('[data-toggle]');
+      if(toggle){
+        var id = toggle.getAttribute('data-toggle');
+        featureState[id] = !featureState[id];
+        selectedFeature = id;
+        renderBudget();
+        return;
+      }
+      var select = e.target.closest('[data-select]');
+      if(select){
+        selectedFeature = select.getAttribute('data-select');
+        renderBudget();
+      }
+    });
+  })();
+
+  function sumFeature(key){
+    return features.reduce(function(total, f){
+      return total + (featureState[f.id] ? (f[key] || 0) : 0);
+    }, 0);
+  }
+
+  function renderFeatureDetail(){
+    var f = null;
+    features.forEach(function(item){ if(item.id === selectedFeature){ f = item; } });
+    if(!f){ f = features[0]; }
+    $('#ch4-feature-detail').innerHTML =
+      '<div class="ch4-detail-title"><b>' + f.name + '</b><span class="ch4-feature-rec ' + f.rec + '">' + f.recLabel + '</span></div>' +
+      '<div class="ch4-detail-grid">' +
+        '<div class="ch4-detail-line"><b>记在哪本账：</b>' + f.cost + '</div>' +
+        '<div class="ch4-detail-line"><b>收益：</b>' + f.benefit + '</div>' +
+        '<div class="ch4-detail-line"><b>替代方案：</b>' + f.alt + '</div>' +
+      '</div>';
+  }
+
+  function renderBudget(){
+    var flash = sumFeature('flash');
+    var ram = sumFeature('ram');
+    var time = sumFeature('time');
+    ['flash', 'ram', 'time'].forEach(function(key){
+      var value = key === 'flash' ? flash : key === 'ram' ? ram : time;
+      var max = key === 'flash' ? 12 : 8;
+      var row = $('[data-meter="' + key + '"]');
+      var fill = $('#ch4-meter-' + key + '-fill');
+      var val = $('#ch4-meter-' + key + '-val');
+      var ratio = value / max;
+      fill.style.width = Math.min(100, ratio * 100) + '%';
+      val.textContent = value + ' / ' + max;
+      row.classList.toggle('is-warn', ratio >= 0.8 && ratio <= 1);
+      row.classList.toggle('is-danger', ratio > 1);
+    });
+
+    var badge = $('#ch4-budget-badge');
+    var over = flash > 12 || ram > 8 || time > 8;
+    var near = !over && (flash >= 9.6 || ram >= 6.4 || time >= 4);
+    badge.textContent = over ? '超预算' : near ? '临界' : '预算内';
+    badge.className = 'ch4-budget-badge ' + (over ? 'bad' : near ? 'warn' : 'ok');
+
+    features.forEach(function(f){
+      var row = $('[data-feature="' + f.id + '"]');
+      if(!row){ return; }
+      row.classList.toggle('is-selected', f.id === selectedFeature);
+      var sw = $('[data-toggle="' + f.id + '"]');
+      if(sw){
+        var on = !!featureState[f.id];
+        sw.setAttribute('aria-pressed', on ? 'true' : 'false');
+        var em = sw.querySelector('em');
+        if(em){ em.textContent = on ? '启用' : '关闭'; }
+      }
+    });
+
+    var note = $('#ch4-budget-note');
+    if(over){
+      note.innerHTML = '<b>超出预算：</b>先把异常、iostream、RTTI 这类“大件”关掉，再考虑模板实例化数量；硬实时场景还要看时间账。';
+    } else if(featureState.exceptions && featureState.iostream){
+      note.innerHTML = '<b>体积与确定性双高风险：</b>异常和 iostream 同时打开，通常不是 MCU 的合理起点；先证明需求，再开。';
+    } else if(featureState.exceptions){
+      note.innerHTML = '<b>异常已开启：</b>硬实时 M 核默认关闭；若必须使用，锁定异常路径的 WCET，并确认所有析构都能安全执行。';
+    } else if(featureState.iostream){
+      note.innerHTML = '<b>iostream 是大胃王：</b>locale、缓冲和全局构造可能一起被拉入；改用日志接口或精简 printf。';
+    } else if(featureState.templates){
+      note.innerHTML = '<b>预算内：</b>当前 Flash 账主要来自模板实例化。每增加一种类型就多一份代码，用 <code>nm</code> 数一数。';
+    } else if(!featureState.virtual){
+      note.innerHTML = '<b>最小配置：</b>没有多态和模板，抽象成本接近于零；适合几百行的小固件。';
+    } else {
+      note.innerHTML = '<b>预算内：</b>保留 RAII、有限模板和单继承虚接口；异常/RTTI/iostream 关闭。下一步用 <code>size</code> 与 <code>nm</code> 复核。';
+    }
+    renderFeatureDetail();
+    $$('#ch4-presets .ch4-btn').forEach(function(b){ b.classList.remove('is-active'); });
+    Object.keys(presets).forEach(function(key){
+      var ok = true;
+      Object.keys(presets[key]).forEach(function(id){
+        if(!!featureState[id] !== presets[key][id]){ ok = false; }
+      });
+      if(ok){ var btn = $('[data-preset="' + key + '"]'); if(btn){ btn.classList.add('is-active'); } }
+    });
+  }
+
+  function applyPreset(name){
+    var p = presets[name];
+    if(!p){ return; }
+    Object.keys(p).forEach(function(id){ featureState[id] = p[id]; });
+    renderBudget();
+  }
+  $$('#ch4-presets [data-preset]').forEach(function(b){
+    b.addEventListener('click', function(){ applyPreset(b.getAttribute('data-preset')); });
+  });
+  $('#ch4-budget-reset').addEventListener('click', function(){ applyPreset('prod'); });
+
+  /* ---------------- compile flags ---------------- */
+  function renderFlags(){
+    var exc = $('#ch4-flag-exceptions').checked;
+    var rtti = $('#ch4-flag-rtti').checked;
+    var ts = $('#ch4-flag-threadsafe').checked;
+    var gc = $('#ch4-flag-gc').checked;
+    var warn = $('#ch4-flag-warn').checked;
+    var lines = ['CXXFLAGS += -std=c++17 -Os'];
+    lines.push(exc ? 'CXXFLAGS += -fno-exceptions' : '# 异常保持默认开启（硬实时不建议）');
+    lines.push(rtti ? 'CXXFLAGS += -fno-rtti' : '# RTTI 保持默认开启');
+    if(ts){ lines.push('CXXFLAGS += -fno-threadsafe-statics'); }
+    if(gc){
+      lines.push('CXXFLAGS += -ffunction-sections -fdata-sections');
+      lines.push('LDFLAGS  += -Wl,--gc-sections');
+    } else {
+      lines.push('# 未启用段裁剪：未引用代码可能仍在 Flash 中');
+    }
+    if(warn){ lines.push('CXXFLAGS += -Wuseless-cast -Wold-style-cast'); }
+    $('#ch4-flags-out').textContent = lines.join('\n');
+    $('#ch4-flag-ts-wrap').classList.toggle('is-risk', ts);
+    var risk = $('#ch4-flag-risk');
+    if(!exc){
+      risk.className = 'ch4-flag-risk ch4-warn';
+      risk.innerHTML = '<b>异常已开启：</b>展开表、体积和不确定路径都会回来；硬实时 M 核不建议。';
+    } else if(ts){
+      risk.className = 'ch4-flag-risk ch4-warn';
+      risk.innerHTML = '<b>-fno-threadsafe-statics 的边界：</b>局部 static 的首次初始化不再加锁。裸机单线程、或在调度器启动前完成首次调用可接受；RTOS 多任务并发首次调用需要加锁或显式 <code>init()</code>。';
+    } else if(!gc){
+      risk.className = 'ch4-flag-risk ch4-warn';
+      risk.innerHTML = '<b>未启用段裁剪：</b>未引用的函数/数据可能仍在 Flash 中；加回 section flags 与 <code>--gc-sections</code>。';
+    } else {
+      risk.className = 'ch4-flag-risk ch4-okbox';
+      risk.innerHTML = '<b>推荐配置：</b>关闭异常/RTTI、启用段裁剪；仍需用 <code>nm</code> 检查实际符号，不要只信编译选项。';
+    }
+  }
+  $$('#ch4-flags input').forEach(function(input){
+    input.addEventListener('change', renderFlags);
+  });
+  $('#ch4-flags-reset').addEventListener('click', function(){
+    $$('#ch4-flags input').forEach(function(input){ input.checked = true; });
+    renderFlags();
+  });
+
+  /* ---------------- RAII theater ---------------- */
+  var raiiCodes = {
+    raii:
+      '<span class="kw">bool</span> <span class="fn">read_frame</span>() {\n' +
+      '    <span class="ty">IrqLock</span> lock;              <span class="cm">// ① 保存 PRIMASK，关中断</span>\n' +
+      '    <span class="ty">SpiTransaction</span> t(spi);     <span class="cm">// ② CS 低 + 占用总线</span>\n\n' +
+      '    <span class="kw">if</span> (!sensor_ok()) <span class="kw">return false</span>;   <span class="cm">// 提前出口</span>\n' +
+      '    <span class="kw">if</span> (!crc_ok())    <span class="kw">return false</span>;   <span class="cm">// 提前出口</span>\n' +
+      '    <span class="kw">return true</span>;\n' +
+      '}   <span class="cm">// 析构：t → lock（构造逆序）</span>',
+    manual:
+      '<span class="kw">bool</span> <span class="fn">read_frame</span>() {\n' +
+      '    __disable_irq();\n' +
+      '    spi.cs_low(); spi.claim();\n\n' +
+      '    <span class="kw">if</span> (!sensor_ok()) <span class="kw">return false</span>;   <span class="bad">// ❌ 没有恢复</span>\n' +
+      '    <span class="kw">if</span> (!crc_ok())    <span class="kw">return false</span>;   <span class="bad">// ❌ 没有恢复</span>\n\n' +
+      '    spi.cs_high(); spi.release(); __enable_irq();\n' +
+      '    <span class="kw">return true</span>;\n' +
+      '}',
+    goto:
+      '<span class="kw">bool</span> <span class="fn">read_frame</span>() {\n' +
+      '    <span class="ty">bool</span> ok = <span class="nu">false</span>;\n' +
+      '    __disable_irq(); spi.cs_low(); spi.claim();\n\n' +
+      '    <span class="kw">if</span> (!sensor_ok()) <span class="kw">goto</span> cleanup;\n' +
+      '    <span class="kw">if</span> (!crc_ok())    <span class="kw">goto</span> cleanup;\n' +
+      '    ok = <span class="nu">true</span>;\n' +
+      'cleanup:\n' +
+      '    spi.cs_high(); spi.release(); __enable_irq();\n' +
+      '    <span class="kw">return</span> ok;\n' +
+      '}'
+  };
+  var raiiHints = {
+    raii: 'RAII：离开作用域时按构造逆序析构，提前 return 也不会漏。',
+    manual: '手工 return：清理代码只在函数末尾；两条早退路径都绕过了它。',
+    goto: 'goto cleanup：所有路径都汇合到清理块；正确，但每加一个资源都要改这里。'
+  };
+  var resourceData = [
+    { id: 'lock', name: 'IrqLock lock', detail: '保存 PRIMASK，关闭 IRQ', release: '恢复 PRIMASK', color: 'var(--c-danger)', icon: 'IRQ' },
+    { id: 'spi', name: 'SpiTransaction t', detail: 'CS 低 + 占用总线', release: 'CS 高 + 释放总线', color: 'var(--c-cyan)', icon: 'SPI' }
+  ];
+  var rState = { mode: 'raii', phase: 'idle', acquired: [], busy: false };
+  var rTimers = [];
+  function rLater(fn, ms){ var t = setTimeout(fn, ms); rTimers.push(t); return t; }
+  function clearRTimers(){ rTimers.forEach(clearTimeout); rTimers = []; }
+  function renderRaiiCode(){
+    $('#ch4-raii-code').innerHTML = raiiCodes[rState.mode];
+    $('#ch4-raii-hint').textContent = raiiHints[rState.mode] + ' 先点“进入函数”，再选择出口。';
+  }
+  function rLog(kind, msg){
+    var line = document.createElement('div');
+    line.className = 'ch4-log-line ' + (kind || 'info');
+    var arrow = document.createElement('span');
+    arrow.className = 't';
+    arrow.textContent = '›';
+    var text = document.createElement('span');
+    text.textContent = msg;
+    line.appendChild(arrow);
+    line.appendChild(text);
+    var log = $('#ch4-raii-log');
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+  function setExitButtons(enabled){
+    $$('#ch4-raii-exits .ch4-exit').forEach(function(b){ b.disabled = !enabled; });
+  }
+  function resetExitStates(){
+    $$('#ch4-raii-exits .ch4-exit').forEach(function(b){
+      b.classList.remove('is-ok', 'is-bad');
+      var state = b.querySelector('.ch4-exit-state');
+      if(state){ state.textContent = '待运行'; }
+    });
+  }
+  function raiiReset(){
+    clearRTimers();
+    rState = { mode: rState.mode, phase: 'idle', acquired: [], busy: false };
+    var rail = $('#ch4-raii-resources');
+    rail.innerHTML = '<div class="ch4-frame-empty">作用域尚未进入</div>';
+    $('#ch4-raii-frame').classList.remove('is-closing', 'is-leaked');
+    $('#ch4-raii-state').textContent = '等待进入';
+    $('#ch4-raii-log').innerHTML = '';
+    $('#ch4-raii-enter').disabled = false;
+    $('#ch4-raii-enter').textContent = '进入函数';
+    setExitButtons(false);
+    resetExitStates();
+    renderRaiiCode();
+  }
+  function addResource(id){
+    var data = null;
+    resourceData.forEach(function(r){ if(r.id === id){ data = r; } });
+    if(!data){ return; }
+    var empty = $('#ch4-raii-resources .ch4-frame-empty');
+    if(empty){ empty.parentNode.removeChild(empty); }
+    var chip = document.createElement('div');
+    chip.className = 'ch4-resource';
+    chip.setAttribute('data-res', id);
+    chip.style.setProperty('--rc', data.color);
+    chip.innerHTML = '<span class="ch4-resource-icon">' + data.icon + '</span><div><b>' + data.name + '</b><small>' + data.detail + '</small></div>';
+    $('#ch4-raii-resources').appendChild(chip);
+    rState.acquired.push(id);
+    rLater(function(){ chip.classList.add('is-in'); }, 20);
+  }
+  function enterRaii(){
+    if(rState.busy){ return; }
+    if(rState.phase === 'ready'){ raiiReset(); }
+    clearRTimers();
+    rState = { mode: rState.mode, phase: 'entering', acquired: [], busy: true };
+    $('#ch4-raii-log').innerHTML = '';
+    $('#ch4-raii-resources').innerHTML = '';
+    $('#ch4-raii-frame').classList.remove('is-closing', 'is-leaked');
+    resetExitStates();
+    setExitButtons(false);
+    $('#ch4-raii-enter').disabled = true;
+    $('#ch4-raii-state').textContent = '进入作用域';
+    $('#ch4-raii-hint').textContent = '正在构造自动对象……';
+    rLog('info', '进入 read_frame()，栈帧压入');
+    addResource('lock');
+    rLog('ok', '构造 IrqLock：保存 PRIMASK，关闭 IRQ');
+    rLater(function(){ addResource('spi'); rLog('ok', '构造 SpiTransaction：CS 拉低，占用总线'); }, 380);
+    rLater(function(){
+      rState.phase = 'ready';
+      rState.busy = false;
+      setExitButtons(true);
+      $('#ch4-raii-state').textContent = '等待出口';
+      $('#ch4-raii-enter').disabled = false;
+      $('#ch4-raii-enter').textContent = '重新进入';
+      $('#ch4-raii-hint').textContent = '两个资源已在栈帧上。选择一条出口，观察析构顺序。';
+    }, 760);
+  }
+  function releaseRaii(prefix){
+    var ids = ['spi', 'lock'];
+    ids.forEach(function(id, index){
+      var data = null;
+      resourceData.forEach(function(r){ if(r.id === id){ data = r; } });
+      if(!data){ return; }
+      rLater(function(){
+        var chip = $('.ch4-resource[data-res="' + id + '"]');
+        if(chip){ chip.classList.add('is-releasing'); }
+        rLog('info', prefix + '：' + data.release);
+      }, index * 260);
+      rLater(function(){
+        var chip = $('.ch4-resource[data-res="' + id + '"]');
+        if(chip){ chip.classList.add('is-released'); }
+      }, index * 260 + 190);
+    });
+    rLater(function(){
+      rLog('ok', '栈帧弹出，0 泄漏');
+      $('#ch4-raii-state').textContent = '作用域结束';
+      $('#ch4-raii-frame').classList.add('is-closing');
+      $('#ch4-raii-enter').disabled = false;
+      $('#ch4-raii-enter').textContent = '重新演示';
+      $('#ch4-raii-hint').textContent = '所有资源已恢复；切换清理方式，观察同一出口的差异。';
+      rState.busy = false;
+    }, 620);
+  }
+  function exitRaii(path){
+    if(rState.phase !== 'ready' || rState.busy){ return; }
+    rState.busy = true;
+    setExitButtons(false);
+    $('#ch4-raii-enter').disabled = true;
+    var early = path !== 'normal';
+    var btn = $('[data-exit="' + path + '"]');
+    var state = btn ? btn.querySelector('.ch4-exit-state') : null;
+    if(early){
+      rLog('info', path === 'sensor' ? 'sensor_ok() 返回 false，提前 return' : 'CRC 校验失败，提前 return');
+    } else {
+      rLog('info', '两条校验通过，return true');
+    }
+    if(rState.mode === 'manual' && early){
+      if(btn){ btn.classList.add('is-bad'); }
+      if(state){ state.textContent = '资源未恢复'; }
+      $$('.ch4-resource').forEach(function(chip){ chip.classList.add('is-leaked'); });
+      $('#ch4-raii-frame').classList.add('is-leaked');
+      $('#ch4-raii-state').textContent = '提前返回 · 资源泄漏';
+      rLog('bad', '函数已经返回：CS 仍为低，IRQ 仍关闭');
+      $('#ch4-raii-hint').textContent = '手工 return 的漏洞：清理代码在函数尾部，提前 return 根本没有执行到。';
+      rState.busy = false;
+      return;
+    }
+    if(btn){ btn.classList.add('is-ok'); }
+    if(state){ state.textContent = '已恢复'; }
+    if(rState.mode === 'raii'){
+      if(early){ rLog('info', '作用域结束 → 编译器插入析构调用，不需要手写 cleanup'); }
+      releaseRaii('析构');
+    } else if(rState.mode === 'goto'){
+      rLog('info', 'goto cleanup → 汇合到统一清理块');
+      releaseRaii('手工清理');
+    } else {
+      releaseRaii('手工清理');
+    }
+  }
+  $$('#ch4-raii-exits .ch4-exit').forEach(function(b){
+    b.addEventListener('click', function(){ exitRaii(b.getAttribute('data-exit')); });
+  });
+  $('#ch4-raii-enter').addEventListener('click', enterRaii);
+  $('#ch4-raii-reset').addEventListener('click', raiiReset);
+  $$('[data-raii-mode]').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('[data-raii-mode]').forEach(function(x){ x.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      rState.mode = b.getAttribute('data-raii-mode');
+      raiiReset();
+    });
+  });
+
+  /* ---------------- shared log helper ---------------- */
+  function logTo(id, kind, msg){
+    var log = $('#' + id);
+    if(!log){ return; }
+    var line = document.createElement('div');
+    line.className = 'ch4-log-line ' + (kind || 'info');
+    var arrow = document.createElement('span');
+    arrow.className = 't';
+    arrow.textContent = '›';
+    var text = document.createElement('span');
+    text.textContent = msg;
+    line.appendChild(arrow);
+    line.appendChild(text);
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  /* ---------------- scene 2: reusable guards ---------------- */
+  var guardData = {
+    irq: {
+      code:
+        '<span class="kw">class</span> <span class="ty">IrqLock</span> {\n' +
+        '<span class="kw">public</span>:\n' +
+        '    <span class="ty">IrqLock</span>() : primask_(__get_PRIMASK()) {\n' +
+        '        __disable_irq();\n' +
+        '    }\n' +
+        '    ~<span class="ty">IrqLock</span>() { __set_PRIMASK(primask_); }\n\n' +
+        '    <span class="ty">IrqLock</span>(<span class="kw">const</span> <span class="ty">IrqLock</span>&amp;) = <span class="kw">delete</span>;\n' +
+        '    <span class="ty">IrqLock</span>&amp; <span class="kw">operator</span>=(<span class="kw">const</span> <span class="ty">IrqLock</span>&amp;) = <span class="kw">delete</span>;\n' +
+        '<span class="kw">private</span>:\n' +
+        '    <span class="ty">uint32_t</span> primask_;\n' +
+        '};\n\n' +
+        '<span class="kw">void</span> <span class="fn">critical_update</span>() {\n' +
+        '    <span class="ty">IrqLock</span> lock;          <span class="cm">// 进入即关中断</span>\n' +
+        '    shared_state.update();  <span class="cm">// 任意提前 return 都会恢复</span>\n' +
+        '}                           <span class="cm">// 析构 → 恢复进入前的 PRIMASK</span>',
+      note: '<b>关键在“保存并恢复”：</b>使用 <code>__set_PRIMASK(primask_)</code> 而不是无条件 <code>__enable_irq()</code>。嵌套临界区时，内层析构不会把外层还没结束的中断提前打开。临界区要短，守卫只负责配对，不负责缩短。'
+    },
+    spi: {
+      code:
+        '<span class="kw">class</span> <span class="ty">SpiTransaction</span> {\n' +
+        '<span class="kw">public</span>:\n' +
+        '    <span class="ty">SpiTransaction</span>(<span class="ty">SpiBus</span>&amp; bus, <span class="ty">GpioPin</span>&amp; cs)\n' +
+        '        : bus_(bus), cs_(cs) {\n' +
+        '        bus_.claim();       <span class="cm">// 单主设备：claim 不会失败</span>\n' +
+        '        cs_.low();\n' +
+        '    }\n' +
+        '    ~<span class="ty">SpiTransaction</span>() {\n' +
+        '        cs_.high();         <span class="cm">// 先放片选</span>\n' +
+        '        bus_.release();     <span class="cm">// 再释放总线</span>\n' +
+        '    }\n' +
+        '    <span class="ty">SpiTransaction</span>(<span class="kw">const</span> <span class="ty">SpiTransaction</span>&amp;) = <span class="kw">delete</span>;\n' +
+        '<span class="kw">private</span>:\n' +
+        '    <span class="ty">SpiBus</span>&amp; bus_;\n' +
+        '    <span class="ty">GpioPin</span>&amp; cs_;\n' +
+        '};\n\n' +
+        '<span class="kw">void</span> <span class="fn">read_chip_id</span>() {\n' +
+        '    <span class="ty">SpiTransaction</span> t(spi, cs);   <span class="cm">// 占资源</span>\n' +
+        '    chip.read_id();               <span class="cm">// 失败/返回都自动释放</span>\n' +
+        '}',
+      note: '<b>顺序是释放契约的一部分：</b>先拉高 CS，再释放总线。禁止拷贝，避免两个对象析构同一个资源。若 <code>claim()</code> 可能失败（多主设备），不要硬塞进构造函数，改用上一节的两段式 <code>begin()</code>。'
+    },
+    scope: {
+      code:
+        '<span class="kw">class</span> <span class="ty">ScopeExit</span> {\n' +
+        '<span class="kw">public</span>:\n' +
+        '    <span class="kw">using</span> <span class="ty">Fn</span> = <span class="kw">void</span>(*)(<span class="kw">void</span>*);\n' +
+        '    <span class="ty">ScopeExit</span>(<span class="ty">Fn</span> fn, <span class="kw">void</span>* ctx) : fn_(fn), ctx_(ctx) {}\n' +
+        '    ~<span class="ty">ScopeExit</span>() { <span class="kw">if</span> (fn_) fn_(ctx_); }\n' +
+        '    <span class="kw">void</span> dismiss() { fn_ = <span class="kw">nullptr</span>; }\n' +
+        '<span class="kw">private</span>:\n' +
+        '    <span class="ty">Fn</span> fn_;\n' +
+        '    <span class="kw">void</span>* ctx_;\n' +
+        '};\n\n' +
+        '<span class="kw">void</span> <span class="fn">dma_start</span>(<span class="ty">Dma</span>&amp; d) {\n' +
+        '    d.enable();\n' +
+        '    <span class="ty">ScopeExit</span> undo([](<span class="kw">void</span>* p) {\n' +
+        '        <span class="kw">static_cast</span>&lt;<span class="ty">Dma</span>*&gt;(p)-&gt;disable();\n' +
+        '    }, &amp;d);\n' +
+        '    <span class="kw">if</span> (!d.configure()) <span class="kw">return</span>;  <span class="cm">// 失败自动回滚</span>\n' +
+        '    undo.dismiss();                 <span class="cm">// 成功：保留配置</span>\n' +
+        '}',
+      note: '<b>这是“反向清理”的通用包装：</b>构造时登记 undo，析构时执行；成功就 <code>dismiss()</code>。无捕获 lambda 才能退化为函数指针，从而让每个使用点共享一份代码。模板版会按 lambda 类型实例化，方便但增加 Flash。'
+    }
+  };
+  function renderGuard(id){
+    var data = guardData[id];
+    if(!data){ return; }
+    $('#ch4-guard-code').innerHTML = data.code;
+    $('#ch4-guard-note').innerHTML = data.note;
+    $$('[data-guard]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-guard') === id); });
+  }
+  $$('[data-guard]').forEach(function(b){
+    b.addEventListener('click', function(){ renderGuard(b.getAttribute('data-guard')); });
+  });
+
+  /* ---------------- scene 2: constructor failure lab ---------------- */
+  var ctorCodes = {
+    bad:
+      '<span class="kw">class</span> <span class="ty">SpiTransaction</span> {\n' +
+      '<span class="kw">public</span>:\n' +
+      '    <span class="ty">SpiTransaction</span>(<span class="ty">SpiBus</span>&amp; bus) : bus_(bus) {\n' +
+      '        <span class="kw">if</span> (!bus_.claim()) {\n' +
+      '            <span class="kw">return</span>;           <span class="cm">// 构造仍算“完成”</span>\n' +
+      '        }\n' +
+      '        active_ = <span class="kw">true</span>;\n' +
+      '    }\n' +
+      '    ~<span class="ty">SpiTransaction</span>() { <span class="kw">if</span> (active_) bus_.release(); }\n' +
+      '    <span class="cm">// ❌ 没有 ok() / 错误码，调用方无从判断</span>\n' +
+      '<span class="kw">private</span>:\n' +
+      '    <span class="ty">SpiBus</span>&amp; bus_;\n' +
+      '    <span class="kw">bool</span> active_ = <span class="kw">false</span>;\n' +
+      '};\n\n' +
+      '<span class="ty">SpiTransaction</span> t(spi);    <span class="cm">// claim 失败也“成功构造”</span>\n' +
+      't.transfer(tx, rx, n);      <span class="cm">// 调用方继续用 → 总线冲突</span>',
+    good:
+      '<span class="kw">class</span> <span class="ty">SpiTransaction</span> {\n' +
+      '<span class="kw">public</span>:\n' +
+      '    <span class="ty">SpiTransaction</span>(<span class="ty">SpiBus</span>&amp; bus, <span class="ty">GpioPin</span>&amp; cs)\n' +
+      '        : bus_(bus), cs_(cs) {}      <span class="cm">// 只保存引用，不碰硬件</span>\n\n' +
+      '    <span class="kw">bool</span> <span class="fn">begin</span>() {                  <span class="cm">// 可能失败 → 显式报告</span>\n' +
+      '        <span class="kw">if</span> (!bus_.claim()) <span class="kw">return false</span>;\n' +
+      '        cs_.low();\n' +
+      '        active_ = <span class="kw">true</span>;\n' +
+      '        <span class="kw">return true</span>;\n' +
+      '    }\n' +
+      '    ~<span class="ty">SpiTransaction</span>() { end(); }\n' +
+      '    <span class="kw">void</span> <span class="fn">end</span>() {\n' +
+      '        <span class="kw">if</span> (!active_) <span class="kw">return</span>;\n' +
+      '        cs_.high();\n' +
+      '        bus_.release();\n' +
+      '        active_ = <span class="kw">false</span>;\n' +
+      '    }\n' +
+      '<span class="kw">private</span>:\n' +
+      '    <span class="ty">SpiBus</span>&amp; bus_;\n' +
+      '    <span class="ty">GpioPin</span>&amp; cs_;\n' +
+      '    <span class="kw">bool</span> active_ = <span class="kw">false</span>;\n' +
+      '};\n\n' +
+      '<span class="ty">SpiTransaction</span> t(spi, cs);\n' +
+      '<span class="kw">if</span> (!t.begin()) <span class="kw">return</span> ERR_BUS;  <span class="cm">// 明确失败，资源未占</span>'
+  };
+  var ctorState = { design: 'bad', busy: false };
+  var cTimers = [];
+  function cLater(fn, ms){ cTimers.push(setTimeout(fn, ms)); }
+  function clearCTimers(){ cTimers.forEach(clearTimeout); cTimers = []; }
+  function ctorBox(id, cls, state){
+    var box = $('#' + id);
+    box.classList.remove('is-on', 'is-ok', 'is-fail');
+    if(cls){ box.classList.add(cls); }
+    var st = box.querySelector('.ch4-box-state');
+    if(st){ st.textContent = state; }
+  }
+  function setCtorBusy(busy){
+    ctorState.busy = busy;
+    ['#ch4-ctor-fail', '#ch4-ctor-normal', '#ch4-ctor-reset'].forEach(function(sel){ $(sel).disabled = busy; });
+  }
+  function renderCtorDesign(){
+    $('#ch4-ctor-code').innerHTML = ctorCodes[ctorState.design];
+    $$('[data-ctor]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-ctor') === ctorState.design); });
+  }
+  function ctorReset(){
+    clearCTimers();
+    setCtorBusy(false);
+    ctorBox('ch4-ctor-caller', '', '等待');
+    ctorBox('ch4-ctor-object', '', '未构造');
+    ctorBox('ch4-ctor-bus', '', '空闲');
+    var result = $('#ch4-ctor-result');
+    result.className = 'ch4-ctor-result';
+    result.textContent = '选择一种设计，然后触发一次总线申请失败。';
+    $('#ch4-ctor-log').innerHTML = '';
+  }
+  function runCtor(kind){
+    if(ctorState.busy){ return; }
+    clearCTimers();
+    $('#ch4-ctor-log').innerHTML = '';
+    ctorBox('ch4-ctor-caller', '', '等待');
+    ctorBox('ch4-ctor-object', '', '未构造');
+    ctorBox('ch4-ctor-bus', '', '空闲');
+    var result = $('#ch4-ctor-result');
+    result.className = 'ch4-ctor-result';
+    result.textContent = '运行中……';
+    setCtorBusy(true);
+    var bad = ctorState.design === 'bad';
+    var fail = kind === 'fail';
+    ctorBox('ch4-ctor-caller', 'is-on', bad ? '构造对象' : '构造 + begin()');
+
+    cLater(function(){
+      ctorBox('ch4-ctor-object', 'is-on', bad ? '构造体执行' : '已构造 · 未申请');
+      logTo('ch4-ctor-log', 'info', bad ? '进入构造函数体，成员已初始化' : '构造只保存引用，不访问总线');
+    }, 220);
+
+    cLater(function(){
+      if(fail){
+        ctorBox('ch4-ctor-bus', 'is-fail', 'claim() → false');
+        if(bad){
+          ctorBox('ch4-ctor-object', 'is-fail', '已构造 · 未激活');
+          ctorBox('ch4-ctor-caller', 'is-on', '继续 transfer()');
+          logTo('ch4-ctor-log', 'bad', 'claim 失败，构造函数提前 return；对象仍然“构造完成”');
+        } else {
+          ctorBox('ch4-ctor-object', 'is-fail', 'begin() → false');
+          ctorBox('ch4-ctor-caller', 'is-ok', '收到 ERR_BUS');
+          logTo('ch4-ctor-log', 'ok', 'begin() 返回 false；CS 未拉低，总线未占用');
+        }
+      } else {
+        ctorBox('ch4-ctor-bus', 'is-ok', 'acquired');
+        ctorBox('ch4-ctor-object', 'is-ok', bad ? '已激活' : 'active_ = true');
+        ctorBox('ch4-ctor-caller', 'is-ok', '可以传输');
+        logTo('ch4-ctor-log', 'ok', bad ? 'claim 成功，active_ = true' : 'begin() 返回 true，资源就绪');
+      }
+    }, 520);
+
+    cLater(function(){
+      if(fail && bad){
+        result.className = 'ch4-ctor-result is-bad';
+        result.innerHTML = '<b>失败被静默吞掉：</b>对象“存在”但不可用，调用方没有错误码可查，继续发起传输就可能撞上别的总线主设备。析构当然会执行，但 <code>active_ = false</code>，它没东西可释放。';
+        logTo('ch4-ctor-log', 'bad', '问题不是“析构没跑”，而是“失败不可见 + 半初始化状态”');
+      } else if(fail){
+        result.className = 'ch4-ctor-result is-ok';
+        result.innerHTML = '<b>失败可见且无泄漏：</b><code>begin()</code> 返回 false，资源没有被占用；对象析构时 <code>active_ = false</code>，不会误释放。调用方可以重试、降级或上报。';
+        logTo('ch4-ctor-log', 'ok', '作用域结束：end() 检查 active_，安全返回');
+      } else if(bad){
+        result.className = 'ch4-ctor-result is-ok';
+        result.innerHTML = '<b>成功路径当然能跑：</b>问题在失败路径。这个设计把“构造完成”和“资源就绪”混为一谈；一旦 claim 失败，调用方没有任何信号。';
+        logTo('ch4-ctor-log', 'info', '正常路径无法暴露失败设计的问题');
+      } else {
+        result.className = 'ch4-ctor-result is-ok';
+        result.innerHTML = '<b>两段式成功：</b><code>begin()</code> 明确返回 true；作用域结束时析构自动 <code>end()</code>。构造与资源获取分离，每一步都可报告结果。';
+        logTo('ch4-ctor-log', 'ok', 'begin() 成功；离开作用域自动 end()');
+      }
+      setCtorBusy(false);
+    }, 900);
+  }
+  $$('[data-ctor]').forEach(function(b){
+    b.addEventListener('click', function(){
+      ctorState.design = b.getAttribute('data-ctor');
+      renderCtorDesign();
+      ctorReset();
+    });
+  });
+  $('#ch4-ctor-fail').addEventListener('click', function(){ runCtor('fail'); });
+  $('#ch4-ctor-normal').addEventListener('click', function(){ runCtor('normal'); });
+  $('#ch4-ctor-reset').addEventListener('click', ctorReset);
+
+  /* ---------------- scene 3: vtable anatomy ---------------- */
+  var vtData = {
+    fake: {
+      name: 'FakeSensor',
+      size: 'sizeof = 4 B',
+      bytes: [
+        { cls: 'is-vptr', label: 'vptr', value: '4 B' }
+      ],
+      slots: [
+        { fn: 'FakeSensor::~FakeSensor', kind: '析构' },
+        { fn: 'FakeSensor::read', kind: 'virtual' },
+        { fn: 'FakeSensor::ready', kind: 'virtual' },
+        { fn: 'FakeSensor::name', kind: 'virtual' }
+      ],
+      code:
+        '<span class="kw">struct</span> <span class="ty">ITempSensor</span> {\n' +
+        '    <span class="kw">virtual</span> ~<span class="ty">ITempSensor</span>() = <span class="kw">default</span>;\n' +
+        '    <span class="kw">virtual</span> <span class="kw">bool</span> <span class="fn">read</span>(<span class="kw">float</span>* out) = <span class="nu">0</span>;\n' +
+        '    <span class="kw">virtual</span> <span class="kw">bool</span> <span class="fn">ready</span>() <span class="kw">const</span> = <span class="nu">0</span>;\n' +
+        '    <span class="kw">virtual</span> <span class="kw">const char</span>* <span class="fn">name</span>() <span class="kw">const</span> = <span class="nu">0</span>;\n' +
+        '};\n\n' +
+        '<span class="kw">class</span> <span class="ty">FakeSensor</span> <span class="kw">final</span> : <span class="kw">public</span> <span class="ty">ITempSensor</span> {\n' +
+        '<span class="kw">public</span>:\n' +
+        '    <span class="kw">bool</span> <span class="fn">read</span>(<span class="kw">float</span>* out) <span class="kw">override</span> { *out = <span class="nu">25.0f</span>; <span class="kw">return true</span>; }\n' +
+        '    <span class="kw">bool</span> <span class="fn">ready</span>() <span class="kw">const override</span> { <span class="kw">return true</span>; }\n' +
+        '    <span class="kw">const char</span>* <span class="fn">name</span>() <span class="kw">const override</span> { <span class="kw">return</span> <span class="st">"FakeSensor"</span>; }\n' +
+        '};\n\n' +
+        '<span class="cm">// 无数据成员：对象里只有隐藏的 vptr</span>',
+      direct: '编译器看到 <span class="ty">FakeSensor</span> 是 <code>final</code>，直接生成 <code>bl FakeSensor::read</code>（还可能内联）；不读 vptr、不查表。'
+    },
+    real: {
+      name: 'Ds18b20',
+      size: 'sizeof = 12 B',
+      bytes: [
+        { cls: 'is-vptr', label: 'vptr', value: '4 B' },
+        { label: 'wire_', value: '4 B' },
+        { label: 'pin_', value: '1 B' },
+        { label: 'ready_', value: '1 B' },
+        { cls: 'is-pad', label: 'pad', value: '2 B' }
+      ],
+      slots: [
+        { fn: 'Ds18b20::~Ds18b20', kind: '析构' },
+        { fn: 'Ds18b20::read', kind: 'virtual' },
+        { fn: 'Ds18b20::ready', kind: 'virtual' },
+        { fn: 'Ds18b20::name', kind: 'virtual' }
+      ],
+      code:
+        '<span class="kw">struct</span> <span class="ty">ITempSensor</span> {\n' +
+        '    <span class="kw">virtual</span> ~<span class="ty">ITempSensor</span>() = <span class="kw">default</span>;\n' +
+        '    <span class="kw">virtual</span> <span class="kw">bool</span> <span class="fn">read</span>(<span class="kw">float</span>* out) = <span class="nu">0</span>;\n' +
+        '    <span class="kw">virtual</span> <span class="kw">bool</span> <span class="fn">ready</span>() <span class="kw">const</span> = <span class="nu">0</span>;\n' +
+        '    <span class="kw">virtual</span> <span class="kw">const char</span>* <span class="fn">name</span>() <span class="kw">const</span> = <span class="nu">0</span>;\n' +
+        '};\n\n' +
+        '<span class="kw">class</span> <span class="ty">Ds18b20</span> <span class="kw">final</span> : <span class="kw">public</span> <span class="ty">ITempSensor</span> {\n' +
+        '<span class="kw">public</span>:\n' +
+        '    <span class="ty">Ds18b20</span>(<span class="ty">OneWire</span>&amp; wire, <span class="ty">uint8_t</span> pin)\n' +
+        '        : wire_(wire), pin_(pin) {}\n' +
+        '    <span class="kw">bool</span> <span class="fn">read</span>(<span class="kw">float</span>* out) <span class="kw">override</span>;\n' +
+        '    <span class="kw">bool</span> <span class="fn">ready</span>() <span class="kw">const override</span> { <span class="kw">return</span> ready_; }\n' +
+        '    <span class="kw">const char</span>* <span class="fn">name</span>() <span class="kw">const override</span> { <span class="kw">return</span> <span class="st">"Ds18b20"</span>; }\n' +
+        '<span class="kw">private</span>:\n' +
+        '    <span class="ty">OneWire</span>&amp; wire_;     <span class="cm">// 32 位 ABI 上通常按指针存：4 B</span>\n' +
+        '    <span class="ty">uint8_t</span> pin_;      <span class="cm">// 1 B</span>\n' +
+        '    <span class="kw">bool</span> ready_ = <span class="kw">false</span>; <span class="cm">// 1 B + 2 B padding</span>\n' +
+        '};\n\n' +
+        '<span class="cm">// vptr 4 + 引用 4 + 1 + 1 + 对齐填充 2 = 12 B</span>',
+      direct: '编译器已知 <span class="ty">Ds18b20</span> 的具体类型且类为 <code>final</code>，可直接调用（或内联）；这是去虚化的机会，但不要假设一定发生。'
+    }
+  };
+  var vtState = { obj: 'fake', busy: false };
+  var vTimers = [];
+  function clearVTimers(){ vTimers.forEach(clearTimeout); vTimers = []; }
+
+  function renderVtable(){
+    var d = vtData[vtState.obj];
+    $('#ch4-vt-code').innerHTML = d.code;
+    $('#ch4-vt-object-name').textContent = d.name;
+    $('#ch4-vt-obj-size').textContent = d.size;
+    $('#ch4-vt-table-title').textContent = 'VT_' + d.name;
+    var bytes = d.bytes.map(function(b){
+      return '<div class="ch4-vt-byte ' + (b.cls || '') + '"><b>' + b.label + '</b><span>' + b.value + '</span></div>';
+    }).join('');
+    $('#ch4-vt-bytes').innerHTML = bytes;
+    var slots = d.slots.map(function(s, i){
+      return '<div class="ch4-vt-slot" data-slot="' + i + '"><span class="idx">[' + i + ']</span><span class="fn">' + s.fn + '</span><span class="kind">' + s.kind + '</span></div>';
+    }).join('');
+    $('#ch4-vt-slots').innerHTML = slots;
+    $$('[data-vt-obj]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-vt-obj') === vtState.obj); });
+    vtReset();
+  }
+  function vtReset(){
+    clearVTimers();
+    vtState.busy = false;
+    $('#ch4-vt-arrow').classList.remove('is-hit');
+    $$('#ch4-vt-slots .ch4-vt-slot').forEach(function(s){ s.classList.remove('is-hit'); });
+    $('#ch4-vt-call').innerHTML = '<span class="dim">// 选择“通过接口调用 read()”或“直接对象调用”，观察路径差异</span>';
+  }
+  function vtIndirect(){
+    if(vtState.busy){ return; }
+    vtReset();
+    vtState.busy = true;
+    var d = vtData[vtState.obj];
+    $('#ch4-vt-call').innerHTML = '<span class="dim">// t 是 ITempSensor*，静态类型不知道具体对象</span>';
+    vTimers.push(setTimeout(function(){
+      $('#ch4-vt-arrow').classList.add('is-hit');
+      $('#ch4-vt-call').innerHTML = '1/4 · 从对象首字读出 vptr → <span class="ok">VT_' + d.name + '</span>';
+    }, 240));
+    vTimers.push(setTimeout(function(){
+      var slot = $('#ch4-vt-slots [data-slot="1"]');
+      if(slot){ slot.classList.add('is-hit'); }
+      $('#ch4-vt-call').innerHTML = '2/4 · vptr + 偏移，取 read 槽 → <span class="ok">' + d.name + '::read</span>';
+    }, 620));
+    vTimers.push(setTimeout(function(){
+      $('#ch4-vt-call').innerHTML = '3/4 · 间接调用（blx）→ 执行具体实现<br><span class="ok">代价：多一次访存 + 一次间接跳转；换来运行期可替换</span><br><span class="dim">示意：真实 ABI 的表头通常还含 offset/typeinfo，析构可能占两个槽。</span>';
+      vtState.busy = false;
+    }, 1040));
+  }
+  function vtDirect(){
+    if(vtState.busy){ return; }
+    vtReset();
+    var d = vtData[vtState.obj];
+    $('#ch4-vt-call').innerHTML = '<span class="dim">// ' + d.name + ' fs; fs.read(&amp;v);</span>';
+    vTimers.push(setTimeout(function(){
+      $('#ch4-vt-call').innerHTML = '<span class="ok">直接调用 → ' + d.name + '::read</span><br>' + d.direct;
+    }, 380));
+  }
+  $$('[data-vt-obj]').forEach(function(b){
+    b.addEventListener('click', function(){
+      vtState.obj = b.getAttribute('data-vt-obj');
+      renderVtable();
+    });
+  });
+  $('#ch4-vt-call-btn').addEventListener('click', vtIndirect);
+  $('#ch4-vt-direct-btn').addEventListener('click', vtDirect);
+  $('#ch4-vt-reset').addEventListener('click', vtReset);
+
+  function updateVtCalc(){
+    var n = parseInt($('#ch4-vt-count').value, 10);
+    var vptr = n * 4;
+    var fp = n * 12;
+    var max = 500 * 12;
+    $('#ch4-vt-objcount').textContent = String(n);
+    $('#ch4-vt-virtual-val').textContent = vptr + ' B';
+    $('#ch4-vt-fp-val').textContent = fp + ' B';
+    $('#ch4-vt-virtual-bar').style.width = Math.max(2, vptr / max * 100) + '%';
+    $('#ch4-vt-fp-bar').style.width = Math.max(2, fp / max * 100) + '%';
+  }
+  $('#ch4-vt-count').addEventListener('input', updateVtCalc);
+
+  var trapOutput = {
+    base:
+      '<b>Base 子对象构造中</b><span class="big">Base::init()</span>' +
+      '此时 vptr 指向 <code>VT_Base</code>，虚调用只会落到 Base；Der 的成员还没有构造。' +
+      '<span class="warnline">若 Base::init 是纯虚函数：即使提供了定义，在构造/析构期间进行虚调用仍是未定义行为；裸机上常见表现是跳到 <code>__cxa_pure_virtual</code> 或空地址，最终 HardFault。</span>',
+    der:
+      '<b>Base 子对象完成，进入 Der 构造体</b><span class="big">Der::init()</span>' +
+      '进入 Der 构造体之前，vptr 已更新为 <code>VT_Der</code>，所以这里调用虚函数会分派到 Der。注意：Base 子对象已经按 Base 的行为构造完毕，不能用“派生类 override”去修正基类构造阶段做的事。',
+    done:
+      '<b>构造完成，动态类型才是 Der</b><span class="big">dispatcher → Der::init()</span>' +
+      '对象完全构造后，普通虚调用正常分派到 Der。析构时反过来：Der 析构后 vptr 回退到 Base，Base 析构中的虚调用不会再落到 Der。'
+  };
+  function renderTrap(id){
+    $('#ch4-trap-output').innerHTML = trapOutput[id] || trapOutput.base;
+    $$('[data-trap]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-trap') === id); });
+  }
+  $$('[data-trap]').forEach(function(b){
+    b.addEventListener('click', function(){ renderTrap(b.getAttribute('data-trap')); });
+  });
+
+  /* ---------------- scene 4: dependency injection ---------------- */
+  var diState = { mode: 'runtime', impl: 'real', busy: false };
+  var dTimers = [];
+  function clearDTimers(){ dTimers.forEach(clearTimeout); dTimers = []; }
+  var diRuntimeHead =
+    '<span class="kw">struct</span> <span class="ty">ITempSensor</span> {\n' +
+    '    <span class="kw">virtual</span> ~<span class="ty">ITempSensor</span>() = <span class="kw">default</span>;\n' +
+    '    <span class="kw">virtual</span> <span class="kw">bool</span> <span class="fn">read</span>(<span class="kw">float</span>* out) = <span class="nu">0</span>;\n' +
+    '};\n\n' +
+    '<span class="kw">class</span> <span class="ty">Monitor</span> {\n' +
+    '<span class="kw">public</span>:\n' +
+    '    <span class="kw">explicit</span> <span class="ty">Monitor</span>(<span class="ty">ITempSensor</span>&amp; s) : sensor_(s) {}\n' +
+    '    <span class="ty">Status</span> <span class="fn">poll</span>() {\n' +
+    '        <span class="kw">float</span> t;\n' +
+    '        <span class="kw">if</span> (!sensor_.<span class="fn">read</span>(&amp;t)) <span class="kw">return</span> Status::SensorFault;\n' +
+    '        <span class="kw">if</span> (t &lt; <span class="nu">-40.f</span> || t &gt; <span class="nu">85.f</span>) <span class="kw">return</span> Status::OutOfRange;\n' +
+    '        <span class="kw">return</span> <span class="fn">publish</span>(t);\n' +
+    '    }\n' +
+    '<span class="kw">private</span>:\n' +
+    '    <span class="ty">ITempSensor</span>&amp; sensor_;      <span class="cm">// 只依赖能力</span>\n' +
+    '};\n\n' +
+    '<span class="cm">// 组合根：唯一知道具体类型的地方</span>\n';
+  var diRuntimeReal = '<span class="ty">Ds18b20</span> ds(wire, PIN_PG12);\n<span class="ty">Monitor</span> monitor(ds);';
+  var diRuntimeFake = '<span class="ty">FakeSensor</span> sensor;      <span class="cm">// 固定 25.0 °C</span>\n<span class="ty">Monitor</span> monitor(sensor);';
+  var diCompileHead =
+    '<span class="kw">template</span> &lt;<span class="kw">class</span> <span class="ty">Sensor</span>&gt;\n' +
+    '<span class="kw">class</span> <span class="ty">Monitor</span> {\n' +
+    '<span class="kw">public</span>:\n' +
+    '    <span class="kw">explicit</span> <span class="ty">Monitor</span>(<span class="ty">Sensor</span>&amp; s) : sensor_(s) {}\n' +
+    '    <span class="ty">Status</span> <span class="fn">poll</span>() { ... }   <span class="cm">// 静态分派，可内联</span>\n' +
+    '<span class="kw">private</span>:\n' +
+    '    <span class="ty">Sensor</span>&amp; sensor_;\n' +
+    '};\n\n' +
+    '<span class="cm">// 换实现 = 换模板实参；实例化在编译期固定</span>\n';
+  var diCompileReal = '<span class="ty">Ds18b20</span> ds(wire, PIN_PG12);\n<span class="ty">Monitor</span>&lt;<span class="ty">Ds18b20</span>&gt; monitor(ds);';
+  var diCompileFake = '<span class="ty">FakeSensor</span> sensor;\n<span class="ty">Monitor</span>&lt;<span class="ty">FakeSensor</span>&gt; monitor(sensor);';
+
+  function diCode(){
+    if(diState.mode === 'runtime'){
+      return diRuntimeHead + (diState.impl === 'fake' ? diRuntimeFake : diRuntimeReal);
+    }
+    return diCompileHead + (diState.impl === 'fake' ? diCompileFake : diCompileReal);
+  }
+  function renderDI(){
+    var runtime = diState.mode === 'runtime';
+    var fake = diState.impl === 'fake';
+    $('#ch4-di-code').innerHTML = diCode();
+    $('#ch4-di-iface-name').textContent = runtime ? 'ITempSensor' : 'Monitor<Sensor>';
+    $('#ch4-di-iface-code').textContent = runtime ? 'virtual bool read(float*) = 0;' : 'Sensor 由模板实参固定';
+    var ifaceSmall = $('#ch4-di-iface small');
+    if(ifaceSmall){ ifaceSmall.textContent = runtime ? '接口' : '模板参数'; }
+    $('#ch4-di-wire1 span').textContent = runtime ? '依赖' : '静态依赖';
+    $('#ch4-di-wire2 span').textContent = runtime ? '实现' : '实例化';
+    $$('[data-di-mode]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-di-mode') === diState.mode); });
+    $$('[data-impl]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-impl') === diState.impl); });
+    var status = $('#ch4-di-status');
+    if(runtime && !fake){
+      status.innerHTML = '<b>量产接线：</b>Monitor 依赖 ITempSensor，具体实现是 Ds18b20。业务代码不需要知道 OneWire 细节；换传感器只改组合根。';
+    } else if(runtime && fake){
+      status.innerHTML = '<b>测试接线：</b>同一份 Monitor 源码注入 FakeSensor，业务逻辑在主机上就能跑；不需要开发板、不需要真实时序。';
+    } else if(!fake){
+      status.innerHTML = '<b>编译期接线：</b>Monitor&lt;Ds18b20&gt; 没有 vptr、调用可内联；但换实现必须改模板实参并重新编译，主机测试要另建一份 Monitor&lt;FakeSensor&gt;。';
+    } else {
+      status.innerHTML = '<b>编译期测试接线：</b>Monitor&lt;FakeSensor&gt; 可在主机测试，零间接调用；目标固件若仍用 Ds18b20，仍是另一个实例化。';
+    }
+    clearDTimers();
+    diState.busy = false;
+    $('#ch4-di-test-btn').disabled = false;
+    $('#ch4-di-test-btn').textContent = '运行主机测试';
+    $('#ch4-di-test').innerHTML = '$ ctest -R monitor\n' + (diState.impl === 'fake'
+      ? '<span class="dim">等待运行：FakeSensor 直接返回固定温度，不需要开发板</span>'
+      : '<span class="dim">当前是 Ds18b20：主机测试未实例化它；可切到 FakeSensor 再跑</span>');
+  }
+  function diTestLines(){
+    var runtime = diState.mode === 'runtime';
+    var fake = diState.impl === 'fake';
+    if(runtime && fake){
+      return [
+        '$ ctest -R monitor',
+        '<span class="dim">[ RUN      ] monitor.fake_25c</span>',
+        'poll() → <span class="ok">25.0 °C · within range</span>',
+        'publish(t) → <span class="ok">ok</span>',
+        '<span class="dim">[       OK ] monitor.fake_25c (0 ms)</span>',
+        '<span class="ok">1 test passed · 0 failed</span>'
+      ];
+    }
+    if(runtime && !fake){
+      return [
+        '$ ctest -R monitor',
+        '<span class="dim">host build: Ds18b20 依赖板级 OneWire HAL</span>',
+        '<span class="bad">[SKIP] 未在主机测试中实例化具体驱动</span>',
+        '<span class="dim">换 FakeSensor 后，同一份 Monitor 可直接跑</span>'
+      ];
+    }
+    if(fake){
+      return [
+        '$ ctest -R monitor',
+        '<span class="dim">Monitor&lt;FakeSensor&gt; · 静态分派，可内联</span>',
+        'poll() → <span class="ok">25.0 °C · publish ok</span>',
+        '<span class="ok">1 test passed</span>',
+        '<span class="dim">注意：这里验证的是 Monitor&lt;FakeSensor&gt;，不是目标固件里的 Monitor&lt;Ds18b20&gt;</span>'
+      ];
+    }
+    return [
+      '$ ctest -R monitor',
+      '<span class="dim">目标构建：Monitor&lt;Ds18b20&gt; 已实例化</span>',
+      '<span class="bad">host ctest: 未覆盖具体驱动</span>',
+      '<span class="dim">编译期注入的代价：测试替身是另一份实例化</span>'
+    ];
+  }
+  function runDITest(){
+    if(diState.busy){ return; }
+    clearDTimers();
+    diState.busy = true;
+    var btn = $('#ch4-di-test-btn');
+    btn.disabled = true;
+    btn.textContent = '运行中…';
+    var term = $('#ch4-di-test');
+    term.innerHTML = '';
+    var lines = diTestLines();
+    lines.forEach(function(line, i){
+      dTimers.push(setTimeout(function(){
+        term.innerHTML += line + '\n';
+      }, 220 * (i + 1)));
+    });
+    dTimers.push(setTimeout(function(){
+      diState.busy = false;
+      btn.disabled = false;
+      btn.textContent = '再跑一次';
+    }, 220 * (lines.length + 1)));
+  }
+  $$('[data-di-mode]').forEach(function(b){
+    b.addEventListener('click', function(){
+      diState.mode = b.getAttribute('data-di-mode');
+      renderDI();
+    });
+  });
+  $$('[data-impl]').forEach(function(b){
+    b.addEventListener('click', function(){
+      diState.impl = b.getAttribute('data-impl');
+      renderDI();
+    });
+  });
+  $('#ch4-di-test-btn').addEventListener('click', runDITest);
+  $('#ch4-di-test-reset').addEventListener('click', function(){
+    clearDTimers();
+    diState.busy = false;
+    $('#ch4-di-test-btn').disabled = false;
+    $('#ch4-di-test-btn').textContent = '运行主机测试';
+    $('#ch4-di-test').innerHTML = '$ ctest -R monitor\n' + (diState.impl === 'fake'
+      ? '<span class="dim">等待运行：FakeSensor 直接返回固定温度，不需要开发板</span>'
+      : '<span class="dim">当前是 Ds18b20：主机测试未实例化它；可切到 FakeSensor 再跑</span>');
+  });
+
+  /* ---------------- scene 5: boot order ---------------- */
+  var bootData = {
+    A: {
+      code:
+        '<span class="cm">// sensor.cpp</span>\n' +
+        '<span class="ty">Sensor</span> g_sensor;               <span class="cm">// 构造函数里初始化 I2C</span>\n' +
+        '<span class="ty">Monitor</span> g_monitor(g_sensor);\n\n' +
+        '<span class="kw">int</span> <span class="fn">main</span>() {\n' +
+        '    <span class="fn">board_init</span>();              <span class="cm">// 时钟/引脚到这里才就绪</span>\n' +
+        '    <span class="fn">app_run</span>();\n' +
+        '}',
+      step3: 'g_sensor 构造访问 I2C：时钟未开 → 卡死/总线错误',
+      ok: false
+    },
+    B: {
+      code:
+        '<span class="ty">Sensor</span> g_sensor;               <span class="cm">// 只存配置，不碰硬件</span>\n' +
+        '<span class="ty">Monitor</span> g_monitor(g_sensor);\n\n' +
+        '<span class="kw">int</span> <span class="fn">main</span>() {\n' +
+        '    <span class="fn">board_init</span>();              <span class="cm">// 先让硬件就绪</span>\n' +
+        '    <span class="kw">if</span> (!g_sensor.<span class="fn">begin</span>()) <span class="fn">fatal</span>(ERR_SENSOR);\n' +
+        '    <span class="kw">if</span> (!g_monitor.<span class="fn">begin</span>()) <span class="fn">fatal</span>(ERR_MONITOR);\n' +
+        '    <span class="fn">app_run</span>();\n' +
+        '}',
+      step3: '只保存引用/配置；不访问任何硬件',
+      ok: true
+    },
+    C: {
+      code:
+        '<span class="cm">// 编译期配置：不产生动态初始化</span>\n' +
+        '<span class="kw">constexpr</span> <span class="ty">Config</span> kCfg = <span class="fn">make_config</span>();\n' +
+        '<span class="ty">Sensor</span> g_sensor{kCfg};        <span class="cm">// 只保存常量</span>\n' +
+        '<span class="ty">Monitor</span> g_monitor(g_sensor);\n\n' +
+        '<span class="kw">int</span> <span class="fn">main</span>() {\n' +
+        '    <span class="fn">board_init</span>();\n' +
+        '    <span class="kw">if</span> (!g_sensor.<span class="fn">begin</span>()) <span class="fn">fatal</span>(ERR_SENSOR);\n' +
+        '    <span class="fn">app_run</span>();\n' +
+        '}',
+      step3: '常量初始化；硬件访问推迟到 begin()',
+      ok: true
+    }
+  };
+  var bootState = { plan: 'A', busy: false };
+  var bTimers = [];
+  function clearBTimers(){ bTimers.forEach(clearTimeout); bTimers = []; }
+  function setBootStatus(kind, html){
+    var el = $('#ch4-boot-status');
+    el.className = 'ch4-boot-status' + (kind ? ' is-' + kind : '');
+    el.innerHTML = html;
+  }
+  function bootReset(){
+    clearBTimers();
+    bootState.busy = false;
+    $$('#ch4-boot-timeline .ch4-tl-item').forEach(function(item){ item.classList.remove('is-active', 'is-ok', 'is-fail'); });
+    setBootStatus('', '选择方案后点“运行启动”，观察在哪一步触碰硬件。');
+    $('#ch4-boot-run').disabled = false;
+    $('#ch4-boot-run').textContent = '运行启动';
+  }
+  function renderBoot(){
+    var d = bootData[bootState.plan];
+    $('#ch4-boot-code').innerHTML = d.code;
+    var step3 = $('#ch4-boot-timeline [data-boot-step="3"] small');
+    if(step3){ step3.textContent = d.step3; }
+    $$('[data-boot-plan]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-boot-plan') === bootState.plan); });
+    bootReset();
+  }
+  function runBoot(){
+    if(bootState.busy){ return; }
+    bootReset();
+    bootState.busy = true;
+    $('#ch4-boot-run').disabled = true;
+    $('#ch4-boot-run').textContent = '运行中…';
+    setBootStatus('', '运行中……');
+    var plan = bootState.plan;
+    var d = bootData[plan];
+    var items = $$('#ch4-boot-timeline .ch4-tl-item');
+    var seq = plan === 'A' ? [0, 1, 2, 3] : [0, 1, 2, 3, 4, 5, 6];
+    var idx = 0;
+    function finish(ok){
+      bootState.busy = false;
+      $('#ch4-boot-run').disabled = false;
+      $('#ch4-boot-run').textContent = '运行启动';
+      if(ok){
+        if(plan === 'A'){
+          setBootStatus('bad', '<b>在全局对象构造阶段失败：</b>应用级时钟、引脚、I2C 尚未初始化。表现通常是上电偶发卡死或 HardFault，复位后不一定复现。修法：全局对象只做平凡初始化，硬件操作移到 <code>begin()</code>。');
+        } else if(plan === 'B'){
+          setBootStatus('ok', '<b>全部通过：</b>硬件初始化集中在 <code>board_init()</code>，<code>begin()</code> 在它之后执行；失败可以返回错误码并安全停机。');
+        } else {
+          setBootStatus('ok', '<b>全部通过：</b>配置在编译期确定，全局构造只保存常量；<code>begin()</code> 仍在 <code>board_init()</code> 之后。<code>constexpr</code> 减少运行期计算，但不能替代两段式。');
+        }
+      }
+    }
+    function step(){
+      if(idx > 0){
+        var prev = items[seq[idx - 1]];
+        prev.classList.remove('is-active');
+        prev.classList.add('is-ok');
+      }
+      if(idx >= seq.length){
+        finish(true);
+        return;
+      }
+      var item = items[seq[idx]];
+      item.classList.add('is-active');
+      if(plan === 'A' && seq[idx] === 3){
+        bTimers.push(setTimeout(function(){
+          item.classList.remove('is-active');
+          item.classList.add('is-fail');
+          finish(false);
+          setBootStatus('bad', '<b>在全局对象构造阶段失败：</b><code>g_sensor</code> 的构造函数访问 I2C，但 <code>board_init()</code> 还没运行。这不是“偶发 bug”，而是启动顺序错误；把硬件操作移到 <code>begin()</code>。');
+        }, 760));
+        return;
+      }
+      idx++;
+      bTimers.push(setTimeout(step, 260));
+    }
+    step();
+  }
+  $$('[data-boot-plan]').forEach(function(b){
+    b.addEventListener('click', function(){
+      bootState.plan = b.getAttribute('data-boot-plan');
+      renderBoot();
+    });
+  });
+  $('#ch4-boot-run').addEventListener('click', runBoot);
+  $('#ch4-boot-reset').addEventListener('click', bootReset);
+
+  var orderState = { order: 'ab', dep: false };
+  function renderOrder(){
+    var ab = orderState.order === 'ab';
+    $('#ch4-order-first').textContent = ab ? 'g_config（A）' : 'g_sensor（B）';
+    $('#ch4-order-second').textContent = ab ? 'g_sensor（B）' : 'g_config（A）';
+    $$('[data-order]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-order') === orderState.order); });
+    var rows = $$('#ch4-order-rows .ch4-order-row');
+    rows.forEach(function(r){ r.classList.remove('is-bad', 'is-ok'); });
+    var note = $('#ch4-order-note');
+    if(orderState.dep && !ab){
+      rows.forEach(function(r){ r.classList.add('is-bad'); });
+      note.innerHTML = '<b>危险接线：</b>B 的构造函数读取 A 的字段，但 A 还没进行动态初始化。静态存储只保证先清零，读到的是默认值；若访问未构造对象，则是未定义行为。换链接顺序就可能换故障现象。';
+    } else if(orderState.dep && ab){
+      rows.forEach(function(r){ r.classList.add('is-ok'); });
+      note.innerHTML = '<b>只是碰巧安全：</b>当前链接顺序让 A 先构造，但标准不保证跨编译单元的顺序。换链接器、换文件顺序就可能坏；应消除跨全局对象依赖，而不是依赖运气。';
+    } else {
+      note.innerHTML = '同一编译单元内按声明顺序构造；不同编译单元之间的顺序由链接顺序决定，标准不保证。跨全局对象依赖必须消除。';
+    }
+  }
+  $$('[data-order]').forEach(function(b){
+    b.addEventListener('click', function(){
+      orderState.order = b.getAttribute('data-order');
+      renderOrder();
+    });
+  });
+  $('#ch4-order-dep').addEventListener('change', function(e){
+    orderState.dep = e.target.checked;
+    renderOrder();
+  });
+
+  /* ---------------- scene 6: nm forensics ---------------- */
+  var nmData = [
+    { name: 'std::__cxx11::basic_ostringstream&lt;char&gt;::...', size: 22160, cat: 'iostream', advice: '<b>删：</b>去掉 iostream/ostringstream，改用小型日志接口；检查日志宏是否间接拉入。' },
+    { name: '__gnu_cxx::__verbose_terminate_handler()', size: 9840, cat: 'exception', advice: '<b>删：</b>这是异常/terminate 路径的一部分。确认 <code>-fno-exceptions</code> 同时覆盖 C++ 与 C 库编译选项。' },
+    { name: '__cxa_throw', size: 6120, cat: 'exception', advice: '<b>删：</b>若项目禁用异常，<code>nm</code> 里不该出现它；检查是否链接了带异常的预编译库。' },
+    { name: 'etl::vector&lt;Frame, 64&gt;::resize(...)', size: 4096, cat: 'template', advice: '<b>限：</b>模板按实例化生成代码。合并类型、减少容量组合，或只保留必要实例；用 <code>nm -C</code> 数一数重复符号。' },
+    { name: 'std::function&lt;void ()&gt;::operator()(...)', size: 2112, cat: 'type-erasure', advice: '<b>换：</b>热路径改用函数指针 + <code>void* ctx</code>；确需捕获时限制捕获大小并确认是否有堆分配。' },
+    { name: 'operator new(unsigned int)', size: 864, cat: 'heap', advice: '<b>换：</b>统一到静态池；更彻底的是禁用动态分配，用静态存储 + placement new。' },
+    { name: 'Monitor::poll()', size: 312, cat: 'business', advice: '<b>留：</b>业务代码本身很小。真正的体积通常来自它间接依赖的库，而不是这几十条指令。' },
+    { name: 'Sensor::begin()', size: 96, cat: 'business', advice: '<b>留：</b>两段式初始化把硬件访问放在明确的位置；这点代码换来确定性，值得。' },
+    { name: 'typeinfo for Ds18b20', size: 48, cat: 'rtti', advice: '<b>删：</b>禁用 RTTI（<code>-fno-rtti</code>）；嵌入式一般不需要 <code>dynamic_cast</code>/<code>typeid</code>。' },
+    { name: 'vtable for Ds18b20', size: 32, cat: 'polymorphism', advice: '<b>留：</b>每类一张，不随对象数量增长；先确认它是否真的值得可替换性，再决定去留。' }
+  ];
+  var nmTimers = [];
+  var nmBusy = false;
+  function clearNmTimers(){ nmTimers.forEach(clearTimeout); nmTimers = []; }
+  function fmtSize(n){ return n >= 1024 ? (n / 1024).toFixed(1) + ' KB' : n + ' B'; }
+  function nmReset(){
+    clearNmTimers();
+    nmBusy = false;
+    $('#ch4-nm-rows').innerHTML = '';
+    $('#ch4-nm-note').innerHTML = '点击一行查看对应的“删/换/限”处理。符号名与体积为示意，真实数值以你的 ELF 为准。';
+    $('#ch4-nm-run').disabled = false;
+    $('#ch4-nm-run').textContent = '运行 nm 采样';
+  }
+  function nmRun(){
+    if(nmBusy){ return; }
+    clearNmTimers();
+    nmBusy = true;
+    var run = $('#ch4-nm-run');
+    run.disabled = true;
+    run.textContent = '采样中…';
+    var box = $('#ch4-nm-rows');
+    box.innerHTML = '';
+    $('#ch4-nm-note').textContent = '$ arm-none-eabi-nm --size-sort -C fw.elf | tail -20';
+    var max = nmData[0].size;
+    nmData.forEach(function(row, i){
+      nmTimers.push(setTimeout(function(){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ch4-nm-row';
+        btn.setAttribute('data-nm', String(i));
+        btn.innerHTML =
+          '<span class="ch4-nm-main"><span class="ch4-nm-name">' + row.name + '</span>' +
+          '<span class="ch4-nm-bar"><i style="width:' + Math.max(3, row.size / max * 100) + '%"></i></span></span>' +
+          '<span class="ch4-nm-size">' + fmtSize(row.size) + '</span>';
+        box.appendChild(btn);
+      }, 120 * (i + 1)));
+    });
+    nmTimers.push(setTimeout(function(){
+      nmBusy = false;
+      run.disabled = false;
+      run.textContent = '重新采样';
+      $('#ch4-nm-note').innerHTML = '<b>采样完成：</b>共 ' + nmData.length + ' 个大符号，最大 ' + fmtSize(max) + '。点击任意行查看“删 / 换 / 限”的处理方式。';
+    }, 120 * (nmData.length + 1)));
+  }
+  $('#ch4-nm-rows').addEventListener('click', function(e){
+    var row = e.target.closest('[data-nm]');
+    if(!row){ return; }
+    var idx = parseInt(row.getAttribute('data-nm'), 10);
+    var d = nmData[idx];
+    if(!d){ return; }
+    $$('#ch4-nm-rows .ch4-nm-row').forEach(function(r){ r.classList.remove('is-selected'); });
+    row.classList.add('is-selected');
+    $('#ch4-nm-note').innerHTML = '<b>' + fmtSize(d.size) + ' · ' + d.cat + '</b><br>' + d.advice;
+  });
+  $('#ch4-nm-run').addEventListener('click', nmRun);
+  $('#ch4-nm-reset').addEventListener('click', nmReset);
+
+  var isaData = {
+    isr: {
+      code:
+        '<span class="cm">// 向量表按 C 链接名查找：必须 extern "C"</span>\n' +
+        '<span class="kw">extern</span> <span class="st">"C"</span> <span class="kw">void</span> <span class="fn">EXTI0_IRQHandler</span>(<span class="kw">void</span>) {\n' +
+        '    <span class="ty">BaseType_t</span> woken = pdFALSE;\n' +
+        '    <span class="ty">ButtonEvent</span> ev = g_button.<span class="fn">on_edge</span>();\n' +
+        '    <span class="cm">// 短、无阻塞、无堆；用 ISR 版队列 API</span>\n' +
+        '    xQueueSendFromISR(g_events, &amp;ev, &amp;woken);\n' +
+        '    portYIELD_FROM_ISR(woken);\n' +
+        '}',
+      note: '<b>边界：</b>C++ 函数名默认会被 name mangling；ISR 向量必须用 <code>extern "C"</code>。ISR 里避免堆、阻塞锁、异常和长调用链；虚调用本身可以，但多一次间接访存。队列/信号量要用 ISR 版本。'
+    },
+    new: {
+      code:
+        '<span class="cm">// 统一到静态池；不要同时用 C 库堆</span>\n' +
+        '<span class="kw">void</span>* <span class="kw">operator</span> <span class="kw">new</span>(std::size_t n) {\n' +
+        '    <span class="kw">void</span>* p = g_pool.<span class="fn">allocate</span>(n);\n' +
+        '    <span class="kw">if</span> (!p) <span class="fn">fatal</span>(ERR_OOM);   <span class="cm">// -fno-exceptions：不抛</span>\n' +
+        '    <span class="kw">return</span> p;\n' +
+        '}\n' +
+        '<span class="kw">void</span> <span class="kw">operator</span> <span class="kw">delete</span>(<span class="kw">void</span>* p) <span class="kw">noexcept</span> {\n' +
+        '    g_pool.<span class="fn">release</span>(p);\n' +
+        '}\n\n' +
+        '<span class="cm">// 更推荐：完全避开堆，静态存储 + placement new</span>\n' +
+        '<span class="kw">alignas</span>(<span class="ty">Monitor</span>) <span class="kw">static</span> std::byte buf[<span class="kw">sizeof</span>(<span class="ty">Monitor</span>)];\n' +
+        '<span class="ty">Monitor</span>* m = <span class="kw">new</span> (buf) <span class="ty">Monitor</span>(sensor);',
+      note: '<b>要么统一，要么禁用：</b>重载全局 <code>new/delete</code> 后，所有分配都走同一池；同时注意数组/对齐版本。placement new 不开堆，但对象析构要显式调用（全局静态对象通常无需）。用 <code>--wrap=malloc</code> 检查是否还有绕过。'
+    },
+    fault: {
+      code:
+        '<span class="kw">extern</span> <span class="st">"C"</span> <span class="kw">void</span> <span class="fn">HardFault_Handler</span>(<span class="kw">void</span>) {\n' +
+        '    <span class="ty">uint32_t</span>* frame = <span class="fn">get_exception_frame</span>();  <span class="cm">// MSP / PSP</span>\n' +
+        '    <span class="ty">uint32_t</span> pc = frame[<span class="nu">6</span>];                 <span class="cm">// 出错指令地址</span>\n' +
+        '    <span class="fn">log_fault</span>(pc, SCB-&gt;CFSR, SCB-&gt;HFSR,\n' +
+        '              SCB-&gt;BFAR, SCB-&gt;MMFAR);\n' +
+        '    <span class="kw">for</span> (;;) {}\n' +
+        '}',
+      note: '<b>先取证再复位：</b>读 CFSR/HFSR/BFAR/MMFAR，按 LR 的 EXC_RETURN 选 MSP 或 PSP，取栈帧里的 PC，再用 <code>addr2line -e fw.elf 0x...</code> 定位。C++ 特有线索：构造期纯虚调用常落在 <code>__cxa_pure_virtual</code>；vptr 被写坏则调用跳到非法地址。'
+    }
+  };
+  function renderISA(id){
+    var d = isaData[id];
+    if(!d){ return; }
+    $('#ch4-isa-code').innerHTML = d.code;
+    $('#ch4-isa-note').innerHTML = d.note;
+    $$('[data-isa]').forEach(function(b){ b.classList.toggle('is-active', b.getAttribute('data-isa') === id); });
+  }
+  $$('[data-isa]').forEach(function(b){
+    b.addEventListener('click', function(){ renderISA(b.getAttribute('data-isa')); });
+  });
+
+  /* ---------------- scene 7: lab checklist ---------------- */
+  function updateLab(){
+    var boxes = $$('#ch4-lab-list input[type="checkbox"]');
+    var done = 0;
+    boxes.forEach(function(box){
+      if(box.checked){ done++; }
+      var item = box.closest('.ch4-lab-item');
+      if(item){ item.classList.toggle('is-done', box.checked); }
+    });
+    $('#ch4-lab-count').textContent = '完成 ' + done + ' / ' + boxes.length;
+    $('#ch4-lab-fill').style.width = (done / boxes.length * 100) + '%';
+  }
+  $$('#ch4-lab-list input[type="checkbox"]').forEach(function(box){
+    box.addEventListener('change', updateLab);
+  });
+
+  /* ---------------- initial state ---------------- */
+  renderGuard('irq');
+  renderCtorDesign();
+  ctorReset();
+  renderVtable();
+  updateVtCalc();
+  renderTrap('base');
+  renderDI();
+  renderBoot();
+  renderOrder();
+  nmReset();
+  renderISA('isr');
+  updateLab();
+  renderFlags();
+  raiiReset();
+  renderBudget();
+
+  go(0);
+})();
+</script>
+</div>

@@ -1,0 +1,818 @@
+<div id="ch6-lesson">
+<style>
+  #ch6-lesson{
+    --ink: var(--seed-fg, #0f172a);
+    --muted: var(--seed-muted, #64748b);
+    --surface: var(--card-bg, #ffffff);
+    --surface-2: var(--inset-bg, #f8fafc);
+    --line: var(--border-standard, rgba(15,23,42,.12));
+    --line-soft: var(--border-subtle, rgba(15,23,42,.07));
+    --primary: var(--seed-primary, #0f766e);
+    --primary-2: #0284c7;
+    --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+    --ok: #059669;
+    --ok-soft: color-mix(in srgb, #059669 10%, transparent);
+    --warn: #d97706;
+    --warn-soft: color-mix(in srgb, #d97706 11%, transparent);
+    --danger: #dc2626;
+    --danger-soft: color-mix(in srgb, #dc2626 10%, transparent);
+    --code-bg: #0f172a;
+    --code-ink: #dbeafe;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    max-width: 1180px;
+    margin: 0 auto;
+    color: var(--ink);
+    font: 14px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #ch6-lesson *{ box-sizing:border-box; }
+  #ch6-lesson p{ margin:0; }
+  #ch6-lesson button{ font:inherit; color:inherit; }
+  #ch6-lesson .ch6-hero{
+    position:relative; overflow:hidden; padding:28px 30px 22px;
+    border:1px solid var(--line); border-radius:20px;
+    background:
+      radial-gradient(680px 250px at 98% -25%, color-mix(in srgb, var(--primary) 17%, transparent), transparent 66%),
+      linear-gradient(145deg, color-mix(in srgb, var(--primary) 6%, var(--surface)), var(--surface) 58%);
+  }
+  #ch6-lesson .ch6-hero::after{
+    content:""; position:absolute; right:-60px; top:-80px; width:250px; height:250px; border-radius:50%;
+    border:1px dashed color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+  #ch6-lesson .ch6-kicker{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+  #ch6-lesson h1{ margin:0; font-size:clamp(25px,3.4vw,40px); line-height:1.2; letter-spacing:-.02em; }
+  #ch6-lesson .ch6-sub{ margin-top:10px; max-width:860px; color:var(--muted); font-size:14px; }
+  #ch6-lesson .ch6-badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:16px; }
+  #ch6-lesson .ch6-badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:7px; border:1px solid var(--line); background:color-mix(in srgb, var(--surface) 75%, transparent); font-size:11px; color:var(--muted); }
+  #ch6-lesson .ch6-badge b{ color:var(--ink); font-weight:650; }
+  #ch6-lesson .ch6-meta{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); font-size:11px; color:var(--muted); }
+  #ch6-lesson .ch6-steps{
+    position:sticky; top:0; z-index:30; display:flex; gap:4px; overflow-x:auto; scrollbar-width:thin;
+    padding:8px; margin:14px 0 16px; border:1px solid var(--line); border-radius:14px;
+    background:color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter:blur(12px);
+  }
+  #ch6-lesson .ch6-step{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px; border:0; background:transparent; border-radius:9px; padding:7px 11px; cursor:pointer; color:var(--muted); text-align:left; min-width:96px; transition:.2s; }
+  #ch6-lesson .ch6-step .n{ font:10px/1 var(--mono); color:color-mix(in srgb, var(--muted) 75%, transparent); }
+  #ch6-lesson .ch6-step .t{ font-size:11.5px; font-weight:650; white-space:nowrap; }
+  #ch6-lesson .ch6-step:hover{ background:var(--primary-soft); color:var(--ink); }
+  #ch6-lesson .ch6-step.is-active{ background:var(--primary); color:#fff; }
+  #ch6-lesson .ch6-step.is-active .n{ color:rgba(255,255,255,.7); }
+  #ch6-lesson .ch6-progress{ height:3px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:-8px 0 18px; }
+  #ch6-lesson .ch6-progress i{ display:block; height:100%; width:20%; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .35s; }
+  #ch6-lesson .ch6-scene{ display:none; }
+  #ch6-lesson .ch6-scene.is-active{ display:block; animation:ch6In .38s ease both; }
+  @keyframes ch6In{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+  #ch6-lesson .ch6-scene-head{ margin:2px 0 14px; }
+  #ch6-lesson .ch6-scene-head .tag{ display:inline-flex; align-items:center; gap:6px; font:10px/1 var(--mono); color:var(--primary); border:1px solid color-mix(in srgb, var(--primary) 30%, transparent); background:var(--primary-soft); border-radius:99px; padding:4px 9px; margin-bottom:7px; }
+  #ch6-lesson .ch6-scene-head h2{ margin:0; font-size:clamp(20px,2.5vw,27px); line-height:1.3; letter-spacing:-.01em; }
+  #ch6-lesson .ch6-scene-head p{ margin-top:5px; color:var(--muted); font-size:12.5px; max-width:900px; }
+  #ch6-lesson .ch6-card{ border:1px solid var(--line); border-radius:15px; background:var(--surface); padding:16px; box-shadow:0 1px 2px rgba(15,23,42,.03); }
+  #ch6-lesson .ch6-card + .ch6-card{ margin-top:12px; }
+  #ch6-lesson .ch6-card-h{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:11px; }
+  #ch6-lesson .ch6-card-h h3{ margin:0; font-size:13px; display:flex; align-items:center; gap:7px; }
+  #ch6-lesson .ch6-card-h h3::before{ content:""; width:3px; height:13px; border-radius:2px; background:var(--primary); }
+  #ch6-lesson .ch6-card-h small{ color:var(--muted); font-size:10.5px; }
+  #ch6-lesson .ch6-grid-2{ display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr); gap:12px; align-items:stretch; }
+  #ch6-lesson .ch6-grid-3{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+  #ch6-lesson .ch6-mt{ margin-top:12px; }
+  #ch6-lesson .ch6-btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:30px; padding:5px 11px; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-size:11.5px; font-weight:600; cursor:pointer; transition:.18s; }
+  #ch6-lesson .ch6-btn:hover{ border-color:color-mix(in srgb, var(--primary) 45%, var(--line)); background:var(--primary-soft); }
+  #ch6-lesson .ch6-btn:active{ transform:translateY(1px); }
+  #ch6-lesson .ch6-btn:disabled{ opacity:.42; cursor:not-allowed; }
+  #ch6-lesson .ch6-btn-primary{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  #ch6-lesson .ch6-btn-primary:hover{ background:color-mix(in srgb, var(--primary) 86%, #000); }
+  #ch6-lesson .ch6-btn-quiet{ background:transparent; color:var(--muted); }
+  #ch6-lesson .ch6-code{ margin:0; padding:13px 14px; border-radius:10px; background:var(--code-bg); color:var(--code-ink); font:11px/1.75 var(--mono); overflow:auto; border:1px solid rgba(255,255,255,.08); tab-size:2; }
+  #ch6-lesson .ch6-code .cm{ color:#94a3b8; }
+  #ch6-lesson .ch6-code .kw{ color:#93c5fd; }
+  #ch6-lesson .ch6-code .num{ color:#f9a8d4; }
+  #ch6-lesson .ch6-code .ok{ color:#6ee7b7; }
+  #ch6-lesson .ch6-code .bad{ color:#fca5a5; }
+  #ch6-lesson .ch6-note{ padding:9px 11px; border-radius:8px; border:1px solid var(--line); background:var(--surface-2); color:var(--muted); font-size:11.5px; }
+  #ch6-lesson .ch6-note b{ color:var(--ink); }
+  #ch6-lesson .ch6-note.tip{ border-left:3px solid var(--primary); }
+  #ch6-lesson .ch6-note.warn{ border-left:3px solid var(--warn); background:var(--warn-soft); color:color-mix(in srgb, var(--warn) 72%, var(--ink)); }
+  #ch6-lesson .ch6-note.danger{ border-left:3px solid var(--danger); background:var(--danger-soft); color:color-mix(in srgb, var(--danger) 70%, var(--ink)); }
+  #ch6-lesson .ch6-note.ok{ border-left:3px solid var(--ok); background:var(--ok-soft); color:color-mix(in srgb, var(--ok) 75%, var(--ink)); }
+  #ch6-lesson .ch6-code-inline{ font-family:var(--mono); font-size:.94em; padding:1px 4px; border-radius:4px; background:var(--surface-2); border:1px solid var(--line-soft); }
+
+  /* scene 0 memory map */
+  #ch6-lesson .ch6-map{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  #ch6-lesson .ch6-mem-block{ border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--surface-2); cursor:pointer; transition:.2s; }
+  #ch6-lesson .ch6-mem-block:hover{ border-color:var(--primary); }
+  #ch6-lesson .ch6-mem-block.is-active{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-soft); }
+  #ch6-lesson .ch6-mem-head{ padding:7px 9px; color:#fff; font:9px/1.3 var(--mono); background:linear-gradient(90deg,var(--primary),var(--primary-2)); }
+  #ch6-lesson .ch6-mem-head b{ display:block; font-size:11px; }
+  #ch6-lesson .ch6-mem-head small{ opacity:.8; font-size:8px; }
+  #ch6-lesson .ch6-mem-body{ display:flex; flex-direction:column; gap:2px; padding:5px; min-height:160px; }
+  #ch6-lesson .ch6-seg{ padding:4px 5px; border-radius:4px; font:8px/1.35 var(--mono); color:var(--muted); background:var(--surface); border:1px solid var(--line-soft); }
+  #ch6-lesson .ch6-seg b{ display:block; color:var(--ink); font-size:9px; }
+  #ch6-lesson .ch6-seg.is-data{ background:color-mix(in srgb, var(--primary) 10%, var(--surface)); border-color:color-mix(in srgb, var(--primary) 25%, var(--line)); }
+  #ch6-lesson .ch6-seg.is-user{ background:var(--ok-soft); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); color:var(--ok); }
+  #ch6-lesson .ch6-seg.is-danger{ background:var(--danger-soft); border-color:color-mix(in srgb, var(--danger) 30%, var(--line)); color:var(--danger); }
+  #ch6-lesson .ch6-seg.is-ghost{ border-style:dashed; background:repeating-linear-gradient(135deg,var(--surface),var(--surface) 5px,var(--surface-2) 5px,var(--surface-2) 10px); }
+  #ch6-lesson .ch6-seg.is-ghost b{ color:var(--muted); }
+  #ch6-lesson .ch6-seg.is-base{ border-style:dotted; opacity:.78; }
+  #ch6-lesson .ch6-seg.is-base b{ color:var(--muted); }
+  #ch6-lesson .ch6-map-detail{ margin-top:9px; border:1px dashed var(--line); border-radius:8px; background:var(--surface); padding:10px; min-height:76px; }
+  #ch6-lesson .ch6-map-detail b{ font-size:12px; }
+  #ch6-lesson .ch6-map-detail p{ font-size:11px; color:var(--muted); margin-top:4px; }
+  #ch6-lesson .ch6-var-btns{ display:flex; flex-wrap:wrap; gap:5px; }
+  #ch6-lesson .ch6-var-btns .ch6-btn{ font-size:10.5px; min-height:27px; padding:3px 8px; }
+  #ch6-lesson .ch6-var-table{ width:100%; border-collapse:collapse; font:9.5px/1.45 var(--mono); margin-top:8px; }
+  #ch6-lesson .ch6-var-table th{ text-align:left; padding:4px 5px; color:var(--muted); font-size:9px; font-weight:500; border-bottom:1px solid var(--line); background:var(--surface-2); }
+  #ch6-lesson .ch6-var-table td{ padding:4px 5px; border-bottom:1px solid var(--line-soft); }
+  #ch6-lesson .ch6-var-table td:last-child{ color:var(--primary); }
+  #ch6-lesson .ch6-meter{ height:7px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:4px 0 2px; }
+  #ch6-lesson .ch6-meter i{ display:block; height:100%; width:0; border-radius:inherit; background:linear-gradient(90deg,var(--primary),var(--primary-2)); transition:width .3s; }
+  #ch6-lesson .ch6-meter.is-danger i{ background:linear-gradient(90deg,var(--warn),var(--danger)); }
+  #ch6-lesson .ch6-meter-label{ display:flex; justify-content:space-between; gap:8px; font:9px/1.4 var(--mono); color:var(--muted); }
+
+  /* scene 1 boot animation */
+  #ch6-lesson .ch6-boot-layout{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+  #ch6-lesson .ch6-boot-visual{ display:grid; grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr); gap:6px; align-items:stretch; }
+  #ch6-lesson .ch6-boot-box{ border:1px solid var(--line); border-radius:9px; background:var(--surface-2); padding:7px; min-height:170px; }
+  #ch6-lesson .ch6-boot-box h4{ margin:0 0 6px; font:9px/1.3 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+  #ch6-lesson .ch6-boot-row{ display:flex; justify-content:space-between; gap:5px; padding:4px 6px; border-radius:4px; background:var(--surface); border:1px solid var(--line-soft); font:8.5px/1.4 var(--mono); margin-bottom:3px; }
+  #ch6-lesson .ch6-boot-row b{ color:var(--ink); }
+  #ch6-lesson .ch6-boot-row span{ color:var(--muted); }
+  #ch6-lesson .ch6-boot-row.is-target{ border-color:var(--primary); background:var(--primary-soft); }
+  #ch6-lesson .ch6-boot-arrow{ display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:18px; }
+  #ch6-lesson .ch6-boot-steps{ display:flex; flex-direction:column; gap:4px; }
+  #ch6-lesson .ch6-boot-step{ display:flex; gap:7px; padding:6px 7px; border-radius:6px; border:1px solid var(--line-soft); background:var(--surface-2); color:var(--muted); font-size:10.5px; }
+  #ch6-lesson .ch6-boot-step .n{ flex:0 0 16px; height:16px; border-radius:50%; display:grid; place-items:center; background:var(--line-soft); font:8px/1 var(--mono); }
+  #ch6-lesson .ch6-boot-step.is-done{ color:var(--ink); border-color:color-mix(in srgb, var(--ok) 25%, var(--line)); background:var(--ok-soft); }
+  #ch6-lesson .ch6-boot-step.is-done .n{ background:var(--ok); color:#fff; }
+  #ch6-lesson .ch6-boot-step.is-active{ color:var(--ink); border-color:var(--primary); background:var(--primary-soft); }
+  #ch6-lesson .ch6-boot-step.is-active .n{ background:var(--primary); color:#fff; }
+  #ch6-lesson .ch6-boot-status{ margin-top:8px; min-height:58px; }
+  #ch6-lesson .ch6-switch{ display:flex; align-items:center; gap:7px; font-size:11px; color:var(--muted); cursor:pointer; }
+  #ch6-lesson .ch6-switch input{ accent-color:var(--primary); }
+
+  /* scene 2 ld lab */
+  #ch6-lesson .ch6-ld-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; }
+  #ch6-lesson .ch6-opts{ display:flex; flex-direction:column; gap:5px; }
+  #ch6-lesson .ch6-opt{ display:flex; align-items:flex-start; gap:7px; padding:7px 8px; border:1px solid var(--line-soft); border-radius:7px; background:var(--surface-2); font-size:10.5px; cursor:pointer; }
+  #ch6-lesson .ch6-opt input{ margin:2px 0 0; accent-color:var(--primary); }
+  #ch6-lesson .ch6-opt b{ display:block; font-size:10.5px; }
+  #ch6-lesson .ch6-opt small{ display:block; color:var(--muted); font-size:9.5px; }
+  #ch6-lesson .ch6-diagnostic{ display:flex; flex-direction:column; gap:5px; min-height:104px; }
+  #ch6-lesson .ch6-diag{ display:flex; gap:6px; padding:6px 8px; border-radius:6px; font-size:10.5px; border:1px solid var(--line); background:var(--surface-2); color:var(--muted); }
+  #ch6-lesson .ch6-diag b{ flex:0 0 auto; }
+  #ch6-lesson .ch6-diag.ok{ background:var(--ok-soft); border-color:color-mix(in srgb, var(--ok) 30%, var(--line)); color:color-mix(in srgb, var(--ok) 78%, var(--ink)); }
+  #ch6-lesson .ch6-diag.warn{ background:var(--warn-soft); border-color:color-mix(in srgb, var(--warn) 30%, var(--line)); color:color-mix(in srgb, var(--warn) 78%, var(--ink)); }
+  #ch6-lesson .ch6-diag.bad{ background:var(--danger-soft); border-color:color-mix(in srgb, var(--danger) 30%, var(--line)); color:color-mix(in srgb, var(--danger) 78%, var(--ink)); }
+
+  /* scene 3 stack */
+  #ch6-lesson .ch6-stack-layout{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); gap:12px; }
+  #ch6-lesson .ch6-stack-visual{ border:1px solid var(--line); border-radius:9px; background:var(--surface-2); padding:8px; }
+  #ch6-lesson .ch6-stack-bar{ display:flex; flex-direction:column-reverse; height:210px; border:1px solid var(--line); border-radius:6px; overflow:hidden; background:var(--surface); }
+  #ch6-lesson .ch6-stack-used{ background:linear-gradient(180deg,color-mix(in srgb,var(--primary) 22%,transparent),color-mix(in srgb,var(--primary) 42%,transparent)); display:flex; align-items:center; justify-content:center; color:var(--primary); font:9px/1.3 var(--mono); transition:height .3s; }
+  #ch6-lesson .ch6-stack-free{ background:repeating-linear-gradient(135deg,var(--surface-2),var(--surface-2) 6px,color-mix(in srgb,var(--muted) 7%,var(--surface-2)) 6px,color-mix(in srgb,var(--muted) 7%,var(--surface-2)) 12px); display:flex; align-items:center; justify-content:center; color:var(--muted); font:9px/1.3 var(--mono); flex:1; transition:.3s; }
+  #ch6-lesson .ch6-stack-bar.is-over .ch6-stack-used{ background:linear-gradient(180deg,var(--warn),var(--danger)); color:#fff; }
+  #ch6-lesson .ch6-sliders{ display:flex; flex-direction:column; gap:9px; margin-top:9px; }
+  #ch6-lesson .ch6-slider label{ display:flex; justify-content:space-between; gap:8px; font-size:10.5px; color:var(--muted); }
+  #ch6-lesson .ch6-slider label b{ color:var(--ink); font-family:var(--mono); }
+  #ch6-lesson .ch6-slider input{ width:100%; accent-color:var(--primary); margin-top:3px; }
+  #ch6-lesson .ch6-defense{ display:flex; flex-direction:column; gap:5px; }
+  #ch6-lesson .ch6-def{ padding:7px 8px; border:1px solid var(--line-soft); border-radius:7px; background:var(--surface-2); font-size:10.5px; }
+  #ch6-lesson .ch6-def b{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  #ch6-lesson .ch6-def small{ display:block; margin-top:3px; color:var(--muted); font-size:9.5px; }
+  #ch6-lesson .ch6-def.is-on{ border-color:color-mix(in srgb, var(--ok) 28%, var(--line)); background:var(--ok-soft); }
+  #ch6-lesson .ch6-status{ margin-top:8px; min-height:58px; }
+
+  /* scene 4 optimize */
+  #ch6-lesson .ch6-opt-table{ width:100%; border-collapse:collapse; font:10px/1.5 var(--mono); }
+  #ch6-lesson .ch6-opt-table th{ text-align:left; padding:5px 7px; background:var(--surface-2); color:var(--muted); font-size:9px; font-weight:500; border-bottom:1px solid var(--line); }
+  #ch6-lesson .ch6-opt-table td{ padding:5px 7px; border-bottom:1px solid var(--line-soft); }
+  #ch6-lesson .ch6-opt-table tr{ cursor:pointer; }
+  #ch6-lesson .ch6-opt-table tr:hover{ background:var(--primary-soft); }
+  #ch6-lesson .ch6-opt-table tr.is-active{ background:var(--primary-soft); }
+  #ch6-lesson .ch6-opt-table tr.is-active td:first-child{ color:var(--primary); font-weight:700; }
+  #ch6-lesson .ch6-sizebars{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  #ch6-lesson .ch6-sizebar{ display:grid; grid-template-columns:38px minmax(0,1fr) 50px; gap:6px; align-items:center; font:9px/1.4 var(--mono); color:var(--muted); }
+  #ch6-lesson .ch6-sizebar i{ display:block; height:6px; border-radius:99px; background:linear-gradient(90deg,var(--primary),var(--primary-2)); }
+  #ch6-lesson .ch6-lab{ display:flex; flex-direction:column; gap:5px; }
+  #ch6-lesson .ch6-lab label{ display:flex; align-items:flex-start; gap:8px; padding:7px 8px; border-radius:7px; border:1px solid var(--line-soft); background:var(--surface-2); font-size:11px; cursor:pointer; }
+  #ch6-lesson .ch6-lab input{ margin:2px 0 0; accent-color:var(--primary); }
+  #ch6-lesson .ch6-lab-bar{ height:4px; border-radius:99px; background:var(--line-soft); overflow:hidden; margin:7px 0 4px; }
+  #ch6-lesson .ch6-lab-bar i{ display:block; height:100%; width:0; background:var(--ok); transition:width .3s; }
+  #ch6-lesson details.ch6-faq{ border:1px solid var(--line); border-radius:9px; padding:10px 12px; background:var(--surface); }
+  #ch6-lesson details.ch6-faq + details.ch6-faq{ margin-top:6px; }
+  #ch6-lesson details.ch6-faq summary{ cursor:pointer; font-weight:650; font-size:11.5px; }
+  #ch6-lesson details.ch6-faq p{ margin-top:7px; color:var(--muted); font-size:11px; }
+  #ch6-lesson .ch6-footer{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-top:16px; padding-top:12px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+  @media(max-width:860px){
+    #ch6-lesson .ch6-grid-2, #ch6-lesson .ch6-boot-layout, #ch6-lesson .ch6-ld-grid, #ch6-lesson .ch6-stack-layout{ grid-template-columns:1fr; }
+    #ch6-lesson .ch6-grid-3, #ch6-lesson .ch6-map{ grid-template-columns:1fr 1fr; }
+    #ch6-lesson .ch6-boot-visual{ grid-template-columns:1fr 26px 1fr; }
+  }
+  @media(max-width:520px){
+    #ch6-lesson .ch6-hero{ padding:20px 18px 16px; }
+    #ch6-lesson .ch6-grid-3, #ch6-lesson .ch6-map{ grid-template-columns:1fr; }
+    #ch6-lesson .ch6-step{ min-width:84px; }
+    #ch6-lesson .ch6-boot-visual{ grid-template-columns:1fr; }
+    #ch6-lesson .ch6-boot-arrow{ transform:rotate(90deg); }
+  }
+</style>
+
+<header class="ch6-hero">
+  <div class="ch6-kicker">第 1 篇 · 编程基础 / 第 6 章</div>
+  <h1>链接器与内存布局</h1>
+  <p class="ch6-sub">变量为什么住在 Flash，运行时却出现在 RAM？为什么改了链接顺序，全局对象的地址就变了？这一章把「城市规划图」变成可操作的实验：<b>你改一段 ld，地图立刻重排。</b></p>
+  <div class="ch6-badges">
+    <span class="ch6-badge"><b>MEMORY</b> / SECTIONS</span>
+    <span class="ch6-badge"><b>LMA</b> 加载地址</span>
+    <span class="ch6-badge"><b>VMA</b> 运行地址</span>
+    <span class="ch6-badge"><b>启动</b> .data / .bss</span>
+    <span class="ch6-badge"><b>防线</b> 水位线 MPU</span>
+  </div>
+  <div class="ch6-meta">
+    <span>学习时长约 50 分钟 · 5 个互动实验</span>
+    <span>建议前置：第 2 章内存模型、第 5 章启动/栈帧</span>
+  </div>
+</header>
+
+<nav class="ch6-steps" aria-label="章节导航">
+  <button type="button" class="ch6-step is-active" data-goto="0"><span class="n">01</span><span class="t">内存地图</span></button>
+  <button type="button" class="ch6-step" data-goto="1"><span class="n">02</span><span class="t">启动搬运</span></button>
+  <button type="button" class="ch6-step" data-goto="2"><span class="n">03</span><span class="t">ld 脚本实验</span></button>
+  <button type="button" class="ch6-step" data-goto="3"><span class="n">04</span><span class="t">栈的三道防线</span></button>
+  <button type="button" class="ch6-step" data-goto="4"><span class="n">05</span><span class="t">测量与 Lab</span></button>
+</nav>
+<div class="ch6-progress"><i id="ch6-progress"></i></div>
+
+<main>
+  <!-- scene 0 -->
+  <section class="ch6-scene is-active" data-scene="0">
+    <div class="ch6-scene-head">
+      <span class="tag">6.1 / 6.3 / 6.7 · 谁住哪</span>
+      <h2>先看地图：Flash、RAM、CCM 各住着谁</h2>
+      <p>链接脚本不是“配置文件”，而是固件内存的宪法。它决定每个段放在哪个地址、加载时在哪里、运行时在哪里。点击地图区域和变量，观察它们如何被分配。</p>
+    </div>
+
+    <div class="ch6-grid-2">
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>F407 内存地图</h3>
+          <small>点击区域查看</small>
+        </div>
+        <div class="ch6-map" id="ch6-map">
+          <button type="button" class="ch6-mem-block is-active" data-map="flash">
+            <div class="ch6-mem-head"><b>FLASH</b><small>0x08000000 · 1 MB</small></div>
+            <div class="ch6-mem-body" id="ch6-map-flash"></div>
+          </button>
+          <button type="button" class="ch6-mem-block" data-map="ram">
+            <div class="ch6-mem-head" style="background:linear-gradient(90deg,#0284c7,#0ea5e9)"><b>SRAM</b><small>0x20000000 · 128 KB</small></div>
+            <div class="ch6-mem-body" id="ch6-map-ram"></div>
+          </button>
+          <button type="button" class="ch6-mem-block" data-map="ccm">
+            <div class="ch6-mem-head" style="background:linear-gradient(90deg,#7c3aed,#a855f7)"><b>CCM</b><small>0x10000000 · 64 KB</small></div>
+            <div class="ch6-mem-body" id="ch6-map-ccm"></div>
+          </button>
+        </div>
+        <div class="ch6-map-detail" id="ch6-map-detail"></div>
+      </div>
+
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>变量落位实验</h3>
+          <small>点击添加变量</small>
+        </div>
+        <div class="ch6-var-btns" id="ch6-var-btns">
+          <button type="button" class="ch6-btn" data-var="logo">const 图片表</button>
+          <button type="button" class="ch6-btn" data-var="cfg">已初始化全局</button>
+          <button type="button" class="ch6-btn" data-var="rx">零初始化缓冲</button>
+          <button type="button" class="ch6-btn" data-var="ccm">CCM fast_buf</button>
+          <button type="button" class="ch6-btn" data-var="ramfunc">RAM 函数</button>
+          <button type="button" class="ch6-btn ch6-btn-quiet" data-var="reset">重置</button>
+        </div>
+        <div class="ch6-mt">
+          <div class="ch6-meter-label"><span>SRAM 主区</span><span id="ch6-ram-label">0 / 128 KB</span></div>
+          <div class="ch6-meter" id="ch6-ram-meter"><i></i></div>
+          <div class="ch6-meter-label"><span>CCM</span><span id="ch6-ccm-label">0 / 64 KB</span></div>
+          <div class="ch6-meter" id="ch6-ccm-meter"><i></i></div>
+          <div class="ch6-meter-label"><span>Flash</span><span id="ch6-flash-label">0 / 1024 KB</span></div>
+          <div class="ch6-meter" id="ch6-flash-meter"><i></i></div>
+        </div>
+        <table class="ch6-var-table" id="ch6-var-table">
+          <thead><tr><th>变量</th><th>段</th><th>VMA</th><th>LMA</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="ch6-note ch6-mt" id="ch6-var-note"><b>规则：</b><span class="ch6-code-inline">const</span> 通常进 <code>.rodata</code>（Flash）；已初始化的全局变量进 <code>.data</code>（VMA 在 RAM，LMA 在 Flash）；零初始化全局变量进 <code>.bss</code>（RAM，不占 Flash 镜像）。</div>
+      </div>
+    </div>
+
+    <div class="ch6-card ch6-mt">
+      <div class="ch6-card-h">
+        <h3>LMA 与 VMA：一个变量，两个地址</h3>
+        <small>本章最核心的一对概念</small>
+      </div>
+      <div class="ch6-grid-3">
+        <div class="ch6-note tip"><b>VMA（运行地址）</b><br>程序运行时用这个地址访问变量。对 <code>.data</code> 来说，它在 RAM。</div>
+        <div class="ch6-note tip"><b>LMA（加载地址）</b><br>固件镜像里初值存放的位置。对 <code>.data</code> 来说，它在 Flash。</div>
+        <div class="ch6-note warn"><b>启动代码的职责</b><br>把 <code>.data</code> 从 Flash 的 LMA 拷到 RAM 的 VMA，再把 <code>.bss</code> 清零。漏掉任何一步，全局变量初值就会错。</div>
+      </div>
+      <div class="ch6-code ch6-mt"><span class="cm">/* .data 的加载域与执行域分离 */</span>
+_sidata = LOADADDR(.data);       <span class="cm">/* Flash 中的初值镜像 */</span>
+.data : {
+  _sdata = .; *(.data*) _edata = .;
+} > RAM AT> FLASH               <span class="cm">/* VMA=RAM，LMA=FLASH */</span></div>
+    </div>
+  </section>
+
+  <!-- scene 1 -->
+  <section class="ch6-scene" data-scene="1">
+    <div class="ch6-scene-head">
+      <span class="tag">6.2 · 启动文件三件事</span>
+      <h2>上电之后，谁把初值搬进了 RAM</h2>
+      <p>点击“播放启动”，看 Reset_Handler 的三件事：先建立栈，再搬运 <code>.data</code>、清零 <code>.bss</code>，最后才进 <code>main</code>。关掉“搬运 .data”，观察全局变量如何变成垃圾值。</p>
+    </div>
+
+    <div class="ch6-boot-layout">
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>启动时序</h3>
+          <small>5 步 · 可单步</small>
+        </div>
+        <div class="ch6-boot-visual">
+          <div class="ch6-boot-box">
+            <h4>FLASH · LMA</h4>
+            <div id="ch6-flash-view"></div>
+          </div>
+          <div class="ch6-boot-arrow">→</div>
+          <div class="ch6-boot-box">
+            <h4>SRAM · VMA</h4>
+            <div id="ch6-ram-view"></div>
+          </div>
+        </div>
+        <div class="ch6-chip-row ch6-mt">
+          <button type="button" class="ch6-btn ch6-btn-primary" id="ch6-boot-play">播放启动</button>
+          <button type="button" class="ch6-btn" id="ch6-boot-step">单步</button>
+          <button type="button" class="ch6-btn ch6-btn-quiet" id="ch6-boot-reset">重置</button>
+        </div>
+        <label class="ch6-switch ch6-mt"><input type="checkbox" id="ch6-data-copy" checked> 正常搬运 .data（取消勾选模拟启动文件漏写）</label>
+        <div class="ch6-note ch6-mt ch6-boot-status" id="ch6-boot-status"></div>
+      </div>
+
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>Reset_Handler 做了什么</h3>
+          <small>示意汇编</small>
+        </div>
+        <div class="ch6-boot-steps" id="ch6-boot-steps"></div>
+        <div class="ch6-code ch6-mt"><span class="cm">; GCC/newlib 的 crt0 会完成搬运；
+; 裸写启动文件时，这段逻辑必须自己写。</span>
+ldr sp, =_estack        <span class="cm">; 1) 先有栈</span>
+bl  SystemInit         <span class="cm">; 2) 时钟/FPU 等</span>
+ldr r0, =_sidata       <span class="cm">; 3) Flash 初值</span>
+ldr r1, =_sdata
+ldr r2, =_edata
+copy: cmp r1,r2
+  ldrlo r3,[r0],#4
+  strlo r3,[r1],#4
+  blo copy
+ldr r1, =_sbss        <span class="cm">; 4) .bss 清零</span>
+...
+bl main               <span class="cm">; 5) 进入应用</span></div>
+      </div>
+    </div>
+
+    <div class="ch6-card ch6-mt">
+      <div class="ch6-card-h">
+        <h3>如果漏掉 .data 搬运，会发生什么</h3>
+        <small>故障表第一条</small>
+      </div>
+      <div class="ch6-grid-3">
+        <div class="ch6-note"><b>现象</b><br>上电后全局变量初值全乱，局部变量却看起来正常；某些配置结构体 magic 不对。</div>
+        <div class="ch6-note"><b>根因</b><br>自定义启动文件漏写拷贝循环，或链接脚本段名不匹配，<code>_sidata</code> 指向了错误位置。</div>
+        <div class="ch6-note"><b>定位</b><br>反汇编 Reset_Handler 确认拷贝循环存在；比对 <code>_sidata</code> 与 <code>.data</code> 的 LMA；在 map 文件里看符号地址。</div>
+      </div>
+      <div class="ch6-note danger ch6-mt"><b>记住：</b>.bss 不需要从 Flash 搬运，但必须清零；未清零的 .bss 变量会继承上电前的 SRAM 随机值。复位后依赖“碰巧为 0”是典型的隐蔽 bug。</div>
+    </div>
+  </section>
+
+  <!-- scene 2 -->
+  <section class="ch6-scene" data-scene="2">
+    <div class="ch6-scene-head">
+      <span class="tag">6.3 / 6.8 · 自定义段</span>
+      <h2>ld 脚本实验：改一个选项，看一个后果</h2>
+      <p>下面四个开关对应量产项目最常用的自定义段配置。勾选后点击“检查配置”，看链接器和硬件会给你什么反馈。这里的判断规则是教学模型，真实项目请以芯片总线和 map 文件为准。</p>
+    </div>
+
+    <div class="ch6-ld-grid">
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>配置开关</h3>
+          <small>4 个真实工程决策</small>
+        </div>
+        <div class="ch6-opts">
+          <label class="ch6-opt"><input type="checkbox" id="ch6-opt-ccm"><span><b>把 fast_buf 放进 CCM</b><small>CPU 专用 64 KB，访问快；但 DMA 不可达。</small></span></label>
+          <label class="ch6-opt"><input type="checkbox" id="ch6-opt-dma"><span><b>fast_buf 供 DMA 使用</b><small>如果同时勾选 CCM，会产生“永远收不到数据”的经典故障。</small></span></label>
+          <label class="ch6-opt"><input type="checkbox" id="ch6-opt-config" checked><span><b>.config 参数区加 KEEP</b><small>独立 Flash 页保存设备参数，防止 --gc-sections 删除。</small></span></label>
+          <label class="ch6-opt"><input type="checkbox" id="ch6-opt-ramfunc" checked><span><b>.ramfunc 生成搬运补丁</b><small>函数放 RAM 执行；只写段定义不搬运，调用会跑飞。</small></span></label>
+          <label class="ch6-opt"><input type="checkbox" id="ch6-opt-vec" checked><span><b>向量表加 KEEP</b><small>向量表没有代码入口引用，最容易被 gc 删掉。</small></span></label>
+        </div>
+        <div class="ch6-chip-row ch6-mt">
+          <button type="button" class="ch6-btn ch6-btn-primary" id="ch6-ld-check">检查配置</button>
+          <button type="button" class="ch6-btn ch6-btn-quiet" id="ch6-ld-reset">恢复默认</button>
+        </div>
+        <div class="ch6-note ch6-mt"><b>工程原则：</b>自定义段 = 段定义 + 启动搬运 + 访问边界，三者缺一不可。只写 <code>__attribute__((section))</code> 不等于它会自动出现在正确位置。</div>
+      </div>
+
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>链接器与硬件反馈</h3>
+          <small id="ch6-ld-count">等待检查</small>
+        </div>
+        <div class="ch6-diagnostic" id="ch6-diagnostic"></div>
+        <div class="ch6-code ch6-mt" id="ch6-ld-code"></div>
+        <div class="ch6-note ch6-mt" id="ch6-ld-summary"></div>
+      </div>
+    </div>
+
+    <div class="ch6-card ch6-mt">
+      <div class="ch6-card-h">
+        <h3>三个自定义段模板</h3>
+        <small>直接可抄</small>
+      </div>
+      <div class="ch6-grid-3">
+        <div class="ch6-note tip"><b>.ccmram</b><br><code>__attribute__((section(".ccmram"))) uint8_t fast_buf[4096];</code><br>适合 CPU 热数据，不适合 DMA。</div>
+        <div class="ch6-note tip"><b>.config</b><br><code>__attribute__((section(".config"),used)) const device_cfg_t g_cfg;</code><br>独立 Flash 页 + magic/CRC，升级不丢参数。</div>
+        <div class="ch6-note tip"><b>.ramfunc</b><br><code>__attribute__((section(".ramfunc"), long_call))</code><br>擦写自身 Flash 时执行；必须补 LMA→VMA 搬运。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 3 -->
+  <section class="ch6-scene" data-scene="3">
+    <div class="ch6-scene-head">
+      <span class="tag">6.4 · 栈与堆</span>
+      <h2>栈不是“够用就行”，它需要三道防线</h2>
+      <p>拖动栈大小和调用深度，观察高水位线。再打开 Canary、MPU、静态分析三道防线，比较它们分别能在什么阶段发现问题。</p>
+    </div>
+
+    <div class="ch6-stack-layout">
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>栈占用模拟</h3>
+          <small id="ch6-stack-label">4 KB · 20 层</small>
+        </div>
+        <div class="ch6-stack-visual">
+          <div class="ch6-stack-bar" id="ch6-stack-bar">
+            <div class="ch6-stack-used" id="ch6-stack-used"></div>
+            <div class="ch6-stack-free" id="ch6-stack-free">0xCD 未使用区</div>
+          </div>
+        </div>
+        <div class="ch6-sliders">
+          <div class="ch6-slider"><label><span>栈大小</span><b id="ch6-stack-size-val">4 KB</b></label><input type="range" id="ch6-stack-size" min="1" max="16" step="1" value="4"></div>
+          <div class="ch6-slider"><label><span>最坏调用深度</span><b id="ch6-stack-depth-val">20 层</b></label><input type="range" id="ch6-stack-depth" min="1" max="60" step="1" value="20"></div>
+          <div class="ch6-slider"><label><span>每层栈耗（含硬件帧）</span><b>96 B</b></label><input type="range" min="96" max="96" value="96" disabled></div>
+        </div>
+        <div class="ch6-note ch6-mt ch6-status" id="ch6-stack-status"></div>
+      </div>
+
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>三道防线</h3>
+          <small>越往下越早发现</small>
+        </div>
+        <div class="ch6-defense">
+          <label class="ch6-def"><b>① 高水位线 Canary <input type="checkbox" id="ch6-def-canary" checked></b><small>启动时把栈区涂成 0xCD，运行后统计被冲掉的颜色。只能告诉你“用了多深”，不能在越界瞬间阻止。</small></label>
+          <label class="ch6-def"><b>② MPU 保护页 <input type="checkbox" id="ch6-def-mpu"></b><small>把栈底一页设为 no-access；一旦越过立刻 MemManage/BusFault，而不是静默踩坏堆或全局变量。</small></label>
+          <label class="ch6-def"><b>③ -fstack-usage <input type="checkbox" id="ch6-def-static"></b><small>编译期生成 .su 文件，累加最坏调用链，在 CI 里做预算校验。它防的是“设计上就超了”。</small></label>
+        </div>
+        <div class="ch6-note tip ch6-mt"><b>推荐组合：</b>静态分析定预算 + Canary 做运行期验证 + MPU 做最后兜底。三者不是替代关系，而是不同时间尺度上的安全网。</div>
+        <div class="ch6-note warn ch6-mt"><b>heap 怎么给？</b>全静态项目把 heap 设 0，并把 <code>_sbrk</code> 重载为断言/死循环，让“意外的 malloc”在开发期立刻暴露。</div>
+      </div>
+    </div>
+
+    <div class="ch6-card ch6-mt">
+      <div class="ch6-card-h">
+        <h3>栈预算怎么算</h3>
+        <small>不是拍脑袋</small>
+      </div>
+      <div class="ch6-grid-3">
+        <div class="ch6-note"><b>① 每函数用量</b><br>用 <code>-fstack-usage</code> 得到每个函数的帧大小，包括局部数组和对齐开销。</div>
+        <div class="ch6-note"><b>② 最坏调用链</b><br>从入口和每个 ISR 出发，沿调用图累加；ISR 嵌套还要加每层硬件入栈帧。</div>
+        <div class="ch6-note"><b>③ 安全系数</b><br>乘 1.5 左右，再用运行期水位线验证。余量低于 50% 就该扩栈或拆函数。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- scene 4 -->
+  <section class="ch6-scene" data-scene="4">
+    <div class="ch6-scene-head">
+      <span class="tag">6.5 / 6.9 / Lab · 测量</span>
+      <h2>用 size、nm、map 把“感觉”变成数字</h2>
+      <p>优化等级不是越高越好：O2 到 Os 体积会降，但热点可能变慢。点击表格行，比较同一工程的体积与周期，再完成 L6-1 的栈预算实验。</p>
+    </div>
+
+    <div class="ch6-grid-2">
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>优化等级实测对照</h3>
+          <small>点行查看</small>
+        </div>
+        <table class="ch6-opt-table" id="ch6-opt-table">
+          <thead><tr><th>等级</th><th>text</th><th>bss</th><th>点积周期</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="ch6-sizebars" id="ch6-sizebars"></div>
+        <div class="ch6-note ch6-mt" id="ch6-opt-note"></div>
+      </div>
+
+      <div class="ch6-card">
+        <div class="ch6-card-h">
+          <h3>L6-1：绘制最坏调用链</h3>
+          <small id="ch6-lab-count">0 / 5</small>
+        </div>
+        <div class="ch6-lab" id="ch6-lab"></div>
+        <div class="ch6-lab-bar"><i id="ch6-lab-bar"></i></div>
+        <div class="ch6-note ch6-mt">验收：产出一张“函数 → 累计字节”的清单贴进仓库 <code>docs/</code>；如果栈余量 &lt; 50%，给出扩栈或拆函数方案。</div>
+      </div>
+    </div>
+
+    <div class="ch6-card ch6-mt">
+      <div class="ch6-card-h">
+        <h3>map 文件三连 grep</h3>
+        <small>排障时直接抄</small>
+      </div>
+      <div class="ch6-code"><span class="cm"># 总览</span>
+arm-none-eabi-size firmware.elf
+
+<span class="cm"># 最大符号 Top20（含大小）</span>
+arm-none-eabi-nm --size-sort -rn firmware.elf | head -20
+
+<span class="cm"># 找 .bss 大户的邻居</span>
+grep -B2 '\.bss' firmware.map
+
+<span class="cm"># 看 gc-sections 删了什么</span>
+grep -A5 discarded firmware.map
+
+<span class="cm"># 验证 LMA / VMA 是否符合预期</span>
+grep -E 'LOADADDR|_sidata|_sdata|_edata' firmware.map</div>
+      <div class="ch6-note warn ch6-mt"><b>体积公式：</b>Flash 占用 ≈ text + data（.data 的初值镜像）；RAM 占用 ≈ data + bss + heap + stack。不要只盯着 text。</div>
+    </div>
+
+    <div class="ch6-mt">
+      <details class="ch6-faq"><summary>Q1：为什么修改链接顺序会改变全局变量地址？</summary><p>段收集顺序 = SECTIONS 书写顺序 + 通配符展开顺序（通常又是 .o 链接顺序）。链接器按这个顺序把输入段拼进输出段，所以变量相对位置会变。不要依赖地址顺序做逻辑判断，跨编译单元的全局初始化顺序更没有标准保证。</p></details>
+      <details class="ch6-faq"><summary>Q2：CCM 这么快，为什么不能把所有变量都放进去？</summary><p>F407 的 CCM 只有 CPU 内核可达，DMA1/DMA2 都访问不到。把 DMA 缓冲放进去，典型症状是传输永远完不成或数据全零。用前查芯片总线矩阵；同理还有 i.MX6ULL 的 OCRAM、RK3588 的部分 SRAM。</p></details>
+      <details class="ch6-faq"><summary>Q3：.bss 为什么不在 Flash 里占空间？</summary><p>.bss 只记录“需要多少零初始化空间”，启动时由代码把 RAM 清零；它不需要在固件镜像里存放一大段零。因此 Flash 体积通常看 text + data，而 RAM 体积看 data + bss。</p></details>
+      <details class="ch6-faq"><summary>Q4：--gc-sections 很省空间，能无脑开吗？</summary><p>不能。GC 从 ENTRY 出发做可达性分析，向量表、配置表、注册表这类“没有直接代码引用”的段会被误删。必须配 KEEP，或者用 used 属性/显式引用把入口钉住。</p></details>
+    </div>
+
+    <div class="ch6-footer">
+      <span>第 6 章 · 链接器与内存布局</span>
+      <span>
+        <button type="button" class="ch6-btn" data-goto="3">上一节</button>
+        <button type="button" class="ch6-btn ch6-btn-primary" data-goto="0">回到开头</button>
+      </span>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var root = document.getElementById('ch6-lesson');
+  if(!root) return;
+  function $(s, el){ return (el||root).querySelector(s); }
+  function $$(s, el){ return Array.prototype.slice.call((el||root).querySelectorAll(s)); }
+  var stepButtons = $$('.ch6-step');
+  function go(n){
+    n = Math.max(0, Math.min(4, Number(n)||0));
+    $$('.ch6-scene').forEach(function(s){ s.classList.toggle('is-active', Number(s.getAttribute('data-scene'))===n); });
+    stepButtons.forEach(function(b){ b.classList.toggle('is-active', Number(b.getAttribute('data-goto'))===n); });
+    $('#ch6-progress').style.width = ((n+1)/5*100)+'%';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  stepButtons.forEach(function(b){ b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+  $$('[data-goto]').forEach(function(b){ if(!b.classList.contains('ch6-step')) b.addEventListener('click', function(){ go(b.getAttribute('data-goto')); }); });
+
+  /* scene 0: memory map + variables */
+  var mapDetails = {
+    flash:{title:'FLASH · 0x08000000, 1 MB', text:'存放向量表、代码、常量，以及 .data 的初值镜像（LMA）。CPU 可以直接从 Flash 取指，但写入需要擦除/编程，且通常有等待周期。'},
+    ram:{title:'SRAM · 0x20000000, 128 KB', text:'运行时的 .data、.bss、heap、stack 都在这里。栈从高地址向低地址生长；堆和栈相向而行，最怕在中间相遇。'},
+    ccm:{title:'CCM · 0x10000000, 64 KB', text:'F407 的内核紧耦合 RAM，CPU 访问快，但 DMA 不可达。适合放 CPU 热数据、栈或不需要 DMA 的缓冲；不要放串口/ADC 的 DMA 缓冲。'}
+  };
+  function renderMapDetail(key){
+    var d = mapDetails[key];
+    $('#ch6-map-detail').innerHTML = '<b>'+d.title+'</b><p>'+d.text+'</p>';
+  }
+  $$('#ch6-map .ch6-mem-block').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#ch6-map .ch6-mem-block').forEach(function(x){ x.classList.toggle('is-active', x===b); });
+      renderMapDetail(b.getAttribute('data-map'));
+    });
+  });
+  renderMapDetail('flash');
+
+  var vars = {
+    logo:{name:'logo[]', size:2048, section:'.rodata', mem:'flash', vma:'0x0800A000', lma:'0x0800A000', note:'const 常量表：只读，直接留在 Flash，CPU 通过总线读取。'},
+    cfg:{name:'g_cfg', size:16, section:'.data', mem:'ram', vma:'0x20000100', lma:'0x0800B000', note:'已初始化全局变量：初值放 Flash，运行时地址在 RAM；启动时必须搬运。'},
+    rx:{name:'rx_buf[1024]', size:1024, section:'.bss', mem:'ram', vma:'0x20001000', lma:'—', note:'零初始化缓冲：不占 Flash 镜像，启动时由代码清零。'},
+    ccm:{name:'fast_buf[4096]', size:4096, section:'.ccmram', mem:'ccm', vma:'0x10000000', lma:'0x0800C000', note:'CCM 段：CPU 访问快，但 DMA 不可达；如果它用于串口/ADC DMA，传输会失败。'},
+    ramfunc:{name:'flash_program()', size:512, section:'.ramfunc', mem:'ram', vma:'0x20002000', lma:'0x0800D000', note:'RAM 函数：擦写自身 Flash 时必须搬到 RAM 执行；只写段定义不搬运，调用会跑飞。'}
+  };
+  var added = {};
+  var memUsed = {flash:0, ram:0, ccm:0};
+  var mapUsed = {flash:[], ram:[], ccm:[]};
+  var mapLma = [];
+  function addVar(key){
+    if(key==='reset'){ added={}; memUsed={flash:0,ram:0,ccm:0}; mapUsed={flash:[],ram:[],ccm:[]}; mapLma=[]; renderVars(); return; }
+    var v=vars[key]; if(!v) return;
+    if(added[key]) return;
+    added[key]=true;
+    memUsed[v.mem]+=v.size;
+    mapUsed[v.mem].push(v);
+    if(v.mem!=='flash' && v.lma!=='—'){ memUsed.flash+=v.size; mapLma.push(v); }
+    renderVars();
+  }
+  function renderVars(){
+    var total = {flash:1024*1024, ram:128*1024, ccm:64*1024};
+    ['flash','ram','ccm'].forEach(function(m){
+      var pct = Math.min(100, memUsed[m]/total[m]*100);
+      var meter = $('#ch6-'+m+'-meter');
+      meter.style.display = m==='flash' || m==='ram' || m==='ccm' ? '' : 'none';
+      meter.querySelector('i').style.width = pct+'%';
+      meter.classList.toggle('is-danger', pct>82);
+      var label = $('#ch6-'+m+'-label');
+      if(m==='flash') label.textContent = (memUsed[m]/1024).toFixed(1)+' KB 镜像 / 1024 KB';
+      else label.textContent = (memUsed[m]/1024).toFixed(1)+' KB / '+(m==='ram'?'128':'64')+' KB';
+      var box = $('#ch6-map-'+m);
+      if(box){
+        var baseSeg = {
+          flash:'<div class="ch6-seg is-base"><b>基础镜像</b>.isr_vector + .text 代码</div>',
+          ram:'<div class="ch6-seg is-base"><b>运行时区域</b>.data / .bss / heap / stack</div>',
+          ccm:'<div class="ch6-seg is-base"><b>默认空闲</b>可选：热数据 / 栈</div>'
+        }[m];
+        var segs = mapUsed[m].map(function(v){
+          return '<div class="ch6-seg is-user"><b>'+v.section+'</b>'+v.name+' · '+v.size+' B</div>';
+        }).join('');
+        if(m==='flash' && mapLma.length){
+          segs += '<div class="ch6-seg is-ghost"><b>LMA 初值镜像：也要占 Flash</b>'+mapLma.map(function(v){ return v.section+' · '+v.size+' B'; }).join('<br>')+'</div>';
+        }
+        box.innerHTML = baseSeg + segs;
+      }
+    });
+    var rows = Object.keys(added).filter(function(k){ return added[k]; }).map(function(k){ var v=vars[k]; return '<tr><td>'+v.name+'</td><td>'+v.section+'</td><td>'+v.vma+'</td><td>'+v.lma+'</td></tr>'; });
+    $('#ch6-var-table tbody').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="color:var(--muted)">点击上方按钮添加变量</td></tr>';
+    var notes = [];
+    if(added.ccm) notes.push('fast_buf 进了 CCM：如果它供 DMA 使用，DMA 访问不到；但它的初值镜像仍然要占 Flash。');
+    if(added.ramfunc) notes.push('ramfunc 需要启动补丁：把 LMA 从 Flash 拷到 VMA。');
+    if(added.cfg) notes.push('.data 记得搬运：VMA 在 RAM，LMA 在 Flash。');
+    $('#ch6-var-note').innerHTML = notes.length ? '<b>本组变量的工程提示：</b>'+notes.join(' ') : '<b>规则：</b><span class="ch6-code-inline">const</span> 通常进 <code>.rodata</code>（Flash）；已初始化的全局变量进 <code>.data</code>（VMA 在 RAM，LMA 在 Flash）；零初始化全局变量进 <code>.bss</code>（RAM，不占 Flash 镜像）。';
+  }
+  $$('#ch6-var-btns .ch6-btn').forEach(function(b){ b.addEventListener('click', function(){ addVar(b.getAttribute('data-var')); }); });
+  renderVars();
+
+  /* scene 1: boot animation */
+  var bootSteps = ['复位：从向量表取 MSP，跳到 Reset_Handler','建立栈并调用 SystemInit（时钟/FPU）','把 .data 从 Flash 的 LMA 拷到 RAM 的 VMA','把 .bss 清零','调用 main()，进入应用'];
+  var bootIndex = -1, bootTimer = null;
+  function renderBoot(){
+    $('#ch6-flash-view').innerHTML =
+      '<div class="ch6-boot-row"><b>.isr_vector</b><span>0x08000000</span></div>'+
+      '<div class="ch6-boot-row"><b>.text / .rodata</b><span>~30 KB</span></div>'+
+      '<div class="ch6-boot-row '+(bootIndex>=2?'is-target':'')+'"><b>.data LMA</b><span>初值镜像</span></div>'+
+      '<div class="ch6-boot-row"><b>.config</b><span>参数页</span></div>';
+    $('#ch6-ram-view').innerHTML =
+      '<div class="ch6-boot-row '+(bootIndex>=2?'is-target':'')+'"><b>.data VMA</b><span>'+(bootIndex>=2?'已搬运':'等待搬运')+'</span></div>'+
+      '<div class="ch6-boot-row '+(bootIndex>=3?'is-target':'')+'"><b>.bss</b><span>'+(bootIndex>=3?'已清零':'随机值')+'</span></div>'+
+      '<div class="ch6-boot-row"><b>heap ↑</b><span>向高地址</span></div>'+
+      '<div class="ch6-boot-row"><b>stack ↓</b><span>从 _estack</span></div>';
+    $('#ch6-boot-steps').innerHTML = bootSteps.map(function(s,i){
+      var cls = i<bootIndex ? ' is-done' : (i===bootIndex ? ' is-active' : '');
+      return '<div class="ch6-boot-step'+cls+'"><span class="n">'+(i+1)+'</span><span>'+s+'</span></div>';
+    }).join('');
+    var copy = $('#ch6-data-copy').checked;
+    var msgs = [
+      '等待启动：点击“播放启动”或“单步”。',
+      '第 1 步：取 MSP、跳 Reset_Handler。此时 C 环境尚未建立。',
+      '第 2 步：栈就绪，SystemInit 配置时钟/FPU。',
+      copy ? '第 3 步：.data 从 Flash LMA 逐字拷贝到 RAM VMA。' : '第 3 步被跳过：.data 的 VMA 仍是 SRAM 上电随机值，g_cfg.magic 可能是 0xFFFFFFFF。',
+      copy ? '第 4 步：.bss 清零；未初始化全局变量才可靠地为 0。' : '第 4 步：.bss 清零；这只救了零初始化变量，救不了 .data。',
+      copy ? '第 5 步：进入 main()。全局变量初值正确，可以开始应用初始化。' : '第 5 步：进入 main()。但 g_cfg 初值已损坏：这是“上电后全局变量全乱”的经典根因。'
+    ];
+    $('#ch6-boot-status').innerHTML = '<b>' + (bootIndex<0 ? '准备就绪：' : '当前状态：') + '</b>' + msgs[Math.max(0,bootIndex+1)];
+  }
+  function bootStepOnce(){
+    if(bootIndex < bootSteps.length-1){ bootIndex++; renderBoot(); }
+    else { clearInterval(bootTimer); bootTimer=null; }
+  }
+  $('#ch6-boot-step').addEventListener('click', bootStepOnce);
+  $('#ch6-boot-play').addEventListener('click', function(){
+    if(bootTimer){ clearInterval(bootTimer); bootTimer=null; }
+    bootIndex = -1; renderBoot();
+    bootTimer = setInterval(bootStepOnce, 620);
+  });
+  $('#ch6-boot-reset').addEventListener('click', function(){
+    if(bootTimer){ clearInterval(bootTimer); bootTimer=null; }
+    bootIndex = -1; renderBoot();
+  });
+  $('#ch6-data-copy').addEventListener('change', renderBoot);
+  renderBoot();
+
+  /* scene 2: ld options */
+  var defaults = {ccm:false,dma:false,config:true,ramfunc:true,vec:true};
+  function getOpts(){
+    return {ccm:$('#ch6-opt-ccm').checked,dma:$('#ch6-opt-dma').checked,config:$('#ch6-opt-config').checked,ramfunc:$('#ch6-opt-ramfunc').checked,vec:$('#ch6-opt-vec').checked};
+  }
+  function checkLd(){
+    var o = getOpts(), diags = [];
+    if(o.ccm && o.dma) diags.push(['bad','DMA 盲区','fast_buf 同时被勾选为 CCM 和 DMA 缓冲；CCM 对 DMA 不可达，传输可能永远完不成。']);
+    else if(o.ccm) diags.push(['ok','CCM 可用','fast_buf 放 CCM，CPU 访问快；如果未来交给 DMA，需要搬回主 SRAM。']);
+    else diags.push(['ok','主 SRAM','fast_buf 留在主 SRAM，DMA 可达。']);
+    if(o.config) diags.push(['ok','参数区受保护','.config 已加 KEEP，--gc-sections 不会删除它；仍建议加 magic/CRC 自检。']);
+    else diags.push(['warn','参数区可能被删','.config 没有 KEEP，也没有代码显式引用；开启 gc-sections 后可能消失。']);
+    if(o.ramfunc) diags.push(['ok','RAM 函数可执行','.ramfunc 已生成搬运补丁；务必确认启动代码真的调用了 load_ramfunc()。']);
+    else diags.push(['bad','RAM 函数未搬运','只定义了 .ramfunc 的 LMA/VMA，没有拷贝循环；函数调用会跑飞或 BusFault。']);
+    if(o.vec) diags.push(['ok','向量表保留','.isr_vector 已 KEEP，不会因为没有代码引用被 gc 删除。']);
+    else diags.push(['bad','向量表可能被删','向量表没有入口引用；缺少 KEEP 时 --gc-sections 可能把它丢弃。']);
+    $('#ch6-diagnostic').innerHTML = diags.map(function(d){ return '<div class="ch6-diag '+d[0]+'"><b>'+d[1]+'</b><span>'+d[2]+'</span></div>'; }).join('');
+    var n = diags.filter(function(d){ return d[0]!=='ok'; }).length;
+    $('#ch6-ld-count').textContent = n ? n+' 项需要处理' : '配置通过';
+    $('#ch6-ld-summary').innerHTML = n ? '<b>结论：</b>先修复红色/黄色项，再看 map 文件确认段的 VMA/LMA 与预期一致。' : '<b>结论：</b>四项配置自洽；下一步用 map 文件确认段地址、LMA/VMA 和大小，不要只看编译是否通过。';
+    var code = '<span class="cm">/* 由开关生成的示意片段 */</span>\n'+
+      (o.ccm ? '.ccmram : { *(.ccmram*) } > CCM\n' : '')+
+      (o.config ? '.config 0x080FF000 (NOLOAD) : { KEEP(*(.config)) } > FLASH\n' : '.config : { *(.config*) } > FLASH\n')+
+      (o.ramfunc ? '.ramfunc : { _siramfunc=.; *(.ramfunc*) _eiramfunc=.; } > RAM AT> FLASH\n_liramfunc = LOADADDR(.ramfunc);\n' : '.ramfunc : { *(.ramfunc*) } > RAM AT> FLASH\n')+
+      (o.vec ? '.isr_vector : { KEEP(*(.isr_vector)) } > FLASH' : '.isr_vector : { *(.isr_vector) } > FLASH');
+    $('#ch6-ld-code').innerHTML = code;
+  }
+  $('#ch6-ld-check').addEventListener('click', checkLd);
+  $('#ch6-ld-reset').addEventListener('click', function(){
+    $('#ch6-opt-ccm').checked=defaults.ccm; $('#ch6-opt-dma').checked=defaults.dma; $('#ch6-opt-config').checked=defaults.config; $('#ch6-opt-ramfunc').checked=defaults.ramfunc; $('#ch6-opt-vec').checked=defaults.vec;
+    checkLd();
+  });
+  $$('#ch6-opt-ccm,#ch6-opt-dma,#ch6-opt-config,#ch6-opt-ramfunc,#ch6-opt-vec').forEach(function(x){ x.addEventListener('change', checkLd); });
+  checkLd();
+
+  /* scene 3: stack simulator */
+  function renderStack(){
+    var sizeKB = Number($('#ch6-stack-size').value);
+    var depth = Number($('#ch6-stack-depth').value);
+    var used = depth * 96;
+    var total = sizeKB * 1024;
+    var pct = Math.min(100, used/total*100);
+    var over = used > total;
+    $('#ch6-stack-size-val').textContent = sizeKB + ' KB';
+    $('#ch6-stack-depth-val').textContent = depth + ' 层';
+    $('#ch6-stack-label').textContent = sizeKB + ' KB · ' + depth + ' 层';
+    $('#ch6-stack-used').style.height = Math.min(100,pct) + '%';
+    $('#ch6-stack-used').textContent = over ? '溢出 '+(used-total)+' B' : used+' B 已用';
+    $('#ch6-stack-free').textContent = over ? '越过栈底：踩到堆/全局变量' : '剩余 '+(total-used)+' B';
+    $('#ch6-stack-bar').classList.toggle('is-over', over);
+    var canary = $('#ch6-def-canary').checked;
+    var mpu = $('#ch6-def-mpu').checked;
+    var stat = $('#ch6-def-static').checked;
+    var msg;
+    if(over && mpu){ msg = '<b>MPU 拦截：</b>越过保护页立刻触发 MemManage/BusFault，系统在破坏扩散前停机。这是最接近“现场保护”的防线。'; }
+    else if(over && canary){ msg = '<b>Canary 发现溢出：</b>水位线已经越过栈底，但数据可能已经踩坏相邻区域；Canary 只能事后发现，不能阻止破坏。'; }
+    else if(over){ msg = '<b>静默溢出：</b>没有任何防线，栈继续向下踩 heap/全局变量；症状可能延迟到很远的地方才爆。'; }
+    else if(stat){ msg = '<b>预算内运行：</b>当前用量 '+used+' B，剩余 '+(total-used)+' B（'+Math.round((1-used/total)*100)+'%）。静态分析 + 水位线验证，余量充足。'; }
+    else { msg = '<b>预算内运行：</b>当前用量 '+used+' B，剩余 '+(total-used)+' B。建议打开静态分析确认最坏调用链，而不是只看这一次运行。'; }
+    $('#ch6-stack-status').innerHTML = msg;
+    $$('.ch6-def').forEach(function(el){ var input = el.querySelector('input'); el.classList.toggle('is-on', input.checked); });
+  }
+  $('#ch6-stack-size').addEventListener('input', renderStack);
+  $('#ch6-stack-depth').addEventListener('input', renderStack);
+  $$('#ch6-def-canary,#ch6-def-mpu,#ch6-def-static').forEach(function(x){ x.addEventListener('change', renderStack); });
+  renderStack();
+
+  /* scene 4: optimization table + lab */
+  var optData = [
+    {grade:'-O0', text:38.1, cycles:41000, note:'调试友好，但代码体积和周期都最高；只适合短期定位。'},
+    {grade:'-Og', text:31.6, cycles:12000, note:'体积下降明显，仍保留较好的调试信息；开发期常用。'},
+    {grade:'-O2', text:30.9, cycles:5800, note:'性能最好；可能内联/重排，排障时 PC 与源码行不一定一一对应。'},
+    {grade:'-Os', text:27.4, cycles:6100, note:'体积再省约 10%，热点略慢；Flash 紧张时优先。'},
+    {grade:'-O2+LTO', text:28.3, cycles:5500, note:'跨文件优化；小工程收益有限，大工程可能 5~15%。'}
+  ];
+  function renderOpt(idx){
+    $('#ch6-opt-table tbody').innerHTML = optData.map(function(d,i){
+      return '<tr class="'+(i===idx?'is-active':'')+'" data-opt="'+i+'"><td>'+d.grade+'</td><td>'+d.text.toFixed(1)+' K</td><td>9.2 K</td><td>~'+d.cycles.toLocaleString()+'</td></tr>';
+    }).join('');
+    $('#ch6-sizebars').innerHTML = optData.map(function(d,i){
+      return '<div class="ch6-sizebar"><span>'+d.grade+'</span><i style="width:'+(d.text/40*100)+'%;opacity:'+(i===idx?'1':'.45')+'"></i><span>'+d.text.toFixed(1)+' K</span></div>';
+    }).join('');
+    $('#ch6-opt-note').innerHTML = '<b>'+optData[idx].grade+'：</b>'+optData[idx].note;
+    $$('#ch6-opt-table tbody tr').forEach(function(tr){ tr.addEventListener('click', function(){ renderOpt(Number(tr.getAttribute('data-opt'))); }); });
+  }
+  renderOpt(2);
+  var labItems = [
+    '在 Makefile 的 CFLAGS 加 <code>-fstack-usage</code>，重新编译。',
+    '汇总所有 .su 文件，按栈用量排序，找出前 15 个函数。',
+    '从最大者出发，沿调用图累加最坏路径，得到总深度。',
+    '与链接脚本里的栈大小对比，计算余量百分比（ISR 嵌套另加 32 B/层）。',
+    '把“函数 → 累计字节”清单写入 docs/，并给出扩栈或拆函数建议。'
+  ];
+  $('#ch6-lab').innerHTML = labItems.map(function(t,i){ return '<label><input type="checkbox" data-lab="'+i+'"><span>'+t+'</span></label>'; }).join('');
+  function updateLab(){
+    var all = $$('#ch6-lab input');
+    var done = all.filter(function(x){ return x.checked; }).length;
+    $('#ch6-lab-count').textContent = done+' / '+all.length;
+    $('#ch6-lab-bar').style.width = (done/all.length*100)+'%';
+  }
+  $$('#ch6-lab input').forEach(function(x){ x.addEventListener('change', updateLab); });
+  updateLab();
+})();
+</script>
+</div>

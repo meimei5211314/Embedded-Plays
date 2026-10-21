@@ -1,0 +1,1960 @@
+<div id="ch1-lesson" class="ch1">
+<style>
+  #ch1-lesson{
+    --ch1-line: var(--border-standard);
+    --ch1-line-soft: var(--border-subtle);
+    --ch1-inset: var(--inset-bg);
+    --ch1-tint: color-mix(in srgb, var(--seed-primary) 10%, transparent);
+    --ch1-tint-2: color-mix(in srgb, var(--seed-primary) 18%, transparent);
+    --ch1-warn: var(--viz-series-6);
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 2px 0 10px;
+    color: var(--seed-fg);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  #ch1-lesson *,
+  #ch1-lesson *::before,
+  #ch1-lesson *::after{ box-sizing: border-box; }
+  #ch1-lesson h2,
+  #ch1-lesson h3,
+  #ch1-lesson h4,
+  #ch1-lesson p,
+  #ch1-lesson ul,
+  #ch1-lesson ol,
+  #ch1-lesson dl,
+  #ch1-lesson dd{ margin: 0; }
+  #ch1-lesson h2,
+  #ch1-lesson h3,
+  #ch1-lesson h4{ font-weight: 500; letter-spacing: 0; }
+  #ch1-lesson p{ font-size: 13px; }
+  #ch1-lesson ul,
+  #ch1-lesson ol{ padding-left: 17px; }
+  #ch1-lesson button{
+    font-family: inherit;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  #ch1-lesson button:disabled{ cursor: default; opacity: .45; }
+  #ch1-lesson code{
+    font-family: var(--font-code);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+  }
+  #ch1-lesson strong{ font-weight: 500; }
+  #ch1-lesson .ch1-head{
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 2px 0 15px;
+    border-bottom: 1px solid var(--ch1-line-soft);
+  }
+  #ch1-lesson .ch1-head::after{
+    content: "";
+    position: absolute;
+    right: -4px;
+    top: -8px;
+    width: 210px;
+    height: 78px;
+    background-image: radial-gradient(color-mix(in srgb, var(--seed-primary) 30%, transparent) 1.2px, transparent 1.2px);
+    background-size: 13px 13px;
+    opacity: .55;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000);
+    mask-image: linear-gradient(90deg, transparent, #000);
+  }
+  #ch1-lesson .ch1-head-copy{
+    position: relative;
+    z-index: 1;
+    flex: 1 1 520px;
+    min-width: 0;
+  }
+  #ch1-lesson .ch1-kicker{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-code);
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-dot{
+    width: 6px;
+    height: 6px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--seed-primary);
+    box-shadow: 0 0 0 4px var(--ch1-tint);
+    animation: ch1Pulse 2.8s ease-in-out infinite;
+  }
+  #ch1-lesson .ch1-title{
+    margin-top: 6px;
+    font-size: 19px;
+    line-height: 1.35;
+  }
+  #ch1-lesson .ch1-lead{
+    margin-top: 5px;
+    max-width: 68ch;
+    font-size: 13px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-meter{
+    position: relative;
+    z-index: 1;
+    flex: 0 1 250px;
+    min-width: 180px;
+  }
+  #ch1-lesson .ch1-meter-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 5px;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-meter-top span:first-child{ color: var(--seed-fg); }
+  #ch1-lesson .ch1-steps{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  #ch1-lesson .ch1-step{
+    flex: 1 1 88px;
+    min-width: 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--seed-muted);
+    cursor: pointer;
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
+  }
+  #ch1-lesson .ch1-step:hover{ border-color: var(--ch1-line); color: var(--seed-fg); }
+  #ch1-lesson .ch1-step span{
+    font-family: var(--font-code);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-step .ch1-step-name{
+    font-family: var(--font-sans);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  #ch1-lesson .ch1-step[aria-current="step"]{
+    border-color: var(--seed-primary);
+    background: var(--ch1-tint);
+    color: var(--seed-fg);
+  }
+  #ch1-lesson .ch1-step[aria-current="step"] span{ color: var(--seed-primary); }
+  #ch1-lesson .ch1-stage{ margin-top: 16px; }
+  #ch1-lesson .ch1-scene{ min-width: 0; }
+  #ch1-lesson .ch1-scene[hidden]{ display: none; }
+  #ch1-lesson .ch1-scene.is-active{
+    display: block;
+    animation: ch1Scene .28s ease both;
+  }
+  #ch1-lesson .ch1-scene-head{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  #ch1-lesson .ch1-scene-num{
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    border: 1px solid var(--ch1-line);
+    border-radius: 6px;
+    background: var(--ch1-tint);
+    color: var(--seed-primary);
+    font-family: var(--font-code);
+    font-size: 11px;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+  #ch1-lesson .ch1-scene-head h3{ font-size: 15px; line-height: 1.4; }
+  #ch1-lesson .ch1-scene-head p{
+    margin-top: 2px;
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-stack-grid,
+  #ch1-lesson .ch1-route-grid{
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  #ch1-lesson .ch1-stack-col,
+  #ch1-lesson .ch1-stack-side{ min-width: 0; }
+  #ch1-lesson .ch1-stack{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 2px 0;
+  }
+  #ch1-lesson .ch1-layer{
+    position: relative;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 14px;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 46px;
+    padding: 5px 9px 5px 12px;
+    text-align: left;
+    border: 1px solid var(--ch1-line-soft);
+    border-left: 3px solid color-mix(in srgb, var(--seed-primary) 30%, var(--ch1-line));
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--seed-primary) var(--tint), var(--card-bg));
+    cursor: pointer;
+    transition: background .18s ease, border-color .18s ease, opacity .18s ease;
+  }
+  #ch1-lesson .ch1-layer:hover{ border-color: var(--seed-primary); }
+  #ch1-lesson .ch1-layer[aria-pressed="true"]{
+    border-color: var(--seed-primary);
+    background: color-mix(in srgb, var(--seed-primary) 16%, var(--card-bg));
+  }
+  #ch1-lesson .ch1-layer.is-hit{ border-color: var(--seed-primary); }
+  #ch1-lesson .ch1-layer.is-skip{ opacity: .36; }
+  #ch1-lesson .ch1-layer-code{
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-layer[aria-pressed="true"] .ch1-layer-code{ color: var(--seed-primary); }
+  #ch1-lesson .ch1-layer-name{
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  #ch1-lesson .ch1-layer-sub{
+    display: block;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--seed-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #ch1-lesson .ch1-layer-mark{
+    color: var(--seed-muted);
+    font-size: 15px;
+    line-height: 1;
+    text-align: right;
+  }
+  #ch1-lesson .ch1-probe{
+    position: absolute;
+    left: 7px;
+    top: 0;
+    z-index: 4;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--seed-primary);
+    box-shadow: 0 0 0 4px var(--ch1-tint-2);
+    opacity: 0;
+    pointer-events: none;
+    transition: top .28s ease, opacity .2s ease, background .2s ease;
+  }
+  #ch1-lesson .ch1-probe.is-run{ opacity: 1; }
+  #ch1-lesson .ch1-probe.is-bad{
+    background: var(--ch1-warn);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ch1-warn) 18%, transparent);
+  }
+  #ch1-lesson .ch1-skip-note{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 5;
+    padding: 6px 10px;
+    border: 1px solid var(--ch1-warn);
+    border-radius: 7px;
+    background: var(--card-bg);
+    color: var(--seed-fg);
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ch1-warn) 12%, transparent);
+    transform: translate(-50%, -50%);
+  }
+  #ch1-lesson .ch1-skip-note.is-on{ animation: ch1Warn 1.5s ease both; }
+  #ch1-lesson .ch1-axis{
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-fig-note{
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-toolband{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px 8px;
+    margin-top: 9px;
+    padding: 8px 10px;
+    border: 1px dashed var(--ch1-line);
+    border-radius: 8px;
+    background: var(--ch1-inset);
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-toolband code{ color: var(--seed-fg); }
+  #ch1-lesson .ch1-stack-side{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #ch1-lesson .ch1-demo{
+    padding: 11px 12px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 10px;
+    background: var(--ch1-inset);
+  }
+  #ch1-lesson .ch1-demo-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  #ch1-lesson .ch1-status{
+    max-width: 55%;
+    padding: 1px 6px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--seed-muted);
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #ch1-lesson .ch1-demo-copy{
+    min-height: 36px;
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-seg{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--fill-1) 70%, transparent);
+  }
+  #ch1-lesson .ch1-seg button{
+    min-height: 38px;
+    padding: 4px 11px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--seed-muted);
+    cursor: pointer;
+    transition: background .16s ease, color .16s ease, border-color .16s ease;
+  }
+  #ch1-lesson .ch1-seg button:hover{ color: var(--seed-fg); }
+  #ch1-lesson .ch1-seg button[aria-pressed="true"]{
+    border-color: var(--ch1-line);
+    background: var(--card-bg);
+    color: var(--seed-fg);
+  }
+  #ch1-lesson .ch1-seg-small{
+    display: flex;
+    margin-top: 9px;
+  }
+  #ch1-lesson .ch1-seg-small button{ flex: 1; }
+  #ch1-lesson .ch1-detail{
+    min-width: 0;
+    padding: 13px 14px 12px;
+  }
+  #ch1-lesson .ch1-detail-top{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #ch1-lesson .ch1-detail h4{ font-size: 14px; line-height: 1.4; }
+  #ch1-lesson .ch1-tag{
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 1px 7px;
+    border: 1px solid color-mix(in srgb, var(--seed-primary) 30%, var(--ch1-line));
+    border-radius: 999px;
+    background: var(--ch1-tint);
+    color: var(--seed-fg);
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+  #ch1-lesson .ch1-detail-role{
+    margin-top: 7px;
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-chiprow{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+  #ch1-lesson .ch1-chip{
+    padding: 2px 6px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 5px;
+    background: var(--ch1-inset);
+    color: var(--seed-fg);
+    font-family: var(--font-code);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-rule{
+    margin-top: 9px;
+    padding: 7px 9px;
+    border-left: 2px solid var(--seed-primary);
+    border-radius: 0 6px 6px 0;
+    background: var(--ch1-tint);
+  }
+  #ch1-lesson .ch1-rule-k{
+    display: block;
+    margin-bottom: 1px;
+    color: var(--seed-primary);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-rule p{ font-size: 12px; }
+  #ch1-lesson .ch1-route{
+    position: relative;
+    min-width: 0;
+    padding-left: 26px;
+  }
+  #ch1-lesson .ch1-route::before{
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--ch1-line);
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  #ch1-lesson .ch1-scene.is-active .ch1-route::before{
+    animation: ch1Draw .8s ease .05s both;
+  }
+  #ch1-lesson .ch1-phase{ margin-top: 12px; }
+  #ch1-lesson .ch1-phase:first-child{ margin-top: 0; }
+  #ch1-lesson .ch1-phase-label{
+    position: relative;
+    margin: 0 0 4px -26px;
+    padding-left: 26px;
+    color: var(--seed-primary);
+    font-family: var(--font-code);
+    font-size: 11px;
+    letter-spacing: .06em;
+  }
+  #ch1-lesson .ch1-phase-label::before{
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--seed-primary);
+    border-radius: 50%;
+    background: var(--card-bg);
+    transform: translateY(-50%);
+  }
+  #ch1-lesson .ch1-stop{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 50px;
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: background .16s ease, border-color .16s ease;
+  }
+  #ch1-lesson .ch1-stop:hover{ background: color-mix(in srgb, var(--fill-1) 70%, transparent); }
+  #ch1-lesson .ch1-stop[aria-pressed="true"]{
+    border-color: var(--ch1-line);
+    background: var(--card-bg);
+  }
+  #ch1-lesson .ch1-stop::before{
+    content: "";
+    position: absolute;
+    left: -21px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--ch1-line);
+    border-radius: 50%;
+    background: var(--card-bg);
+    transform: translateY(-50%);
+  }
+  #ch1-lesson .ch1-stop[aria-pressed="true"]::before{
+    border-color: var(--seed-primary);
+    background: var(--seed-primary);
+    box-shadow: 0 0 0 3px var(--ch1-tint);
+  }
+  #ch1-lesson .ch1-stop-num{
+    flex: 0 0 auto;
+    width: 18px;
+    color: var(--seed-muted);
+    font-family: var(--font-code);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-stop[aria-pressed="true"] .ch1-stop-num{ color: var(--seed-primary); }
+  #ch1-lesson .ch1-stop-main{ min-width: 0; flex: 1; }
+  #ch1-lesson .ch1-stop-name{
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  #ch1-lesson .ch1-stop-sub{
+    display: block;
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-details{
+    margin-top: 10px;
+    padding: 0 12px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 10px;
+    background: var(--ch1-inset);
+  }
+  #ch1-lesson .ch1-details summary{
+    min-height: 44px;
+    padding: 11px 0;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    outline-offset: 2px;
+  }
+  #ch1-lesson .ch1-details[open]{ padding-bottom: 11px; }
+  #ch1-lesson .ch1-details p,
+  #ch1-lesson .ch1-details li{
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-details ul{
+    margin-top: 6px;
+    padding-left: 17px;
+  }
+  #ch1-lesson .ch1-details li{ margin-top: 4px; }
+  #ch1-lesson .ch1-facts{
+    display: grid;
+    gap: 6px;
+    margin-top: 9px;
+  }
+  #ch1-lesson .ch1-facts > div{
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 9px;
+  }
+  #ch1-lesson .ch1-facts dt{
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-facts dd{
+    min-width: 0;
+    font-size: 12px;
+    color: var(--seed-fg);
+  }
+  #ch1-lesson .ch1-chart{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: end;
+    gap: 6px;
+    min-height: 224px;
+    padding: 0 2px;
+  }
+  #ch1-lesson .ch1-level{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    height: 224px;
+    min-width: 0;
+    padding: 5px 3px 4px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    cursor: pointer;
+    transition: background .16s ease, border-color .16s ease;
+  }
+  #ch1-lesson .ch1-level:hover{ background: color-mix(in srgb, var(--fill-1) 60%, transparent); }
+  #ch1-lesson .ch1-level-code{
+    color: var(--seed-muted);
+    font-family: var(--font-code);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-level[aria-pressed="true"]{
+    border-color: transparent;
+    background: transparent;
+  }
+  #ch1-lesson .ch1-level[aria-pressed="true"] .ch1-level-code{ color: var(--seed-primary); }
+  #ch1-lesson .ch1-level[aria-pressed="true"] .ch1-level-bar{
+    border-color: var(--seed-primary);
+    box-shadow: 0 0 0 2px var(--ch1-tint);
+  }
+  #ch1-lesson .ch1-level[aria-pressed="true"] .ch1-level-name{ color: var(--seed-primary); }
+  #ch1-lesson .ch1-level-bar{
+    display: flex;
+    align-items: flex-end;
+    width: min(100%, 58px);
+    height: var(--h);
+    overflow: hidden;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 6px 6px 3px 3px;
+    background: var(--ch1-inset);
+  }
+  #ch1-lesson .ch1-level-fill{
+    width: 100%;
+    height: 100%;
+    background: color-mix(in srgb, var(--seed-primary) 26%, transparent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  #ch1-lesson .ch1-scene.is-active .ch1-level-fill{
+    animation: ch1Grow .55s ease var(--d, 0s) both;
+  }
+  #ch1-lesson .ch1-level[aria-pressed="true"] .ch1-level-fill{ background: var(--seed-primary); }
+  #ch1-lesson .ch1-level-name{
+    font-size: 12px;
+    color: var(--seed-fg);
+    white-space: nowrap;
+  }
+  #ch1-lesson .ch1-emphasis{
+    margin-top: 10px;
+    padding: 8px 10px;
+    border-left: 2px solid var(--seed-primary);
+    border-radius: 0 6px 6px 0;
+    background: var(--ch1-tint);
+    font-size: 12px;
+  }
+  #ch1-lesson .ch1-filterbar{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  #ch1-lesson .ch1-filter{
+    min-height: 38px;
+    padding: 4px 10px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--seed-muted);
+    cursor: pointer;
+    transition: background .16s ease, border-color .16s ease, color .16s ease;
+  }
+  #ch1-lesson .ch1-filter:hover{ border-color: var(--ch1-line); color: var(--seed-fg); }
+  #ch1-lesson .ch1-filter[aria-pressed="true"]{
+    border-color: var(--seed-primary);
+    background: var(--ch1-tint);
+    color: var(--seed-fg);
+  }
+  #ch1-lesson .ch1-oss-status{
+    margin-top: 7px;
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-oss-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  #ch1-lesson .ch1-oss{
+    min-width: 0;
+    padding: 10px 11px;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--fill-1) 55%, transparent);
+  }
+  #ch1-lesson .ch1-oss[hidden]{ display: none; }
+  #ch1-lesson .ch1-scene.is-active .ch1-oss{
+    animation: ch1Rise .3s ease var(--d, 0s) both;
+  }
+  #ch1-lesson .ch1-oss-top{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  #ch1-lesson .ch1-oss-name{
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  #ch1-lesson .ch1-oss-repo{
+    margin-top: 3px;
+    color: var(--seed-muted);
+    font-family: var(--font-code);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+  }
+  #ch1-lesson .ch1-oss p{
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-notes{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+  #ch1-lesson .ch1-note{
+    padding: 9px 10px;
+    border: 1px dashed var(--ch1-line);
+    border-radius: 8px;
+    background: var(--ch1-inset);
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-note .ch1-tag{
+    margin-right: 5px;
+    vertical-align: 1px;
+  }
+  #ch1-lesson .ch1-sym-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #ch1-lesson .ch1-sym{
+    min-height: 74px;
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--fill-1) 55%, transparent);
+    cursor: pointer;
+    transition: background .16s ease, border-color .16s ease;
+  }
+  #ch1-lesson .ch1-sym:hover{ border-color: var(--ch1-line); }
+  #ch1-lesson .ch1-sym[aria-pressed="true"]{
+    border-color: var(--seed-primary);
+    background: var(--ch1-tint);
+  }
+  #ch1-lesson .ch1-sym-q{
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  #ch1-lesson .ch1-sym-h{
+    display: block;
+    margin-top: 3px;
+    color: var(--seed-muted);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-diag{ margin-top: 10px; }
+  #ch1-lesson .ch1-diag-root{
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-diag-path{
+    margin-top: 5px;
+    padding-left: 17px;
+  }
+  #ch1-lesson .ch1-diag-path li{
+    margin-top: 3px;
+    font-size: 12px;
+  }
+  #ch1-lesson .ch1-rules{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  #ch1-lesson .ch1-rulebox{
+    padding-left: 9px;
+    border-left: 2px solid var(--seed-primary);
+  }
+  #ch1-lesson .ch1-rulebox strong{
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  #ch1-lesson .ch1-rulebox p{
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-faq-group{
+    margin-top: 12px;
+    border-top: 1px solid var(--ch1-line-soft);
+  }
+  #ch1-lesson .ch1-faq{
+    padding: 0 2px;
+    border-bottom: 1px solid var(--ch1-line-soft);
+  }
+  #ch1-lesson .ch1-faq summary{
+    min-height: 44px;
+    padding: 11px 0;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    outline-offset: 2px;
+  }
+  #ch1-lesson .ch1-faq p{
+    padding-bottom: 10px;
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-skill-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+  #ch1-lesson .ch1-skill{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 112px;
+    padding: 10px 11px;
+    text-align: left;
+    border: 1px solid var(--ch1-line-soft);
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--fill-1) 55%, transparent);
+    cursor: pointer;
+    transition: background .16s ease, border-color .16s ease;
+  }
+  #ch1-lesson .ch1-skill:hover{ border-color: var(--ch1-line); }
+  #ch1-lesson .ch1-skill[aria-pressed="true"]{
+    border-color: var(--seed-primary);
+    background: var(--ch1-tint);
+  }
+  #ch1-lesson .ch1-skill-num{
+    color: var(--seed-muted);
+    font-family: var(--font-code);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-skill[aria-pressed="true"] .ch1-skill-num{ color: var(--seed-primary); }
+  #ch1-lesson .ch1-skill-name{
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  #ch1-lesson .ch1-skill-sub{
+    display: block;
+    margin-top: 2px;
+    color: var(--seed-muted);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  #ch1-lesson .ch1-skill-detail{ margin-top: 10px; }
+  #ch1-lesson .ch1-panel[hidden]{ display: none; }
+  #ch1-lesson .ch1-panel:not([hidden]){ animation: ch1Pop .2s ease both; }
+  #ch1-lesson .ch1-lab-head{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 10px;
+    margin-top: 2px;
+  }
+  #ch1-lesson .ch1-lab-head p{
+    font-size: 12px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-lab-meter{ margin-top: 9px; }
+  #ch1-lesson .ch1-lab-meter-top{
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-checklist{ margin-top: 6px; }
+  #ch1-lesson .ch1-checkitem{
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    min-height: 44px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--ch1-line-soft);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  #ch1-lesson .ch1-checkitem input{
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    margin: 2px 0 0;
+    accent-color: var(--seed-primary);
+  }
+  #ch1-lesson .ch1-lab-accept{
+    margin-top: 10px;
+    color: var(--seed-muted);
+    font-size: 11px;
+  }
+  #ch1-lesson .ch1-lab-status{
+    min-height: 18px;
+    margin-top: 7px;
+    font-size: 12px;
+  }
+  #ch1-lesson .ch1-foot{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 13px;
+    border-top: 1px solid var(--ch1-line-soft);
+  }
+  #ch1-lesson .ch1-btn{
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--ch1-line);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--seed-fg);
+    cursor: pointer;
+    transition: border-color .16s ease, color .16s ease, background .16s ease;
+  }
+  #ch1-lesson .ch1-btn:hover{ border-color: var(--seed-primary); color: var(--seed-primary); }
+  #ch1-lesson .ch1-btn-next{
+    border-color: var(--seed-primary);
+    background: var(--ch1-tint);
+  }
+  #ch1-lesson .ch1-foot-mid{
+    flex: 1;
+    min-width: 130px;
+    text-align: center;
+  }
+  #ch1-lesson .ch1-foot-name{
+    display: block;
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--seed-fg);
+  }
+  #ch1-lesson .ch1-foot-hint{
+    display: block;
+    font-size: 11px;
+    color: var(--seed-muted);
+  }
+  #ch1-lesson .ch1-pop{ animation: ch1Pop .22s ease both; }
+  #ch1-lesson .ch1-scene.is-active .ch1-layer{ animation: ch1Rise .4s ease var(--d, 0s) both; }
+  #ch1-lesson .ch1-scene.is-active .ch1-stop{ animation: ch1Rise .35s ease var(--d, 0s) both; }
+  #ch1-lesson .ch1-scene.is-active .ch1-sym{ animation: ch1Rise .35s ease var(--d, 0s) both; }
+  #ch1-lesson .ch1-scene.is-active .ch1-skill{ animation: ch1Rise .35s ease var(--d, 0s) both; }
+  @keyframes ch1Scene{
+    from{ opacity: 0; transform: translateY(5px); }
+    to{ opacity: 1; transform: none; }
+  }
+  @keyframes ch1Rise{
+    from{ opacity: 0; transform: translateY(6px); }
+    to{ opacity: 1; transform: none; }
+  }
+  @keyframes ch1Draw{
+    from{ transform: scaleY(0); }
+    to{ transform: scaleY(1); }
+  }
+  @keyframes ch1Grow{
+    from{ transform: scaleY(0); }
+    to{ transform: scaleY(1); }
+  }
+  @keyframes ch1Pop{
+    from{ opacity: .35; }
+    to{ opacity: 1; }
+  }
+  @keyframes ch1Pulse{
+    0%, 100%{ box-shadow: 0 0 0 3px var(--ch1-tint); }
+    50%{ box-shadow: 0 0 0 6px transparent; }
+  }
+  @keyframes ch1Warn{
+    0%{ opacity: 0; transform: translate(-50%, -46%); }
+    15%, 75%{ opacity: 1; transform: translate(-50%, -50%); }
+    100%{ opacity: 0; transform: translate(-50%, -50%); }
+  }
+  @media (pointer: coarse){
+    #ch1-lesson .ch1-seg button{ min-height: 44px; }
+    #ch1-lesson .ch1-filter{ min-height: 44px; }
+  }
+  @media (max-width: 820px){
+    #ch1-lesson .ch1-stack-grid,
+    #ch1-lesson .ch1-route-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch1-lesson .ch1-head::after{ display: none; }
+    #ch1-lesson .ch1-meter{ flex-basis: 100%; max-width: 320px; }
+  }
+  @media (max-width: 560px){
+    #ch1-lesson .ch1-head{ gap: 12px; }
+    #ch1-lesson .ch1-title{ font-size: 17px; }
+    #ch1-lesson .ch1-steps{ gap: 5px; }
+    #ch1-lesson .ch1-step{ flex-basis: 86px; padding: 4px 6px; }
+    #ch1-lesson .ch1-layer{
+      grid-template-columns: 26px minmax(0, 1fr) 12px;
+      padding-left: 10px;
+    }
+    #ch1-lesson .ch1-sym-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch1-lesson .ch1-rules{ grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    #ch1-lesson .ch1-chart{ gap: 3px; }
+    #ch1-lesson .ch1-level{ padding: 3px 1px; }
+    #ch1-lesson .ch1-level-bar{ width: 100%; }
+    #ch1-lesson .ch1-detail{ padding: 11px 12px; }
+    #ch1-lesson .ch1-scene-head{ gap: 8px; }
+    #ch1-lesson .ch1-scene-num{ padding: 1px 5px; }
+    #ch1-lesson .ch1-oss-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch1-lesson .ch1-notes{ grid-template-columns: minmax(0, 1fr); }
+    #ch1-lesson .ch1-skill-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #ch1-lesson .ch1-skill{ min-height: 100px; }
+    #ch1-lesson .ch1-foot-mid{ order: 3; flex-basis: 100%; text-align: left; }
+    #ch1-lesson .ch1-btn{ flex: 1; }
+  }
+  @media (max-width: 360px){
+    #ch1-lesson .ch1-skill-grid{ grid-template-columns: minmax(0, 1fr); }
+    #ch1-lesson .ch1-level-name{ font-size: 11px; }
+    #ch1-lesson .ch1-facts > div{ grid-template-columns: 48px minmax(0, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #ch1-lesson *,
+    #ch1-lesson *::before,
+    #ch1-lesson *::after{
+      animation-duration: .001s !important;
+      animation-delay: 0s !important;
+      transition-duration: .001s !important;
+    }
+    #ch1-lesson .ch1-dot{ animation: none !important; }
+  }
+</style>
+
+<header class="ch1-head">
+  <div class="ch1-head-copy">
+    <div class="ch1-kicker"><span class="ch1-dot" aria-hidden="true"></span>PART 1 · 第1章 / 课程导学</div>
+    <h2 class="ch1-title">从「会点灯」到「能交付」</h2>
+    <p class="ch1-lead">六层技术栈、八站学习路线、五级能力标尺。先把地图画对，再决定先学什么、后学什么、卡住时怎么走。</p>
+  </div>
+  <div class="ch1-meter">
+    <div class="ch1-meter-top"><span id="ch1-progress-label">01 / 06 · 技术栈</span><span>可点击切换</span></div>
+    <div class="progress" role="progressbar" aria-label="课件进度" aria-valuemin="0" aria-valuemax="6" aria-valuenow="1" id="ch1-progress">
+      <div class="progress-bar" id="ch1-progress-fill" style="width:16.7%"></div>
+    </div>
+  </div>
+</header>
+
+<nav class="ch1-steps" aria-label="课件章节">
+  <button type="button" class="ch1-step" data-goto="0" aria-current="step"><span>01</span><span class="ch1-step-name">技术栈</span></button>
+  <button type="button" class="ch1-step" data-goto="1"><span>02</span><span class="ch1-step-name">学习路线</span></button>
+  <button type="button" class="ch1-step" data-goto="2"><span>03</span><span class="ch1-step-name">能力阶梯</span></button>
+  <button type="button" class="ch1-step" data-goto="3"><span>04</span><span class="ch1-step-name">开源教材</span></button>
+  <button type="button" class="ch1-step" data-goto="4"><span>05</span><span class="ch1-step-name">学习排障</span></button>
+  <button type="button" class="ch1-step" data-goto="5"><span>06</span><span class="ch1-step-name">元技能</span></button>
+</nav>
+
+<div class="ch1-stage">
+
+  <section class="ch1-scene is-active" data-scene="0" aria-labelledby="ch1-s1-title">
+    <div class="ch1-scene-head">
+      <span class="ch1-scene-num">1.1</span>
+      <div>
+        <h3 id="ch1-s1-title">嵌入式软件六层栈</h3>
+        <p>上层只依赖下层接口；跨层直捅，是万恶之源。</p>
+      </div>
+    </div>
+
+    <div class="ch1-stack-grid">
+      <div class="ch1-stack-col">
+        <div class="ch1-stack" id="ch1-stack">
+          <div class="ch1-probe" id="ch1-probe" aria-hidden="true"></div>
+          <div class="ch1-skip-note" id="ch1-skip-note" aria-hidden="true">越过中间 4 层，直接写寄存器</div>
+          <button type="button" class="ch1-layer" data-layer="app" aria-pressed="true" style="--tint:4%;--d:.30s">
+            <span class="ch1-layer-code">L6</span>
+            <span><span class="ch1-layer-name">应用层</span><span class="ch1-layer-sub">业务 · UI · 云协议 · 算法</span></span>
+            <span class="ch1-layer-mark" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="ch1-layer" data-layer="middleware" aria-pressed="false" style="--tint:6%;--d:.25s">
+            <span class="ch1-layer-code">L5</span>
+            <span><span class="ch1-layer-name">中间件层</span><span class="ch1-layer-sub">lwIP · FatFs · LVGL · mbedTLS</span></span>
+            <span class="ch1-layer-mark" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="ch1-layer" data-layer="system" aria-pressed="false" style="--tint:8%;--d:.20s">
+            <span class="ch1-layer-code">L4</span>
+            <span><span class="ch1-layer-name">系统层</span><span class="ch1-layer-sub">调度 · 内存 · IPC · 设备模型</span></span>
+            <span class="ch1-layer-mark" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="ch1-layer" data-layer="bsp" aria-pressed="false" style="--tint:10%;--d:.15s">
+            <span class="ch1-layer-code">L3</span>
+            <span><span class="ch1-layer-name">硬件抽象层 BSP</span><span class="ch1-layer-sub">HAL · 设备树 · Bootloader · SPL</span></span>
+            <span class="ch1-layer-mark" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="ch1-layer" data-layer="bus" aria-pressed="false" style="--tint:12%;--d:.10s">
+            <span class="ch1-layer-code">L2</span>
+            <span><span class="ch1-layer-name">总线与外设协议</span><span class="ch1-layer-sub">UART · I2C · SPI · CAN · USB</span></span>
+            <span class="ch1-layer-mark" aria-hidden="true">›</span>
+          </button>
+          <button type="button" class="ch1-layer" data-layer="cpu" aria-pressed="false" style="--tint:14%;--d:.05s">
+            <span class="ch1-layer-code">L1</span>
+            <span><span class="ch1-layer-name">CPU 架构层</span><span class="ch1-layer-sub">寄存器 · 异常 · MMU / MPU · Cache</span></span>
+            <span class="ch1-layer-mark" aria-hidden="true">›</span>
+          </button>
+        </div>
+        <div class="ch1-axis"><span>↑ 上层：可移植性最高</span><span>下层：最贴近硬件 ↓</span></div>
+        <p class="ch1-fig-note">图1-1 · 点击任意一层，查看它的职责、典型组件与铁律。</p>
+        <div class="ch1-toolband">
+          <span class="ch1-tag">贯穿层</span>
+          <code>GCC / GDB / OpenOCD / probe-rs</code>
+          <span>·</span>
+          <span>示波器 / 逻辑分析仪 / 频谱仪 / Wireshark</span>
+          <span>· 第二篇专项训练</span>
+        </div>
+      </div>
+
+      <div class="ch1-stack-side">
+        <div class="ch1-demo">
+          <div class="ch1-demo-head"><span>调用路径实验</span><span class="ch1-status" id="ch1-demo-state" aria-live="polite">待运行</span></div>
+          <p class="ch1-demo-copy" id="ch1-demo-copy" aria-live="polite">一次 UART 打印，应该怎样穿过这六层？选一条路径试试。</p>
+          <div class="ch1-seg ch1-seg-small">
+            <button type="button" data-mode="ok" aria-pressed="false">合规调用</button>
+            <button type="button" data-mode="bad" aria-pressed="false">跨层直捅</button>
+          </div>
+        </div>
+
+        <div class="card ch1-detail" id="ch1-layer-detail" aria-live="polite">
+          <div class="ch1-detail-top"><span class="ch1-tag">L6 · 离硬件最远</span><h4>应用层</h4></div>
+          <p class="ch1-detail-role">业务逻辑、UI、云端协议与算法都在这里。可移植性最高，也最应该“无知”——它不该知道寄存器长什么样。</p>
+          <div class="ch1-chiprow"><span class="ch1-chip">LVGL / Qt</span><span class="ch1-chip">MQTT / HTTP</span><span class="ch1-chip">滤波 / PID / 推理</span></div>
+          <div class="ch1-rule"><span class="ch1-rule-k">铁律</span><p>只调用中间件与 OS 接口，禁止直捅寄存器；否则应用代码会与芯片焊死。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch1-scene" data-scene="1" aria-labelledby="ch1-s2-title" hidden>
+    <div class="ch1-scene-head">
+      <span class="ch1-scene-num">1.2</span>
+      <div>
+        <h3 id="ch1-s2-title">学习路线：先地基，再主干，后高阶</h3>
+        <p>八站顺序不是唯一真理，但每一步都有它必须先行的理由。</p>
+      </div>
+    </div>
+
+    <div class="ch1-route-grid">
+      <div class="ch1-route" aria-label="八站学习路线">
+        <div class="ch1-phase">
+          <div class="ch1-phase-label">地基 · 先把黑盒拆开</div>
+          <button type="button" class="ch1-stop" data-stop="0" aria-pressed="true" style="--d:.05s">
+            <span class="ch1-stop-num">01</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第一篇 · 语言与底层机制</span><span class="ch1-stop-sub">第1~9章 · C / C++ / 汇编 / 链接器 / 数据结构 / 单测</span></span>
+          </button>
+          <button type="button" class="ch1-stop" data-stop="1" aria-pressed="false" style="--d:.10s">
+            <span class="ch1-stop-num">02</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第二篇 · 工具链与仪器</span><span class="ch1-stop-sub">第10~20章 · GCC / GDB / OpenOCD / 日志 / 抓包 / 示波器</span></span>
+          </button>
+        </div>
+        <div class="ch1-phase">
+          <div class="ch1-phase-label">主干 · 在实时系统里扎根</div>
+          <button type="button" class="ch1-stop" data-stop="2" aria-pressed="false" style="--d:.16s">
+            <span class="ch1-stop-num">03</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第三篇 · 单片机裸机 → RTOS 化</span><span class="ch1-stop-sub">第21~33章 · Cortex-M / F407 / 外设 / DMA / OTA / ESP32</span></span>
+          </button>
+          <button type="button" class="ch1-stop" data-stop="3" aria-pressed="false" style="--d:.22s">
+            <span class="ch1-stop-num">04</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第五篇 · RTOS 源码级</span><span class="ch1-stop-sub">第45~53章 · 调度 / PendSV / IPC / heap / tickless / SMP</span></span>
+          </button>
+        </div>
+        <div class="ch1-phase">
+          <div class="ch1-phase-label">进阶 · 进入 A 核与协议世界</div>
+          <button type="button" class="ch1-stop" data-stop="4" aria-pressed="false" style="--d:.28s">
+            <span class="ch1-stop-num">05</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第四篇 + 第六篇 · SoC 与嵌入式 Linux</span><span class="ch1-stop-sub">第34~44 + 54~66章 · 启动链 / U-Boot / 设备树 / 驱动</span></span>
+          </button>
+          <button type="button" class="ch1-stop" data-stop="5" aria-pressed="false" style="--d:.34s">
+            <span class="ch1-stop-num">06</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第八篇 · 通信协议</span><span class="ch1-stop-sub">第74~86章 · UART / I2C / SPI / CAN / USB / 以太网 / 无线</span></span>
+          </button>
+        </div>
+        <div class="ch1-phase">
+          <div class="ch1-phase-label">高阶 · 把知识拧成交付物</div>
+          <button type="button" class="ch1-stop" data-stop="6" aria-pressed="false" style="--d:.40s">
+            <span class="ch1-stop-num">07</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第七篇 · Android 底层</span><span class="ch1-stop-sub">第67~73章 · AOSP / Zygote / HAL / Binder / OTA</span></span>
+          </button>
+          <button type="button" class="ch1-stop" data-stop="7" aria-pressed="false" style="--d:.46s">
+            <span class="ch1-stop-num">08</span>
+            <span class="ch1-stop-main"><span class="ch1-stop-name">第九篇 · 综合项目集</span><span class="ch1-stop-sub">第87~92章 · 六个可交付项目</span></span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card ch1-detail" id="ch1-route-detail" aria-live="polite">
+          <div class="ch1-detail-top"><span class="ch1-tag">地基</span><h4>第一篇 · 语言与底层机制</h4></div>
+          <p class="ch1-detail-role">第1~9章 · C / C++ / 汇编 / 链接器 / 数据结构 / 架构 / 单测</p>
+          <div class="ch1-rule"><span class="ch1-rule-k">为什么在这个位置</span><p>不懂 volatile、链接器、栈布局，后面全是黑盒。</p></div>
+        </div>
+        <details class="ch1-details">
+          <summary>1.4 支线判断：RISC-V 现在值得投入吗？</summary>
+          <p><span class="ch1-tag">结论</span> 作为第二架构顺手掌握，而不是替代 ARM 从头学。</p>
+          <ul>
+            <li><strong>生态已可用：</strong>ESP32-C3/C6、CH32V003/V103、嘉楠 K230、全志 D1 都已铺开。</li>
+            <li><strong>迁移成本低：</strong>FreeRTOS 换掉 port 层即可，上下文切换逻辑同构。</li>
+            <li><strong>工具链同构：</strong><code>riscv-none-elf-gcc</code> / gdb / OpenOCD 与 ARM 版用法一致。</li>
+            <li><strong>战略价值：</strong>信创与车规市场渗透加快，“ARM 精通 + RISC-V 能上手”是当前较优的简历组合。</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch1-scene" data-scene="2" aria-labelledby="ch1-s3-title" hidden>
+    <div class="ch1-scene-head">
+      <span class="ch1-scene-num">能力标尺</span>
+      <div>
+        <h3 id="ch1-s3-title">L1 会用 → L5 可交付</h3>
+        <p>每一级都有可检验的产物，不靠“我感觉会了”。</p>
+      </div>
+    </div>
+
+    <div class="ch1-chart" role="group" aria-label="五级能力阶梯">
+      <button type="button" class="ch1-level" data-level="0" aria-pressed="true" aria-label="L1 会用：照教程跑通例程">
+        <span class="ch1-level-code">L1</span>
+        <span class="ch1-level-bar" style="--h:64px"><span class="ch1-level-fill" style="--d:.05s"></span></span>
+        <span class="ch1-level-name">会用</span>
+      </button>
+      <button type="button" class="ch1-level" data-level="1" aria-pressed="false" aria-label="L2 懂原理：读手册、读源码">
+        <span class="ch1-level-code">L2</span>
+        <span class="ch1-level-bar" style="--h:88px"><span class="ch1-level-fill" style="--d:.12s"></span></span>
+        <span class="ch1-level-name">懂原理</span>
+      </button>
+      <button type="button" class="ch1-level" data-level="2" aria-pressed="false" aria-label="L3 能排障：现象、根因、修复">
+        <span class="ch1-level-code">L3</span>
+        <span class="ch1-level-bar" style="--h:112px"><span class="ch1-level-fill" style="--d:.19s"></span></span>
+        <span class="ch1-level-name">能排障</span>
+      </button>
+      <button type="button" class="ch1-level" data-level="3" aria-pressed="false" aria-label="L4 会设计：模块划分与取舍">
+        <span class="ch1-level-code">L4</span>
+        <span class="ch1-level-bar" style="--h:136px"><span class="ch1-level-fill" style="--d:.26s"></span></span>
+        <span class="ch1-level-name">会设计</span>
+      </button>
+      <button type="button" class="ch1-level" data-level="4" aria-pressed="false" aria-label="L5 可交付：完整项目闭环">
+        <span class="ch1-level-code">L5</span>
+        <span class="ch1-level-bar" style="--h:160px"><span class="ch1-level-fill" style="--d:.33s"></span></span>
+        <span class="ch1-level-name">可交付</span>
+      </button>
+    </div>
+
+    <p class="ch1-emphasis"><strong>最硬的一条：</strong>L3 的检验标准是 HardFault / Oops / 死锁 / 丢包，能在 1 小时内定位根因——不是“看过”，是“查到过”。</p>
+
+    <div class="card ch1-detail" id="ch1-level-detail" aria-live="polite">
+      <div class="ch1-detail-top"><span class="ch1-tag">L1 · 起点</span><h4>会用</h4></div>
+      <dl class="ch1-facts">
+        <div><dt>目标</dt><dd>照教程跑通例程，先建立“能跑”的正反馈。</dd></div>
+        <div><dt>对应篇章</dt><dd>第一、三篇前半。</dd></div>
+        <div><dt>检验标准</dt><dd>能独立完成 GPIO / 串口 / 定时器例程，并解释每一行代码。</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="ch1-scene" data-scene="3" aria-labelledby="ch1-s4-title" hidden>
+    <div class="ch1-scene-head">
+      <span class="ch1-scene-num">1.3</span>
+      <div>
+        <h3 id="ch1-s4-title">必收开源项目：你的第二套教材</h3>
+        <p>嵌入式最好的教材，是被千锤百炼过的开源代码。按阶段读，不要一上来啃内核。</p>
+      </div>
+    </div>
+
+    <div class="ch1-filterbar" role="group" aria-label="按学习阶段筛选开源项目">
+      <button type="button" class="ch1-filter" data-filter="all" aria-pressed="true">全部</button>
+      <button type="button" class="ch1-filter" data-filter="mcu" aria-pressed="false">MCU</button>
+      <button type="button" class="ch1-filter" data-filter="rtos" aria-pressed="false">RTOS · Linux</button>
+      <button type="button" class="ch1-filter" data-filter="proto" aria-pressed="false">协议</button>
+      <button type="button" class="ch1-filter" data-filter="tool" aria-pressed="false">工具</button>
+      <button type="button" class="ch1-filter" data-filter="adv" aria-pressed="false">高阶</button>
+    </div>
+    <p class="ch1-oss-status" id="ch1-oss-status" aria-live="polite">显示 16 个仓库 · 全部阶段</p>
+
+    <div class="ch1-oss-grid">
+      <article class="ch1-oss" data-stage="mcu" style="--d:.02s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">FreeRTOS-Kernel</span><span class="ch1-tag">第五篇</span></div>
+        <div class="ch1-oss-repo">github.com/FreeRTOS/FreeRTOS-Kernel</div>
+        <p>逐行精读 <code>tasks.c</code> / <code>list.c</code> / <code>port.c</code>。</p>
+      </article>
+      <article class="ch1-oss" data-stage="mcu" style="--d:.04s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">ESP-IDF</span><span class="ch1-tag">第三篇</span></div>
+        <div class="ch1-oss-repo">github.com/espressif/esp-idf</div>
+        <p>组件化 SDK 范本，看 <code>components</code> 如何组织。</p>
+      </article>
+      <article class="ch1-oss" data-stage="mcu" style="--d:.06s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">LVGL</span><span class="ch1-tag">GUI</span></div>
+        <div class="ch1-oss-repo">github.com/lvgl/lvgl</div>
+        <p>GUI 移植与显示驱动对接的实战样本。</p>
+      </article>
+      <article class="ch1-oss" data-stage="rtos" style="--d:.08s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">RT-Thread</span><span class="ch1-tag">第五篇</span></div>
+        <div class="ch1-oss-repo">github.com/RT-Thread/rt-thread</div>
+        <p>中文注释多，适合与 FreeRTOS 对照着读。</p>
+      </article>
+      <article class="ch1-oss" data-stage="rtos" style="--d:.10s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">Zephyr</span><span class="ch1-tag">第五篇</span></div>
+        <div class="ch1-oss-repo">github.com/zephyrproject-rtos/zephyr</div>
+        <p>Kconfig / devicetree 工程化的极致。</p>
+      </article>
+      <article class="ch1-oss" data-stage="rtos" style="--d:.12s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">U-Boot / mainline</span><span class="ch1-tag">第四篇</span></div>
+        <div class="ch1-oss-repo">source.denx.de · git.kernel.org</div>
+        <p>SoC 启动链与驱动框架的源头。</p>
+      </article>
+      <article class="ch1-oss" data-stage="rtos" style="--d:.14s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">Buildroot / Armbian</span><span class="ch1-tag">第四篇</span></div>
+        <div class="ch1-oss-repo">github.com/buildroot/buildroot · armbian/build</div>
+        <p>rootfs 定制的两条路线。</p>
+      </article>
+      <article class="ch1-oss" data-stage="proto" style="--d:.16s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">lwIP</span><span class="ch1-tag">第80章</span></div>
+        <div class="ch1-oss-repo">github.com/lwip-tcpip/lwip</div>
+        <p>TCP/IP 栈源码导读，先从 <code>pbuf</code> 与网卡接口看起。</p>
+      </article>
+      <article class="ch1-oss" data-stage="proto" style="--d:.18s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">libmodbus / LoRaMac-node</span><span class="ch1-tag">第75/83章</span></div>
+        <div class="ch1-oss-repo">github.com/stephane/libmodbus · Lora-net/LoRaMac-node</div>
+        <p>第75 / 83章解析对象，边抓包边读。</p>
+      </article>
+      <article class="ch1-oss" data-stage="proto" style="--d:.20s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">ChirpStack</span><span class="ch1-tag">第83章</span></div>
+        <div class="ch1-oss-repo">github.com/chirpstack/chirpstack</div>
+        <p>LoRaWAN 服务器端组网与设备管理。</p>
+      </article>
+      <article class="ch1-oss" data-stage="proto" style="--d:.22s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">BlueZ / wpa_supplicant</span><span class="ch1-tag">第81/82章</span></div>
+        <div class="ch1-oss-repo">git.kernel.org/pub/scm/bluetooth/bluez.git</div>
+        <p>Linux 蓝牙/WiFi 守护进程，理解协议栈的用户态入口。</p>
+      </article>
+      <article class="ch1-oss" data-stage="tool" style="--d:.24s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">OpenOCD / probe-rs</span><span class="ch1-tag">第13章</span></div>
+        <div class="ch1-oss-repo">openocd.org · github.com/probe-rs/probe-rs</div>
+        <p>烧写与调试主力，先把一条下载链路跑通。</p>
+      </article>
+      <article class="ch1-oss" data-stage="tool" style="--d:.26s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">sigrok / PulseView</span><span class="ch1-tag">第19章</span></div>
+        <div class="ch1-oss-repo">github.com/sigrokproject/pulseview</div>
+        <p>逻辑分析仪解码：SPI / I2C / UART 都能看。</p>
+      </article>
+      <article class="ch1-oss" data-stage="tool" style="--d:.28s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">MCUboot</span><span class="ch1-tag">第30/89章</span></div>
+        <div class="ch1-oss-repo">github.com/mcu-tools/mcuboot</div>
+        <p>OTA 安全升级与双分区设计。</p>
+      </article>
+      <article class="ch1-oss" data-stage="adv" style="--d:.30s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">seL4 / AOSP</span><span class="ch1-tag">第52章</span></div>
+        <div class="ch1-oss-repo">github.com/seL4/seL4 · source.android.com</div>
+        <p>微内核形式化验证 / 第七篇 Android 全线。</p>
+      </article>
+      <article class="ch1-oss" data-stage="adv" style="--d:.32s">
+        <div class="ch1-oss-top"><span class="ch1-oss-name">rknn_model_zoo</span><span class="ch1-tag">第43/91章</span></div>
+        <div class="ch1-oss-repo">github.com/airockchip/rknn_model_zoo</div>
+        <p>NPU 模型部署示例集，边跑边改输入输出。</p>
+      </article>
+    </div>
+
+    <div class="ch1-notes">
+      <div class="ch1-note"><span class="ch1-tag">硬件方案</span>GitHub 强在代码工程；立创开源广场强在原理图 / PCB / BOM。可搜「STM32F407 开发板」「ESP32-S3 最小系统」「LoRa 节点」「四轴飞控」。</div>
+      <div class="ch1-note"><span class="ch1-tag">统一管理</span>浅克隆到 <code>~/oss</code>：<code>git clone --depth=1 &lt;repo&gt;</code>，再用 VSCode 多根工作区全文检索。</div>
+    </div>
+  </section>
+
+  <section class="ch1-scene" data-scene="4" aria-labelledby="ch1-s5-title" hidden>
+    <div class="ch1-scene-head">
+      <span class="ch1-scene-num">1.5</span>
+      <div>
+        <h3 id="ch1-s5-title">学习本身卡住了，怎么排障？</h3>
+        <p>把“学不会”当成故障：先定位，再修复，别用焦虑代替动作。</p>
+      </div>
+    </div>
+
+    <div class="ch1-sym-grid" role="group" aria-label="选择你遇到的学习卡点">
+      <button type="button" class="ch1-sym" data-sym="0" aria-pressed="true" style="--d:.04s">
+        <span class="ch1-sym-q">“例程抄了跑不通”</span>
+        <span class="ch1-sym-h">先怀疑环境：版本 / 引脚 / 宏</span>
+      </button>
+      <button type="button" class="ch1-sym" data-sym="1" aria-pressed="false" style="--d:.08s">
+        <span class="ch1-sym-q">“教程能跑，自己改就崩”</span>
+        <span class="ch1-sym-h">先怀疑边界：时序 / 中断 / 内存</span>
+      </button>
+      <button type="button" class="ch1-sym" data-sym="2" aria-pressed="false" style="--d:.12s">
+        <span class="ch1-sym-q">“资料看不懂”</span>
+        <span class="ch1-sym-h">先怀疑前置：术语 / 知识断层</span>
+      </button>
+      <button type="button" class="ch1-sym" data-sym="3" aria-pressed="false" style="--d:.16s">
+        <span class="ch1-sym-q">“越学越焦虑想放弃”</span>
+        <span class="ch1-sym-h">先怀疑节奏：只看不练的虚假进度</span>
+      </button>
+    </div>
+
+    <div class="card ch1-detail ch1-diag" id="ch1-sym-detail" aria-live="polite">
+      <div class="ch1-detail-top"><span class="ch1-tag">环境问题</span><h4>例程抄了跑不通</h4></div>
+      <p class="ch1-diag-root"><strong>根因：</strong>板卡版本/引脚差异、库版本差异、漏配宏。</p>
+      <div class="ch1-rule">
+        <span class="ch1-rule-k">定位路径</span>
+        <ol class="ch1-diag-path">
+          <li>diff 你的代码与官方例程，先确认差在哪一行。</li>
+          <li>查板卡原理图，核对 LED / 串口引脚是否同名不同脚。</li>
+          <li>看 Build Output 的第一条 error，不要只盯着最后一条。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ch1-rules">
+      <div class="ch1-rulebox"><strong>① 工具链版本一致</strong><p>同一项目内 GCC、CubeMX 生成代码、SDK 版本不要混用。</p></div>
+      <div class="ch1-rulebox"><strong>② 先测供电再上电</strong><p>新焊接/新接线先用万用表确认无短路，仪器地线共地。</p></div>
+      <div class="ch1-rulebox"><strong>③ 改动要留痕</strong><p>所有实验用 Git 管理，每次成功后 commit，出问题可 diff 回溯。</p></div>
+    </div>
+
+    <div class="ch1-faq-group">
+      <details class="ch1-faq">
+        <summary>FAQ：先学 STM32 还是直接上 Linux 开发板？</summary>
+        <p>先 M 后 A。Cortex-M 裸机阶段你会亲手处理启动文件、向量表、中断现场保存；这些概念到 A 核会变成 ATF / U-Boot / 内核异常向量。没有 M 核直觉直接学 A 核，会处处碰壁且无从调试。</p>
+      </details>
+      <details class="ch1-faq">
+        <summary>FAQ：需要买正点原子的全套板子吗？</summary>
+        <p>不需要。最低配：一块 F407 系板（含 ST-Link）+ 一块 ESP32-S3 + 24MHz 逻辑分析仪（约 ¥30）。Linux 部分可先用 QEMU 过一遍流程，确定方向后再入 i.MX6ULL 或 RK 板。</p>
+      </details>
+      <details class="ch1-faq">
+        <summary>FAQ：英语不好能学好嵌入式吗？</summary>
+        <p>手册绕不开（TRM / Datasheet / Errata），但常用技术词约 800 个，句式高度模板化。前 20 章遇到生词就记入个人术语表，两个月后读手册通常比读中文翻译更准。</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="ch1-scene" data-scene="5" aria-labelledby="ch1-s6-title" hidden>
+    <div class="ch1-scene-head">
+      <span class="ch1-scene-num">1.6</span>
+      <div>
+        <h3 id="ch1-s6-title">专家的五条元技能，与今晚就能做的实验</h3>
+        <p>技术会过时，学习方式会复利。先选一条练起来，再做 30 分钟底座。</p>
+      </div>
+    </div>
+
+    <div class="ch1-seg" role="group" aria-label="切换元技能或动手实验">
+      <button type="button" data-tab="skills" aria-pressed="true">五条元技能</button>
+      <button type="button" data-tab="lab" aria-pressed="false">30 分钟动手实验</button>
+    </div>
+
+    <div class="ch1-panel" data-panel="skills">
+      <div class="ch1-skill-grid" role="group" aria-label="五条元技能">
+        <button type="button" class="ch1-skill" data-skill="0" aria-pressed="true" style="--d:.05s">
+          <span class="ch1-skill-num">01</span>
+          <span><span class="ch1-skill-name">手册三遍</span><span class="ch1-skill-sub">建索引 → 任务精读 → 排障查字典</span></span>
+        </button>
+        <button type="button" class="ch1-skill" data-skill="1" aria-pressed="false" style="--d:.10s">
+          <span class="ch1-skill-num">02</span>
+          <span><span class="ch1-skill-name">开源五问</span><span class="ch1-skill-sub">commit · issue · release · 贡献者 · CI</span></span>
+        </button>
+        <button type="button" class="ch1-skill" data-skill="2" aria-pressed="false" style="--d:.15s">
+          <span class="ch1-skill-num">03</span>
+          <span><span class="ch1-skill-name">T 型结构</span><span class="ch1-skill-sub">广度能对话，深度打穿一个方向</span></span>
+        </button>
+        <button type="button" class="ch1-skill" data-skill="3" aria-pressed="false" style="--d:.20s">
+          <span class="ch1-skill-num">04</span>
+          <span><span class="ch1-skill-name">证据链</span><span class="ch1-skill-sub">结论 = 仪器数据 / 日志</span></span>
+        </button>
+        <button type="button" class="ch1-skill" data-skill="4" aria-pressed="false" style="--d:.25s">
+          <span class="ch1-skill-num">05</span>
+          <span><span class="ch1-skill-name">复利输出</span><span class="ch1-skill-sub">一篇带波形的笔记 = 未来简历</span></span>
+        </button>
+      </div>
+
+      <div class="card ch1-detail ch1-skill-detail" id="ch1-skill-detail" aria-live="polite">
+        <div class="ch1-detail-top"><span class="ch1-tag">元技能 01</span><h4>手册三遍阅读法</h4></div>
+        <p class="ch1-detail-role">第一遍只看目录和框图，建立索引感；第二遍按当前任务精读对应章（做 UART 就只读 USART + 时钟树 + NVIC 三处）；第三遍在排障时当字典查。切忌从头通读 TRM——耗时且留不住。</p>
+        <div class="ch1-rule"><span class="ch1-rule-k">怎么练</span><p>今天就选 USART 试一次：时钟从哪来？中断怎么进？错误怎么查？</p></div>
+      </div>
+    </div>
+
+    <div class="ch1-panel" data-panel="lab" hidden>
+      <div class="ch1-lab-head">
+        <p><strong>实验 L1-1：</strong>30 分钟搭建贯穿全库的个人知识管理系统。</p>
+        <span class="ch1-tag">今晚就能做</span>
+      </div>
+      <div class="ch1-lab-meter">
+        <div class="ch1-lab-meter-top"><span>完成度</span><span id="ch1-lab-count">0 / 5</span></div>
+        <div class="progress" role="progressbar" aria-label="动手实验完成度" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="ch1-lab-progress">
+          <div class="progress-bar" id="ch1-lab-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="ch1-checklist">
+        <label class="ch1-checkitem"><input type="checkbox" class="ch1-check"><span>GitHub 新建私有仓库 <code>embedded-journal</code>。</span></label>
+        <label class="ch1-checkitem"><input type="checkbox" class="ch1-check"><span>建目录骨架：<code>notes/ terms.md labs/ projects/ cheatsheets/</code>。</span></label>
+        <label class="ch1-checkitem"><input type="checkbox" class="ch1-check"><span><code>terms.md</code> 录入本章 10 个术语，用自己的话解释（示例：AAPCS / XIP / WCET / jitter）。</span></label>
+        <label class="ch1-checkitem"><input type="checkbox" class="ch1-check"><span>建 <code>labs/lab-template.md</code> 六栏模板：日期 / 环境 / 步骤 / 现象 / 预期 vs 实际 / 结论。</span></label>
+        <label class="ch1-checkitem"><input type="checkbox" class="ch1-check"><span>首次 commit 并推远端。</span></label>
+      </div>
+      <p class="ch1-lab-accept"><strong>验收：</strong>换一台电脑 clone 能完整还原；术语表没有复制粘贴痕迹。</p>
+      <p class="ch1-lab-status" id="ch1-lab-status" aria-live="polite">勾选左侧步骤，完成你的学习底座。</p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="ch1-foot">
+  <button type="button" class="ch1-btn" id="ch1-prev" disabled>← 上一节</button>
+  <div class="ch1-foot-mid">
+    <span class="ch1-foot-name" id="ch1-foot-name">01 · 技术栈全景</span>
+    <span class="ch1-foot-hint" id="ch1-foot-hint">点击上方数字可跳转</span>
+  </div>
+  <button type="button" class="ch1-btn ch1-btn-next" id="ch1-next">下一节 →</button>
+</footer>
+</div>
+<script>
+(function(){
+  'use strict';
+  var root = document.getElementById('ch1-lesson');
+  if(!root){ return; }
+
+  var scenes = Array.prototype.slice.call(root.querySelectorAll('.ch1-scene'));
+  var stepButtons = Array.prototype.slice.call(root.querySelectorAll('[data-goto]'));
+  var progressLabel = document.getElementById('ch1-progress-label');
+  var progressBar = document.getElementById('ch1-progress');
+  var progressFill = document.getElementById('ch1-progress-fill');
+  var prevBtn = document.getElementById('ch1-prev');
+  var nextBtn = document.getElementById('ch1-next');
+  var footName = document.getElementById('ch1-foot-name');
+  var footHint = document.getElementById('ch1-foot-hint');
+  var current = 0;
+  var shortNames = ['技术栈', '学习路线', '能力阶梯', '开源教材', '学习排障', '元技能'];
+  var longNames = ['01 · 技术栈全景', '02 · 学习路线', '03 · 能力阶梯', '04 · 开源教材', '05 · 学习排障', '06 · 元技能与行动'];
+
+  function go(n){
+    current = Math.max(0, Math.min(scenes.length - 1, n));
+    scenes.forEach(function(scene, index){
+      var active = index === current;
+      scene.hidden = !active;
+      scene.classList.toggle('is-active', active);
+    });
+    stepButtons.forEach(function(button, index){
+      if(index === current){
+        button.setAttribute('aria-current', 'step');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
+    var shown = String(current + 1).padStart(2, '0');
+    progressLabel.textContent = shown + ' / 06 · ' + shortNames[current];
+    progressBar.setAttribute('aria-valuenow', String(current + 1));
+    progressFill.style.width = (((current + 1) / scenes.length) * 100).toFixed(1) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === scenes.length - 1;
+    nextBtn.textContent = current === scenes.length - 1 ? '本章结束' : '下一节 →';
+    footName.textContent = longNames[current];
+    footHint.textContent = current === scenes.length - 1 ? '下一章：第2章 C 语言进阶' : '点击上方数字可跳转';
+    if(current !== 0 && demoRunning){
+      resetDemoVisuals();
+      demoCopy.textContent = defaultDemoCopy;
+    }
+  }
+
+  stepButtons.forEach(function(button){
+    button.addEventListener('click', function(){ go(Number(button.getAttribute('data-goto'))); });
+  });
+  prevBtn.addEventListener('click', function(){ go(current - 1); });
+  nextBtn.addEventListener('click', function(){ go(current + 1); });
+
+  var layers = {
+    app: {
+      code: 'L6', pos: '离硬件最远', title: '应用层',
+      role: '业务逻辑、UI、云端协议与算法都在这里。可移植性最高，也最应该“无知”——它不该知道寄存器长什么样。',
+      items: ['LVGL / Qt', 'MQTT / HTTP', '滤波 / PID / 推理'],
+      rule: '只调用中间件与 OS 接口，禁止直捅寄存器；否则应用代码会与芯片焊死。'
+    },
+    middleware: {
+      code: 'L5', pos: '复用层', title: '中间件层',
+      role: '用成熟开源库解决通用问题，重点在移植层（port）适配与裁剪配置，而不是重造轮子。',
+      items: ['lwIP', 'libmodbus', 'FatFs / Littlefs', 'LVGL', 'mbedTLS', 'LoRaMac-node', 'MCUboot'],
+      rule: '先看 port 层怎么接、配置怎么裁，再看内核实现。'
+    },
+    system: {
+      code: 'L4', pos: '系统核心', title: '系统层',
+      role: '负责调度、内存管理、IPC 与设备模型，是“应用能跑起来”的地基。',
+      items: ['FreeRTOS', 'RT-Thread', 'Zephyr', 'Linux 内核 + 驱动', 'Android HAL / Binder', 'seL4'],
+      rule: '排障必须能回答：谁在跑？被谁切走？等了哪把锁？'
+    },
+    bsp: {
+      code: 'L3', pos: '板级适配', title: '硬件抽象层 BSP',
+      role: '板级初始化、Bootloader、设备树、SPL / ATF，把一块具体板子变成软件可用的平台。',
+      items: ['HAL / LL 库', '设备树', 'SPL / ATF', 'U-Boot / IAP', '板级时钟与引脚'],
+      rule: '芯片手册 + 原理图 = 这层的两把钥匙。'
+    },
+    bus: {
+      code: 'L2', pos: '时序与电气', title: '总线与外设协议',
+      role: '定义电平、速率、时序窗口与拓扑。协议问题最终都要落到波形上。',
+      items: ['UART / RS485', 'I2C', 'SPI / QSPI', 'CAN / CAN FD', 'USB', 'PCIe', '以太网 MAC-PHY', 'WiFi / BLE / LoRa'],
+      rule: '时序图必须能徒手画出来；示波器 / 逻辑分析仪是裁判。'
+    },
+    cpu: {
+      code: 'L1', pos: '最贴近硅片', title: 'CPU 架构层',
+      role: '寄存器组、异常模型、MMU / MPU、Cache，决定代码究竟怎样在硅片上执行。',
+      items: ['Cortex-M / A / R', 'Xtensa', 'RISC-V (RV32/64)', '中断与异常', 'Cache / MPU / MMU'],
+      rule: '汇编读写能力 = 排障能力的上限；HardFault 最终都要回到这里。'
+    }
+  };
+  var layerButtons = Array.prototype.slice.call(root.querySelectorAll('.ch1-layer'));
+  var layerDetail = document.getElementById('ch1-layer-detail');
+  var byLayer = {};
+  var probe = document.getElementById('ch1-probe');
+  var skipNote = document.getElementById('ch1-skip-note');
+  var demoCopy = document.getElementById('ch1-demo-copy');
+  var demoState = document.getElementById('ch1-demo-state');
+  var modeButtons = Array.prototype.slice.call(root.querySelectorAll('[data-mode]'));
+  var demoTimers = [];
+  var demoRunning = false;
+  var defaultDemoCopy = '一次 UART 打印，应该怎样穿过这六层？选一条路径试试。';
+
+  layerButtons.forEach(function(button){
+    byLayer[button.getAttribute('data-layer')] = button;
+  });
+
+  function renderLayer(key){
+    var data = layers[key];
+    if(!data){ return; }
+    layerDetail.innerHTML =
+      '<div class="ch1-detail-top"><span class="ch1-tag">' + data.code + ' · ' + data.pos + '</span><h4>' + data.title + '</h4></div>' +
+      '<p class="ch1-detail-role">' + data.role + '</p>' +
+      '<div class="ch1-chiprow">' + data.items.map(function(item){ return '<span class="ch1-chip">' + item + '</span>'; }).join('') + '</div>' +
+      '<div class="ch1-rule"><span class="ch1-rule-k">铁律</span><p>' + data.rule + '</p></div>';
+  }
+
+  function clearDemoTimers(){
+    demoTimers.forEach(function(timer){ clearTimeout(timer); });
+    demoTimers = [];
+  }
+
+  function resetDemoVisuals(){
+    clearDemoTimers();
+    probe.classList.remove('is-run');
+    probe.style.opacity = '0';
+    skipNote.classList.remove('is-on');
+    layerButtons.forEach(function(button){ button.classList.remove('is-hit', 'is-skip'); });
+    modeButtons.forEach(function(button){
+      button.disabled = false;
+      button.setAttribute('aria-pressed', 'false');
+    });
+    demoRunning = false;
+    demoState.textContent = '待运行';
+  }
+
+  function selectLayer(key, byUser){
+    var layer = byLayer[key];
+    if(!layer){ return; }
+    layerButtons.forEach(function(button){
+      button.setAttribute('aria-pressed', button === layer ? 'true' : 'false');
+    });
+    renderLayer(key);
+    if(byUser){
+      resetDemoVisuals();
+      demoCopy.textContent = '已选中「' + layers[key].title + '」。再跑一次调用路径，看它如何被上层依赖。';
+    }
+  }
+
+  layerButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+      selectLayer(button.getAttribute('data-layer'), true);
+    });
+  });
+
+  function probeTop(layer){
+    return layer.offsetTop + (layer.offsetHeight / 2) - 4.5;
+  }
+
+  function finishDemo(){
+    demoRunning = false;
+    modeButtons.forEach(function(button){ button.disabled = false; });
+  }
+
+  function runDemo(mode){
+    resetDemoVisuals();
+    demoRunning = true;
+    modeButtons.forEach(function(button){
+      button.disabled = true;
+      button.setAttribute('aria-pressed', button.getAttribute('data-mode') === mode ? 'true' : 'false');
+    });
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var order = ['app', 'middleware', 'system', 'bsp', 'bus', 'cpu'];
+
+    if(mode === 'ok'){
+      demoState.textContent = '合规 · 逐层调用';
+      demoCopy.textContent = '从应用到寄存器，每一层只调用下一层的接口。';
+      probe.classList.remove('is-bad');
+      probe.style.opacity = '1';
+      probe.classList.add('is-run');
+      probe.style.top = probeTop(byLayer.app) + 'px';
+      order.forEach(function(key, index){
+        var delay = reduced ? 0 : index * 300;
+        demoTimers.push(setTimeout(function(){
+          var layer = byLayer[key];
+          if(!layer){ return; }
+          layer.classList.add('is-hit');
+          probe.style.top = probeTop(layer) + 'px';
+        }, delay));
+      });
+      demoTimers.push(setTimeout(function(){
+        demoCopy.textContent = '换芯片时只替换 BSP / CPU 层，应用代码原样复用。';
+        finishDemo();
+      }, reduced ? 30 : order.length * 300 + 220));
+    } else {
+      demoState.textContent = '违规 · 越过 4 层';
+      demoCopy.textContent = '应用层直接写寄存器：中间 4 层全部被绕过。';
+      probe.classList.add('is-bad');
+      probe.classList.remove('is-run');
+      probe.style.opacity = '0';
+      demoTimers.push(setTimeout(function(){
+        order.forEach(function(key){
+          if(key === 'middleware' || key === 'system' || key === 'bsp' || key === 'bus'){
+            byLayer[key].classList.add('is-skip');
+          }
+        });
+        byLayer.cpu.classList.add('is-hit');
+        skipNote.classList.add('is-on');
+      }, reduced ? 0 : 180));
+      demoTimers.push(setTimeout(function(){
+        demoCopy.textContent = '换芯片 → 应用层全盘重写，移植成本爆炸。';
+        finishDemo();
+      }, reduced ? 30 : 1400));
+    }
+  }
+
+  modeButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+      if(demoRunning){ return; }
+      runDemo(button.getAttribute('data-mode'));
+    });
+  });
+
+  var routeData = [
+    { phase: '地基', title: '第一篇 · 语言与底层机制', desc: '第1~9章 · C / C++ / 汇编 / 链接器 / 数据结构 / 架构 / 单测', why: '不懂 volatile、链接器、栈布局，后面全是黑盒。' },
+    { phase: '地基', title: '第二篇 · 工具链与仪器', desc: '第10~20章 · GCC / GDB / OpenOCD / 日志 / 抓包 / 示波器', why: '工具先行。之后每章的实验都能用仪器验证，形成“现象 → 证据”的闭环。' },
+    { phase: '主干', title: '第三篇 · 单片机裸机 → RTOS 化', desc: '第21~33章 · Cortex-M / F407 / 外设 / DMA / OTA / ESP32', why: 'Cortex-M 是理解一切实时系统的最佳入口；中断现场、启动文件在这里亲手摸。' },
+    { phase: '主干', title: '第五篇 · RTOS 源码级', desc: '第45~53章 · 调度 / PendSV / IPC / heap / tickless / SMP', why: '可与第③站并行；建议在 F407 上边跑边读源码。会调度，才谈得上“实时”。' },
+    { phase: '进阶', title: '第四篇 + 第六篇 · SoC 与嵌入式 Linux', desc: '第34~44 + 54~66章 · 启动链 / U-Boot / 设备树 / 驱动', why: '进入 A 核世界：MMU、进程、驱动框架。先 M 后 A，否则处处碰壁。' },
+    { phase: '进阶', title: '第八篇 · 通信协议', desc: '第74~86章 · UART / I2C / SPI / CAN / USB / 以太网 / 无线', why: '有了前面的基础，协议调试如虎添翼；示波器与逻辑分析仪在这里变成日常工具。' },
+    { phase: '高阶', title: '第七篇 · Android 底层', desc: '第67~73章 · AOSP / Zygote / HAL / Binder / OTA', why: '建立在 Linux 内核知识之上；Binder、HAL、OTA 都需要内核与驱动直觉。' },
+    { phase: '高阶', title: '第九篇 · 综合项目集', desc: '第87~92章 · 六个可交付项目', why: '把八篇知识拧成一个可交付产品：需求 → 设计 → 实现 → 测试 → 文档。' }
+  ];
+  var routeButtons = Array.prototype.slice.call(root.querySelectorAll('.ch1-stop'));
+  var routeDetail = document.getElementById('ch1-route-detail');
+
+  function renderRoute(index){
+    var data = routeData[index];
+    if(!data){ return; }
+    routeButtons.forEach(function(button, i){
+      button.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
+    routeDetail.innerHTML =
+      '<div class="ch1-detail-top"><span class="ch1-tag">' + data.phase + '</span><h4>' + data.title + '</h4></div>' +
+      '<p class="ch1-detail-role">' + data.desc + '</p>' +
+      '<div class="ch1-rule"><span class="ch1-rule-k">为什么在这个位置</span><p>' + data.why + '</p></div>';
+    routeDetail.classList.remove('ch1-pop');
+    void routeDetail.offsetWidth;
+    routeDetail.classList.add('ch1-pop');
+  }
+
+  routeButtons.forEach(function(button, index){
+    button.addEventListener('click', function(){ renderRoute(index); });
+  });
+
+  var levelData = [
+    { code: 'L1', tag: '起点', name: '会用', goal: '照教程跑通例程，先建立“能跑”的正反馈。', chapters: '第一、三篇前半。', check: '能独立完成 GPIO / 串口 / 定时器例程，并解释每一行代码。' },
+    { code: 'L2', tag: '拆黑盒', name: '懂原理', goal: '读手册、读源码，能解释现象背后的机制。', chapters: '第二、五篇 + 第三篇后半。', check: '能讲清一次中断的完整旅程、PendSV 切换细节。' },
+    { code: 'L3', tag: '硬门槛', name: '能排障', goal: '把“现象 → 根因 → 修复”变成稳定动作。', chapters: '贯穿全库的「排故表」。', check: 'HardFault / Oops / 死锁 / 丢包，能在 1 小时内定位根因。' },
+    { code: 'L4', tag: '做取舍', name: '会设计', goal: '能划分模块，并在性能、成本、可维护性之间取舍。', chapters: '第八篇 + 第四、六篇。', check: '拿到需求能画出框图、估出带宽与内存、写出接口文档。' },
+    { code: 'L5', tag: '闭环', name: '可交付', goal: '独立完成一个从需求到文档的完整项目。', chapters: '第九篇六大项目。', check: '需求 → 设计 → 实现 → 测试 → 文档，全流程独立完成。' }
+  ];
+  var levelButtons = Array.prototype.slice.call(root.querySelectorAll('.ch1-level'));
+  var levelDetail = document.getElementById('ch1-level-detail');
+
+  function renderLevel(index){
+    var data = levelData[index];
+    if(!data){ return; }
+    levelButtons.forEach(function(button, i){
+      button.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
+    levelDetail.innerHTML =
+      '<div class="ch1-detail-top"><span class="ch1-tag">' + data.code + ' · ' + data.tag + '</span><h4>' + data.name + '</h4></div>' +
+      '<dl class="ch1-facts">' +
+        '<div><dt>目标</dt><dd>' + data.goal + '</dd></div>' +
+        '<div><dt>对应篇章</dt><dd>' + data.chapters + '</dd></div>' +
+        '<div><dt>检验标准</dt><dd>' + data.check + '</dd></div>' +
+      '</dl>';
+    levelDetail.classList.remove('ch1-pop');
+    void levelDetail.offsetWidth;
+    levelDetail.classList.add('ch1-pop');
+  }
+
+  levelButtons.forEach(function(button, index){
+    button.addEventListener('click', function(){ renderLevel(index); });
+  });
+
+  var filterButtons = Array.prototype.slice.call(root.querySelectorAll('.ch1-filter'));
+  var ossCards = Array.prototype.slice.call(root.querySelectorAll('.ch1-oss'));
+  var ossStatus = document.getElementById('ch1-oss-status');
+  var filterLabels = { all: '全部阶段', mcu: 'MCU', rtos: 'RTOS / Linux', proto: '协议', tool: '工具', adv: '高阶' };
+
+  filterButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+      var filter = button.getAttribute('data-filter');
+      filterButtons.forEach(function(item){
+        item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+      });
+      var visible = 0;
+      ossCards.forEach(function(card){
+        var show = filter === 'all' || card.getAttribute('data-stage') === filter;
+        card.hidden = !show;
+        if(show){
+          visible += 1;
+          card.style.setProperty('--d', (visible * 0.025).toFixed(3) + 's');
+        }
+      });
+      ossStatus.textContent = '显示 ' + visible + ' 个仓库 · ' + filterLabels[filter];
+    });
+  });
+
+  var symptomData = [
+    { tag: '环境问题', title: '例程抄了跑不通', root: '板卡版本 / 引脚差异、库版本差异、漏配宏。', steps: ['diff 你的代码与官方例程，先确认差在哪一行。', '查板卡原理图，核对 LED / 串口引脚是否同名不同脚。', '看 Build Output 的第一条 error，不要只盯着最后一条。'] },
+    { tag: '工程习惯', title: '教程能跑，自己改就崩', root: '对时序、中断、内存边界缺乏敬畏。', steps: ['回退到能跑的版本，先恢复确定性。', '每次只改一处并 commit，让变化可比较。', '用二分法定位改动，而不是整段重写后猜。'] },
+    { tag: '知识断层', title: '资料看不懂', root: '术语断层或前置知识缺失。', steps: ['先查附录 D 术语表，确认词的含义。', '回到对应章节补前置知识。', '仍不懂再问社区，附上最小复现代码和完整报错。'] },
+    { tag: '心态 / 节奏', title: '越学越焦虑想放弃', root: '只看不练产生的“虚假进度感”崩塌。', steps: ['立即做一个最小实验，哪怕只是点灯。', '用完成度重建信心，不靠收藏夹续命。', '每周固定产出一次 commit，让进步可见。'] }
+  ];
+  var symptomButtons = Array.prototype.slice.call(root.querySelectorAll('.ch1-sym'));
+  var symptomDetail = document.getElementById('ch1-sym-detail');
+
+  function renderSymptom(index){
+    var data = symptomData[index];
+    if(!data){ return; }
+    symptomButtons.forEach(function(button, i){
+      button.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
+    symptomDetail.innerHTML =
+      '<div class="ch1-detail-top"><span class="ch1-tag">' + data.tag + '</span><h4>' + data.title + '</h4></div>' +
+      '<p class="ch1-diag-root"><strong>根因：</strong>' + data.root + '</p>' +
+      '<div class="ch1-rule"><span class="ch1-rule-k">定位路径</span><ol class="ch1-diag-path">' +
+        data.steps.map(function(step){ return '<li>' + step + '</li>'; }).join('') +
+      '</ol></div>';
+    symptomDetail.classList.remove('ch1-pop');
+    void symptomDetail.offsetWidth;
+    symptomDetail.classList.add('ch1-pop');
+  }
+
+  symptomButtons.forEach(function(button, index){
+    button.addEventListener('click', function(){ renderSymptom(index); });
+  });
+
+  var skillData = [
+    { name: '手册三遍阅读法', body: '第一遍只看目录和框图，建立索引感；第二遍按当前任务精读对应章（做 UART 就只读 USART + 时钟树 + NVIC 三处）；第三遍在排障时当字典查。切忌从头通读 TRM——耗时且留不住。', practice: '今天就选 USART 试一次：时钟从哪来？中断怎么进？错误怎么查？' },
+    { name: '开源项目健康度五问', body: '最近 commit 时间？issue 平均响应时长？release 节奏？贡献者数量分布？CI 徽章是否绿色？选型前 10 分钟回答完这五问，可避开九成弃坑项目。', practice: '拿 FreeRTOS-Kernel 和一个小众 RTOS 各答一遍五问，感受差距。' },
+    { name: 'T 型能力结构', body: '横向广度到“能与相邻岗位对话”即可，懂射频同事的语言；纵向深度选一个方向打穿，RTOS 内核或 Linux 驱动。面试考深度，团队要广度。', practice: '写下你的纵深方向，以及必须能对话的两个相邻岗位。' },
+    { name: '证据链思维', body: '从第一天起要求“结论必须有仪器数据或日志支撑”。“大概是”“应该是”在嵌入式领域等于没说。', practice: '下次写结论，附一张波形 / 日志截图和一条可复现命令。' },
+    { name: '复利式输出', body: '每学一个外设 / 协议，就写一篇带实测波形的笔记公开发布。两年后这些产出是简历放大器，也是最好的复习材料。', practice: '建 notes/ 目录，先写 300 字 + 一张图。' }
+  ];
+  var skillButtons = Array.prototype.slice.call(root.querySelectorAll('.ch1-skill'));
+  var skillDetail = document.getElementById('ch1-skill-detail');
+
+  function renderSkill(index){
+    var data = skillData[index];
+    if(!data){ return; }
+    skillButtons.forEach(function(button, i){
+      button.setAttribute('aria-pressed', i === index ? 'true' : 'false');
+    });
+    skillDetail.innerHTML =
+      '<div class="ch1-detail-top"><span class="ch1-tag">元技能 0' + (index + 1) + '</span><h4>' + data.name + '</h4></div>' +
+      '<p class="ch1-detail-role">' + data.body + '</p>' +
+      '<div class="ch1-rule"><span class="ch1-rule-k">怎么练</span><p>' + data.practice + '</p></div>';
+    skillDetail.classList.remove('ch1-pop');
+    void skillDetail.offsetWidth;
+    skillDetail.classList.add('ch1-pop');
+  }
+
+  skillButtons.forEach(function(button, index){
+    button.addEventListener('click', function(){ renderSkill(index); });
+  });
+
+  var tabButtons = Array.prototype.slice.call(root.querySelectorAll('[data-tab]'));
+  var panels = Array.prototype.slice.call(root.querySelectorAll('[data-panel]'));
+
+  tabButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+      var name = button.getAttribute('data-tab');
+      tabButtons.forEach(function(item){
+        item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
+      });
+      panels.forEach(function(panel){
+        panel.hidden = panel.getAttribute('data-panel') !== name;
+      });
+    });
+  });
+
+  var checks = Array.prototype.slice.call(root.querySelectorAll('.ch1-check'));
+  var labProgress = document.getElementById('ch1-lab-progress');
+  var labFill = document.getElementById('ch1-lab-fill');
+  var labCount = document.getElementById('ch1-lab-count');
+  var labStatus = document.getElementById('ch1-lab-status');
+
+  function updateLab(){
+    var done = checks.filter(function(check){ return check.checked; }).length;
+    labCount.textContent = done + ' / ' + checks.length;
+    labFill.style.width = ((done / checks.length) * 100).toFixed(0) + '%';
+    labProgress.setAttribute('aria-valuenow', String(done));
+    if(done === checks.length){
+      labStatus.textContent = '底座完成：可以进入第2章，开始建 C 语言与内存模型的地基。';
+    } else {
+      labStatus.textContent = '还差 ' + (checks.length - done) + ' 步完成学习底座。';
+    }
+  }
+
+  checks.forEach(function(check){ check.addEventListener('change', updateLab); });
+
+  go(0);
+  selectLayer('app', false);
+  renderRoute(0);
+  renderLevel(0);
+  renderSymptom(0);
+  renderSkill(0);
+  updateLab();
+})();
+</script>
